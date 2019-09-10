@@ -1,0 +1,1 @@
+# Contao Component Style Manager
