@@ -1,0 +1,21 @@
+.widget.stylemanager {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  clear: both;
+}
+.widget.stylemanager > h3 {
+  display: none;
+}
+.widget.stylemanager > div {
+  width: calc(50% - 30px);
+  float: left;
+  margin-left: 15px;
+  margin-right: 15px;
+  min-height: 80px;
+}
+.widget.stylemanager .tl_help {
+  font-size: 0.75rem;
+}
+
+/*# sourceMappingURL=stylemanager.css.map */
