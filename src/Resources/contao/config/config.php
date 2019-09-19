@@ -26,11 +26,6 @@ array_insert($GLOBALS['BE_FFL'], 1, array
 // Models
 $GLOBALS['TL_MODELS']['tl_style_manager'] = '\\Oveleon\\ContaoComponentStyleManager\\StyleManagerModel';
 
-// Hooks
-$GLOBALS['TL_HOOKS']['generatePage'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'generatePage');
-$GLOBALS['TL_HOOKS']['getArticle'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'getArticle');
-$GLOBALS['TL_HOOKS']['parseTemplate'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'parseTemplate');
-
 // Style sheet
 if (TL_MODE == 'BE')
 {
