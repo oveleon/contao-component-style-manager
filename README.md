@@ -7,8 +7,11 @@ This plugin is designed to simplify theme customizations without the need for cu
 Own groups of styles can be created and managed.
 
 ####Admin:
-[[https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-list.png|alt=Admin View: List]]
-[[https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-mask.png|alt=Admin View: Mask]]
+##### List-View
+![Admin View: List](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-list.png)
+##### Mask-View
+![Admin View: Mask](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-mask.png)
 
 ####Customer:
-[[https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-customer.png|alt=Customer View: Article]]
+##### Article
+![Customer View: Article](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-customer.png)
