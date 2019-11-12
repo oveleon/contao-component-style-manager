@@ -12,6 +12,6 @@ Own groups of styles can be created and managed.
 ##### Mask-View
 ![Admin View: Mask](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-mask.png)
 
-####Customer:
+#### Customer:
 ##### Article
 ![Customer View: Article](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-customer.png)
