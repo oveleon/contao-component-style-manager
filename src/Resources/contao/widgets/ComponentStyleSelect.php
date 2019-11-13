@@ -55,6 +55,16 @@ class ComponentStyleSelect extends \Widget
             $arrOptions = array();
             $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
 
+            if(!!$objStyleGroups->extendContentElement)
+            {
+                $arrContentElements = \StringUtil::deserialize($objStyleGroups->contentElements);
+
+                if($arrContentElements !== null && !in_array($this->activeRecord->type, $arrContentElements))
+                {
+                    continue;
+                }
+            }
+
             // prepare data for older versions
             if($opts !== null)
             {
@@ -120,6 +130,12 @@ class ComponentStyleSelect extends \Widget
             );
         }
 
-        return implode("",$arrFields);
+		if(!count($arrFields))
+		{
+		    \System::loadLanguageFile('tl_style_manager');
+		    return '<div class="no_styles"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+        }
+
+		return implode("",$arrFields);
 	}
 }

@@ -14,6 +14,12 @@
   margin-right: 15px;
   min-height: 80px;
 }
+.widget.stylemanager > div.no_styles {
+  min-height: auto;
+}
+.widget.stylemanager > div.no_styles p {
+  font-style: italic;
+}
 .widget.stylemanager .tl_help {
   font-size: 0.75rem;
 }

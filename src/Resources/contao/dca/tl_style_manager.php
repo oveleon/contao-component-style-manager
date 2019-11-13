@@ -89,7 +89,14 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendPage,extendArticle,extendContentElement;'
+        '__selector__'                => array('extendContentElement'),
+        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendPage,extendArticle,extendContentElement;{expert_legend:hide},alias;'
+    ),
+
+    // Sub-Palettes
+    'subpalettes' => array
+    (
+        'extendContentElement'        => 'contentElements'
     ),
 
     // Fields
@@ -164,8 +171,17 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendContentElement'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12 clr'),
+            'eval'                    => array('tl_class'=>'w50 m12 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'contentElements' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['contentElements'],
+            'inputType'               => 'checkbox',
+            'options_callback'        => array('tl_style_manager', 'getContentElements'),
+            'reference'               => &$GLOBALS['TL_LANG']['CTE'],
+            'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'w50'),
+            'sql'                     => "blob NULL"
         ),
     )
 );
@@ -312,5 +328,25 @@ class tl_style_manager extends \Backend
         }
 
         return serialize($arrValue);
+    }
+
+    /**
+     * Return all content elements as array
+     *
+     * @return array
+     */
+    public function getContentElements()
+    {
+        $groups = array();
+
+        foreach ($GLOBALS['TL_CTE'] as $k=>$v)
+        {
+            foreach (array_keys($v) as $kk)
+            {
+                $groups[$k][] = $kk;
+            }
+        }
+
+        return $groups;
     }
 }
