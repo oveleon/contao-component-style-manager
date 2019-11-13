@@ -89,7 +89,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title,description,alias;{config_legend},cssClasses;{publish_legend},extendPage,extendArticle,extendContentElement;'
+        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendPage,extendArticle,extendContentElement;'
     ),
 
     // Fields
@@ -136,8 +136,11 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['cssClasses'],
             'exclude'                 => true,
-            'inputType'               => 'listWizard',
-            'eval'                    => array('allowHtml'=>true, 'tl_class'=>'clr'),
+            'inputType'               => 'keyValueWizard',
+            'eval'                    => array('allowHtml'=>true, 'tl_class'=>'clr long'),
+            'load_callback'           => array(
+                array('tl_style_manager', 'prepareData')
+            ),
             'sql'                     => "blob NULL"
         ),
         'extendPage' => array
@@ -282,5 +285,32 @@ class tl_style_manager extends \Backend
         }
 
         return $varValue;
+    }
+    /**
+     * Prepare data from older versions
+     *
+     * @param mixed         $varValue
+     * @param \DataContainer $dc
+     *
+     * @return string
+     */
+    public function prepareData($varValue, \DataContainer $dc)
+    {
+        $arrValue = \StringUtil::deserialize($varValue);
+
+        if($arrValue !== null)
+        {
+            if(!isset($arrValue[0]['key']))
+            {
+                foreach ($arrValue as &$item) {
+                    $item = array(
+                        'key' => $item,
+                        'value' => ''
+                    );
+                }
+            }
+        }
+
+        return serialize($arrValue);
     }
 }

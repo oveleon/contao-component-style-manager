@@ -55,10 +55,24 @@ class ComponentStyleSelect extends \Widget
             $arrOptions = array();
             $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
 
+            // prepare data for older versions
+            if($opts !== null)
+            {
+                if(!isset($opts[0]['key']))
+                {
+                    foreach ($opts as &$item) {
+                        $item = array(
+                            'key' => $item,
+                            'value' => ''
+                        );
+                    }
+                }
+            }
+
             foreach ($opts as $opt) {
                 $arrFieldOptions[] = array(
-                    'label' => $opt,
-                    'value' => $opt
+                    'label' => $opt['value'] ?: $opt['key'],
+                    'value' => $opt['key']
                 );
             }
 

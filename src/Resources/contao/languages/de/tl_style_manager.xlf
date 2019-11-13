@@ -65,8 +65,8 @@
         <target>CSS-Klassen</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.cssClasses.1">
-        <source>Define the available CSS classes in this group.</source>
-        <target>Definieren Sie hier die in dieser Gruppe vorhandenen CSS-Klassen.</target>
+        <source>Define the available CSS classes and description in this group.</source>
+        <target>Definieren Sie hier die in dieser Gruppe vorhandenen CSS-Klassen und dessen Beschreibungen.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendPage.0">
         <source>Publish for Pages</source>
