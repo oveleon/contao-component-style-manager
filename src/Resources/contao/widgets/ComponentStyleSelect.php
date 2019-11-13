@@ -55,7 +55,7 @@ class ComponentStyleSelect extends \Widget
             $arrOptions = array();
             $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
 
-            if(!!$objStyleGroups->extendContentElement)
+            if(!!$objStyleGroups->extendContentElement && $this->strTable === 'tl_content')
             {
                 $arrContentElements = \StringUtil::deserialize($objStyleGroups->contentElements);
 
