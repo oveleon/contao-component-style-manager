@@ -1,10 +1,8 @@
 # Contao Component Style Manager
 
-Allows you to add your own CSS classes, which are available in pages, articles and content elements. 
+Allows you to add your own groups of CSS classes provided in pages, articles, and content elements to your customers.
 
 This plugin is designed to simplify theme customizations without the need for customers to manually add classes or create new layouts.
-
-Own groups of styles can be created and managed.
 
 #### Admin:
 ##### List-View
