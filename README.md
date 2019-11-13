@@ -14,4 +14,4 @@ This plugin is designed to simplify theme customizations without the need for cu
 
 #### Customer:
 ##### Article
-![Customer View: Article](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-customer.png)
+![Customer View: Article](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-customer-1.png)
