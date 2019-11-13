@@ -6,9 +6,9 @@ This plugin is designed to simplify theme customizations without the need for cu
 
 #### Admin:
 ##### List-View
-![Admin View: List](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-list.png)
+![Admin View: List](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-list-0.png)
 ##### Mask-View: Content Elements
-![Admin View: Mask](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-mask.png)
+![Admin View: Mask](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-mask-0.png)
 ##### Mask-View: Article
 ![Admin View: Mask](https://www.oveleon.de/share/github-assets/contao-component-style-manager/style-manager-mask-1.png)
 
