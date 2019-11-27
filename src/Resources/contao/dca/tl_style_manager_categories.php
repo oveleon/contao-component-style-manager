@@ -127,7 +127,6 @@ $GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
  */
 class tl_style_manager_categories extends \Backend
 {
-
     /**
      * Import the back end user object
      */

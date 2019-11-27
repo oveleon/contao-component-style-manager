@@ -7,7 +7,6 @@
 
 $GLOBALS['TL_DCA']['tl_style_manager'] = array
 (
-
     // Config
     'config' => array
     (
@@ -218,7 +217,6 @@ use Oveleon\ContaoComponentStyleManager\StyleManagerCategoriesModel;
 
 class tl_style_manager extends \Backend
 {
-
     /**
      * Import the back end user object
      */
@@ -248,6 +246,7 @@ class tl_style_manager extends \Backend
     public function getAllCategories(DataContainer $dc)
     {
         $arrCategories = StyleManagerCategoriesModel::findAll();
+        $arrResult = array();
 
         if($arrCategories !== null)
         {
