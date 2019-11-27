@@ -10,7 +10,7 @@ namespace Oveleon\ContaoComponentStyleManager;
 class Support
 {
     /**
-     * Clear StyleManager classes from cssClass field
+     * Support Rocksolid Custom Element
      *
      * @param DataContainer $dc
      */
