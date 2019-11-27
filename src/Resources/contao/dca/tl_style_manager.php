@@ -34,8 +34,8 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'sorting' => array
         (
             'mode'                    => 1,
-            'fields'                  => array('title'),
-            'flag'                    => 1,
+            'fields'                  => array('category'),
+            'flag'                    => 11,
             'panelLayout'             => 'filter;search,limit'
         ),
         'label' => array
@@ -45,6 +45,13 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         ),
         'global_operations' => array
         (
+            'categories' => array
+            (
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['categories'],
+                'href'                => 'do=style_manager_categories',
+                'icon'                => 'rows.svg',
+                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
+            ),
             'all' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -59,23 +66,20 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['editheader'],
                 'href'                => 'act=edit',
-                'icon'                => 'edit.svg',
-                'button_callback'     => array('tl_style_manager', 'editHeader')
+                'icon'                => 'edit.svg'
             ),
             'copy' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['copy'],
                 'href'                => 'act=copy',
-                'icon'                => 'copy.svg',
-                'button_callback'     => array('tl_style_manager', 'copy')
+                'icon'                => 'copy.svg'
             ),
             'delete' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['delete'],
                 'href'                => 'act=delete',
                 'icon'                => 'delete.svg',
-                'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-                'button_callback'     => array('tl_style_manager', 'delete')
+                'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
             ),
             'show' => array
             (
@@ -90,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'palettes' => array
     (
         '__selector__'                => array('extendContentElement'),
-        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendPage,extendArticle,extendContentElement;{expert_legend:hide},alias;'
+        'default'                     => '{title_legend},title,description,category;{config_legend},cssClasses;{publish_legend},extendPage,extendArticle,extendContentElement;{expert_legend:hide},alias,chosen;'
     ),
 
     // Sub-Palettes
@@ -139,6 +143,14 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) NOT NULL default ''"
         ),
+        'category' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['category'],
+            'inputType'               => 'select',
+            'options_callback'        => array('tl_style_manager', 'getAllCategories'),
+            'eval'                    => array('chosen'=>true, 'tl_class'=>'w50', 'includeBlankOption'=>true),
+            'sql'                     => "varchar(64) NOT NULL default ''"
+        ),
         'cssClasses' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['cssClasses'],
@@ -146,16 +158,25 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'inputType'               => 'keyValueWizard',
             'eval'                    => array('allowHtml'=>true, 'tl_class'=>'clr long'),
             'load_callback'           => array(
-                array('tl_style_manager', 'prepareData')
+                array('tl_style_manager', 'prepareData'),
+                array('tl_style_manager', 'translateKeyValue')
             ),
             'sql'                     => "blob NULL"
+        ),
+        'chosen' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['chosen'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 m12'),
+            'sql'                     => "char(1) NOT NULL default '1'"
         ),
         'extendPage' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendPage'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12 clr'),
+            'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
         ),
         'extendArticle' => array
@@ -163,7 +184,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendArticle'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12 clr'),
+            'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
         ),
         'extendContentElement' => array
@@ -171,7 +192,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendContentElement'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12 clr', 'submitOnChange'=>true),
+            'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
         ),
         'contentElements' => array
@@ -192,6 +213,9 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
  *
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
+
+use Oveleon\ContaoComponentStyleManager\StyleManagerCategoriesModel;
+
 class tl_style_manager extends \Backend
 {
 
@@ -205,7 +229,7 @@ class tl_style_manager extends \Backend
     }
 
     /**
-     * Check permissions to edit table tl_real_estate_group
+     * Check permissions to edit table tl_style_manager
      *
      * @throws Contao\CoreBundle\Exception\AccessDeniedException
      */
@@ -215,54 +239,25 @@ class tl_style_manager extends \Backend
     }
 
     /**
-     * Return the edit header button
+     * Returns all allowed page types as array
      *
-     * @param array  $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
+     * @param DataContainer $dc
      *
-     * @return string
+     * @return array
      */
-    public function editHeader($row, $href, $label, $title, $icon, $attributes)
+    public function getAllCategories(DataContainer $dc)
     {
-        return $this->User->canEditFieldsOf('tl_style_manager') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-    }
+        $arrCategories = StyleManagerCategoriesModel::findAll();
 
-    /**
-     * Return the copy group button
-     *
-     * @param array  $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
-     */
-    public function copy($row, $href, $label, $title, $icon, $attributes)
-    {
-        return $this->User->hasAccess('create', 'tl_style_manager') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-    }
+        if($arrCategories !== null)
+        {
+            while($arrCategories->next())
+            {
+                $arrResult[] = $arrCategories->title;
+            }
+        }
 
-    /**
-     * Return the delete group button
-     *
-     * @param array  $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
-     */
-    public function delete($row, $href, $label, $title, $icon, $attributes)
-    {
-        return $this->User->hasAccess('delete', 'tl_style_manager') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $arrResult;
     }
 
     /**
@@ -302,6 +297,23 @@ class tl_style_manager extends \Backend
 
         return $varValue;
     }
+
+    /**
+     * Prepare data from older versions
+     *
+     * @param mixed         $varValue
+     * @param \DataContainer $dc
+     *
+     * @return string
+     */
+    public function translateKeyValue($varValue, \DataContainer $dc)
+    {
+        $GLOBALS['TL_LANG']['MSC']['ow_key'] = $GLOBALS['TL_LANG']['tl_style_manager']['ow_key'];
+        $GLOBALS['TL_LANG']['MSC']['ow_value'] = $GLOBALS['TL_LANG']['tl_style_manager']['ow_value'];
+
+        return $varValue;
+    }
+
     /**
      * Prepare data from older versions
      *

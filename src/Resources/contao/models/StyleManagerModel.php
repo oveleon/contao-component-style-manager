@@ -13,6 +13,8 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property integer $id
  * @property integer $tstamp
  * @property string  $title
+ * @property string  $category
+ * @property string  $chosen
  * @property string  $cssClasses
  * @property integer $extendPage
  * @property integer $extendArticle
@@ -23,6 +25,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static StyleManagerModel|null findOneBy($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByTstamp($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByCssClasses($col, $val, $opt=array())
+ * @method static StyleManagerModel|null findOneByCategory($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendPage($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendArticle($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendContentElement($col, $val, $opt=array())
@@ -32,6 +35,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByTstamp($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByTitle($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByCssClasses($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByCategory($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendPage($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendArticle($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendContentElement($val, array $opt=array())
@@ -42,6 +46,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static integer countByTstamp($id, array $opt=array())
  * @method static integer countByTitle($id, array $opt=array())
  * @method static integer countByCssClasses($id, array $opt=array())
+ * @method static integer countByCategory($id, array $opt=array())
  * @method static integer countByExtendPage($id, array $opt=array())
  * @method static integer countByExtendArticle($id, array $opt=array())
  * @method static integer countByExtendContentElement($id, array $opt=array())

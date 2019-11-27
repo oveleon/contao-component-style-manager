@@ -40,8 +40,8 @@ class ComponentStyleSelect extends \Widget
 	 */
 	public function generate()
 	{
-        $arrFields = array();
-        $strClass = 'tl_select';
+        $isEmpty = true;
+        $arrCategories = array();
 		$objStyleGroups = StyleManagerModel::findByTable($this->strTable);
 
 		if($objStyleGroups === null)
@@ -51,8 +51,10 @@ class ComponentStyleSelect extends \Widget
 
         while($objStyleGroups->next())
         {
-            $arrFieldOptions = array(array('value'=>'', 'label'=>'-'));
             $arrOptions = array();
+            $strClass = 'tl_select';
+            $arrFieldOptions = array(array('value'=>'', 'label'=>'-'));
+
             $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
 
             if(!!$objStyleGroups->extendContentElement && $this->strTable === 'tl_content')
@@ -86,6 +88,7 @@ class ComponentStyleSelect extends \Widget
                 );
             }
 
+            // set options
             $strFieldId   = $this->strId . '_' . $objStyleGroups->alias;
             $strFieldName = $this->strName . '[' . $objStyleGroups->alias . ']';
 
@@ -114,10 +117,24 @@ class ComponentStyleSelect extends \Widget
                 }
             }
 
-            // Add Chosen
-            $strClass .= ' tl_chosen';
+            // add chosen
+            if(!!$objStyleGroups->chosen)
+            {
+                $strClass .= ' tl_chosen';
+            }
 
-            $arrFields[] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
+            // set categories
+            $categoryAlias = $objStyleGroups->category ? \StringUtil::standardize($objStyleGroups->category) : 'no_category';
+
+            if(!in_array($categoryAlias, array_keys($arrCategories)))
+            {
+                $arrCategories[ $categoryAlias ] = array(
+                    'label'  => $objStyleGroups->category,
+                    'fields' => array()
+                );
+            }
+
+            $arrCategories[ $categoryAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
                 '<div><h3><label>' . $objStyleGroups->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
@@ -128,14 +145,29 @@ class ComponentStyleSelect extends \Widget
                 $this->wizard,
                 '<p class="tl_help tl_tip" title="">'.$objStyleGroups->description.'</p></div>'
             );
+
+            $isEmpty = false;
         }
 
-		if(!count($arrFields))
+		if($isEmpty)
 		{
 		    \System::loadLanguageFile('tl_style_manager');
 		    return '<div class="no_styles"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
         }
 
-		return implode("",$arrFields);
+        $arrFieldsets = array();
+
+        foreach ($arrCategories as $alias => $category)
+        {
+            $label = $category['label'];
+
+            $arrFieldsets[] = sprintf('<fieldset%s>%s%s</fieldset>',
+                $label ? ' class="legend"' : '',
+                $label ? '<legend>' . $label . '</legend>' : '',
+                implode("",$category['fields'])
+            );
+        }
+
+		return implode("",$arrFieldsets);
 	}
 }

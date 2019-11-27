@@ -14,6 +14,11 @@ array_insert($GLOBALS['BE_MOD'], count($GLOBALS['BE_MOD']['design']), array
         (
             'tables'                => array('tl_style_manager')
         ),
+        'style_manager_categories' => array
+        (
+            'tables'                => array('tl_style_manager_categories'),
+            'hideInNavigation'      => true
+        ),
     )
 ));
 
@@ -24,7 +29,8 @@ array_insert($GLOBALS['BE_FFL'], 1, array
 ));
 
 // Models
-$GLOBALS['TL_MODELS']['tl_style_manager'] = '\\Oveleon\\ContaoComponentStyleManager\\StyleManagerModel';
+$GLOBALS['TL_MODELS']['tl_style_manager']            = '\\Oveleon\\ContaoComponentStyleManager\\StyleManagerModel';
+$GLOBALS['TL_MODELS']['tl_style_manager_categories'] = '\\Oveleon\\ContaoComponentStyleManager\\StyleManagerCategoriesModel';
 
 // Style sheet
 if (TL_MODE == 'BE')

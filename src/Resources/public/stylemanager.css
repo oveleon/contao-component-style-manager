@@ -1,27 +1,66 @@
 .widget.stylemanager {
-  width: 100%;
-  margin-left: 0;
-  margin-right: 0;
+  margin-left: 15px;
+  margin-right: 15px;
   clear: both;
 }
 .widget.stylemanager > h3 {
   display: none;
 }
-.widget.stylemanager > div {
-  width: calc(50% - 30px);
-  float: left;
+.widget.stylemanager fieldset {
+  position: relative;
+  border: 1px solid #e6e6e8;
+  background: #fdfdfd;
+  margin-top: 12px;
+  margin-bottom: 10px;
+  padding: 5px 5px 15px 5px;
+}
+.widget.stylemanager fieldset.legend {
+  margin-top: 37px;
+}
+.widget.stylemanager fieldset legend {
+  position: absolute;
+  font-size: 14px;
+  line-height: 18px;
+  bottom: 100%;
+  margin-bottom: -1px;
+  left: -1px;
+  border: 1px solid #e6e6e8;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  padding: 5px 10px;
+  background: #fdfdfd;
+  color: #6a6a6c;
+}
+.widget.stylemanager fieldset > div {
   margin-left: 15px;
   margin-right: 15px;
   min-height: 80px;
 }
-.widget.stylemanager > div.no_styles {
+.widget.stylemanager fieldset > div.no_styles {
   min-height: auto;
 }
-.widget.stylemanager > div.no_styles p {
+.widget.stylemanager fieldset > div.no_styles p {
   font-style: italic;
 }
 .widget.stylemanager .tl_help {
   font-size: 0.75rem;
+}
+
+.navigation.style_manager_categories {
+  display: none !important;
+}
+
+@media (min-width: 600px) {
+  .widget.stylemanager fieldset > div {
+    width: calc(50% - 30px);
+    float: left;
+  }
+}
+@media (min-width: 1200px) {
+  .widget.stylemanager fieldset > div {
+    width: calc(33.333% - 30px);
+    float: left;
+  }
 }
 
 /*# sourceMappingURL=stylemanager.css.map */

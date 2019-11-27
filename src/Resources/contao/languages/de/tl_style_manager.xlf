@@ -19,6 +19,15 @@
         <target>Experteneinstellungen</target>
       </trans-unit>
 
+      <trans-unit id="tl_style_manager.ow_key">
+        <source>CSS Class</source>
+        <target>CSS-Klasse</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.ow_value">
+        <source>Title / Description</source>
+        <target>Titel / Beschreibung</target>
+      </trans-unit>
+
       <trans-unit id="tl_style_manager.noStylesDefined">
         <source>No styles have yet been defined yet for this area.</source>
         <target>Für diesen Bereich sind noch keine Stile hinterlegt.</target>
@@ -61,6 +70,22 @@
         <source>Here you can enter a field description.</source>
         <target>Hier können Sie eine Feldbeschreibung eingeben.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager.category.0">
+        <source>Category</source>
+        <target>Kategorie</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.category.1">
+        <source>Here you can define the category.</source>
+        <target>Hier können Sie eine Kategorie festlegen.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.categories.0">
+        <source>Manage Categories</source>
+        <target>Kategorien verwalten</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.categories.1">
+        <source>Manage Categories</source>
+        <target>Kategorien verwalten</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager.alias.0">
         <source>Alias</source>
         <target>Alias</target>
@@ -68,6 +93,14 @@
       <trans-unit id="tl_style_manager.alias.1">
         <source>Here you can enter an alias.</source>
         <target>Hier können Sie einen Alias eingeben.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.chosen.0">
+        <source>Add search field</source>
+        <target>Suchfeld hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.chosen.1">
+        <source>Use of chosen for a search field within the select box.</source>
+        <target>Verwendung von chosen für ein Suchfeld innerhalb der Select-Box.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.cssClasses.0">
         <source>CSS classes</source>
