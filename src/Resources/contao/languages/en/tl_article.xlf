@@ -5,6 +5,10 @@
       <trans-unit id="tl_article.style_manager_legend">
         <source>Style Manager</source>
       </trans-unit>
+
+      <trans-unit id="tl_article.styleManager.0">
+        <source>Style Manager</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

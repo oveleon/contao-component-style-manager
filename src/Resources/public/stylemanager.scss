@@ -1,13 +1,22 @@
+#pal_style_manager_legend{
+
+  .widget {
+
+    &.stylemanager {
+
+      > h3{
+        display: none;
+      }
+    }
+  }
+}
+
 .widget{
 
   &.stylemanager{
     margin-left: 15px;
     margin-right: 15px;
     clear: both;
-
-    > h3{
-      display: none;
-    }
 
     fieldset{
       position: relative;

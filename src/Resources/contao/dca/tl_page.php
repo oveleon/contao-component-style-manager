@@ -18,7 +18,10 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['styleManager'] = array
     'exclude'                 => true,
     'inputType'               => 'stylemanager',
     'eval'                    => array('tl_class'=>'clr stylemanager'),
-    'sql'                     => "blob NULL"
+    'sql'                     => "blob NULL",
+    'save_callback'           => array(
+        array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'updateOnMultiEdit')
+    )
 );
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['cssClass']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'clearStyleManager');

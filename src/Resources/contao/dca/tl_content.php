@@ -22,11 +22,14 @@ foreach ($GLOBALS['TL_DCA']['tl_content']['palettes'] as $key=>$value){
 // Extend fields
 $GLOBALS['TL_DCA']['tl_content']['fields']['styleManager'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_article']['styleManager'],
+    'label'                   => &$GLOBALS['TL_LANG']['tl_content']['styleManager'],
     'exclude'                 => true,
     'inputType'               => 'stylemanager',
     'eval'                    => array('tl_class'=>'clr stylemanager'),
-    'sql'                     => "blob NULL"
+    'sql'                     => "blob NULL",
+    'save_callback'           => array(
+        array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'updateOnMultiEdit')
+    )
 );
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['cssID']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'clearStyleManager');

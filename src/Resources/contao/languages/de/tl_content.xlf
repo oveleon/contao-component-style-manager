@@ -6,6 +6,11 @@
         <source>Style Manager</source>
         <target>Style Manager</target>
       </trans-unit>
+
+      <trans-unit id="tl_content.styleManager.0">
+        <source>Style Manager</source>
+        <target>Style Manager</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
