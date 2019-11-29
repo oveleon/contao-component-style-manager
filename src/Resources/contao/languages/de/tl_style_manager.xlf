@@ -110,37 +110,85 @@
         <source>Define the CSS classes and their descriptions that are available in this group.</source>
         <target>Definieren Sie hier die in dieser Gruppe vorhandenen CSS-Klassen und deren Beschreibungen.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager.extendLayout.0">
+        <source>Layouts</source>
+        <target>Layouts</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendLayout.1">
+        <source>Provides the CSS classes in layouts.</source>
+        <target>Stellt die CSS-Klassen in Layouts zur Verfügung.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager.extendPage.0">
-        <source>Publish for pages</source>
-        <target>Für Seiten veröffentlichen</target>
+        <source>Pages</source>
+        <target>Seiten</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendPage.1">
         <source>Provides the CSS classes in pages.</source>
         <target>Stellt die CSS-Klassen in Seiten zur Verfügung.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendArticle.0">
-        <source>Publish for articles</source>
-        <target>Für Artikel veröffentlichen</target>
+        <source>Articles</source>
+        <target>Artikel</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendArticle.1">
         <source>Provides the CSS classes in articles.</source>
         <target>Stellt die CSS-Klassen in Artikeln zur Verfügung.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager.extendModule.0">
+        <source>Modules</source>
+        <target>Module</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendModule.1">
+        <source>Provides the CSS classes in modules.</source>
+        <target>Stellt die CSS-Klassen in Modulen zur Verfügung.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.0">
+        <source>Forms</source>
+        <target>Formulare</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.1">
+        <source>Provides the CSS classes in forms.</source>
+        <target>Stellt die CSS-Klassen in Formularen zur Verfügung.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.0">
+        <source>Form fields</source>
+        <target>Formularfelder</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.1">
+        <source>Provides the CSS classes in form fields.</source>
+        <target>Stellt die CSS-Klassen in Formularfeldern zur Verfügung.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager.extendContentElement.0">
-        <source>Publish for Content-Elements</source>
-        <target>Für Inhalts-Elemente veröffentlichen</target>
+        <source>Content elements</source>
+        <target>Inhaltselemente</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendContentElement.1">
         <source>Provides the CSS classes in content elements.</source>
         <target>Stellt die CSS-Klassen in Inhaltselementen zur Verfügung.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.contentElements.0">
-        <source>Content elements</source>
-        <target>Inhaltselemente</target>
+        <source>Available content elements</source>
+        <target>Verfügbare Inhaltselemente</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.contentElements.1">
         <source>Select the content elements that this group may be displayed for.</source>
         <target>Wählen Sie die Inhaltselemente aus, für die diese Gruppe angezeigt werden soll.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.formFields.0">
+        <source>Available form fields</source>
+        <target>Verfügbare Formularfelder</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.formFields.1">
+        <source>Select the form fields that this group may be displayed for.</source>
+        <target>Wählen Sie die Formularfelder aus, für die diese Gruppe angezeigt werden soll.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modules.0">
+        <source>Available modules</source>
+        <target>Verfügbare Module</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modules.1">
+        <source>Select the modules that this group may be displayed for.</source>
+        <target>Wählen Sie die Module aus, für die diese Gruppe angezeigt werden soll.</target>
       </trans-unit>
     </body>
   </file>

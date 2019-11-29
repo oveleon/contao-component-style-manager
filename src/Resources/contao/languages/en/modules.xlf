@@ -8,6 +8,12 @@
       <trans-unit id="MOD.style_manager.1">
         <source>Manage styles and CSS classes</source>
       </trans-unit>
+      <trans-unit id="MOD.style_manager_categories.0">
+        <source>Style Manager Categories</source>
+      </trans-unit>
+      <trans-unit id="MOD.style_manager_categories.1">
+        <source>Manage categories</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

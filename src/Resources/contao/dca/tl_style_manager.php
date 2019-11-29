@@ -40,7 +40,8 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'label' => array
         (
             'fields'                  => array('title'),
-            'format'                  => '%s'
+            'format'                  => '%s',
+            'label_callback'          => array('tl_style_manager', 'addExtendedInfo')
         ),
         'global_operations' => array
         (
@@ -92,14 +93,16 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     // Palettes
     'palettes' => array
     (
-        '__selector__'                => array('extendContentElement'),
-        'default'                     => '{title_legend},title,description,category;{config_legend},cssClasses;{publish_legend},extendPage,extendArticle,extendContentElement;{expert_legend:hide},alias,chosen;'
+        '__selector__'                => array('extendContentElement','extendFormFields','extendModule'),
+        'default'                     => '{title_legend},title,description,category;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen;'
     ),
 
     // Sub-Palettes
     'subpalettes' => array
     (
-        'extendContentElement'        => 'contentElements'
+        'extendContentElement'        => 'contentElements',
+        'extendFormFields'            => 'formFields',
+        'extendModule'                => 'modules'
     ),
 
     // Fields
@@ -116,14 +119,8 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'alias' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['alias'],
-            'exclude'                 => true,
-            'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('rgxp'=>'folderalias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
-            'save_callback' => array
-            (
-                array('tl_style_manager', 'generateAlias')
-            ),
             'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''"
         ),
         'title' => array
@@ -133,6 +130,10 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+            'save_callback' => array
+            (
+                array('tl_style_manager', 'generateAlias')
+            ),
             'sql'                     => "varchar(255) NOT NULL default ''"
         ),
         'description' => array
@@ -170,6 +171,14 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'eval'                    => array('tl_class'=>'w50 m12'),
             'sql'                     => "char(1) NOT NULL default '1'"
         ),
+        'extendLayout' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendLayout'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
         'extendPage' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendPage'],
@@ -186,6 +195,30 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
         ),
+        'extendForm' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendForm'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'extendFormFields' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendFormFields'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'formFields' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['formFields'],
+            'inputType'               => 'checkbox',
+            'options_callback'        => array('tl_style_manager', 'getFormFields'),
+            'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'w50 clr'),
+            'sql'                     => "blob NULL"
+        ),
         'extendContentElement' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendContentElement'],
@@ -200,7 +233,24 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'inputType'               => 'checkbox',
             'options_callback'        => array('tl_style_manager', 'getContentElements'),
             'reference'               => &$GLOBALS['TL_LANG']['CTE'],
-            'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'w50'),
+            'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'w50 clr'),
+            'sql'                     => "blob NULL"
+        ),
+        'extendModule' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendModule'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'modules' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['modules'],
+            'inputType'               => 'checkbox',
+            'options_callback'        => array('tl_style_manager', 'getModules'),
+            'reference'               => &$GLOBALS['TL_LANG']['FMD'],
+            'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'w50 clr'),
             'sql'                     => "blob NULL"
         ),
     )
@@ -237,6 +287,36 @@ class tl_style_manager extends \Backend
     }
 
     /**
+     * Add extended information
+     *
+     * @param array         $row
+     * @param string        $label
+     * @param DataContainer $dc
+     * @param array         $args
+     *
+     * @return array
+     */
+    public function addExtendedInfo($row, $label, DataContainer $dc, $args)
+    {
+        $arrExtends = null;
+
+        foreach ($row as $field => $value)
+        {
+            if(strpos($field, 'extend') === 0 && !!$value)
+            {
+                $arrExtends[] = &$GLOBALS['TL_LANG']['tl_style_manager'][ $field ][0];
+            }
+        }
+
+        if($arrExtends !== null)
+        {
+            $args[0] .= '<span style="color:#999;padding-left:3px">[' . implode(", ", $arrExtends) . ']</span>';
+        }
+
+        return $args;
+    }
+
+    /**
      * Returns all allowed page types as array
      *
      * @param DataContainer $dc
@@ -260,9 +340,9 @@ class tl_style_manager extends \Backend
     }
 
     /**
-     * Auto-generate the news alias if it has not been set yet
+     * Auto-generate the group alias if it has not been set yet
      *
-     * @param mixed         $varValue
+     * @param mixed          $varValue
      * @param \DataContainer $dc
      *
      * @return string
@@ -271,28 +351,24 @@ class tl_style_manager extends \Backend
      */
     public function generateAlias($varValue, \DataContainer $dc)
     {
-        $autoAlias = false;
-
-        // Generate alias if there is none
-        if ($varValue == '')
+        if($dc->activeRecord->alias)
         {
-            $autoAlias = true;
-            $varValue = \StringUtil::generateAlias($dc->activeRecord->title);
+            return $varValue;
         }
+
+        $strAlias = \StringUtil::generateAlias($varValue);
 
         $objAlias = $this->Database->prepare("SELECT id FROM tl_style_manager WHERE alias=? AND id!=?")
-            ->execute($varValue, $dc->id);
+            ->execute($strAlias, $dc->id);
 
-        // Check whether the styles alias exists
+        // Check whether the group alias exists
         if ($objAlias->numRows)
         {
-            if (!$autoAlias)
-            {
-                throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
-            }
-
-            $varValue .= '-' . $dc->id;
+            $strAlias .= '-' . $dc->id;
         }
+
+        $objAlias = $this->Database->prepare("UPDATE tl_style_manager SET alias=? WHERE id=?")
+            ->execute($strAlias, $dc->id);
 
         return $varValue;
     }
@@ -351,6 +427,46 @@ class tl_style_manager extends \Backend
         $groups = array();
 
         foreach ($GLOBALS['TL_CTE'] as $k=>$v)
+        {
+            foreach (array_keys($v) as $kk)
+            {
+                $groups[$k][] = $kk;
+            }
+        }
+
+        return $groups;
+    }
+
+    /**
+     * Return all form fields as array
+     *
+     * @return array
+     */
+    public function getFormFields()
+    {
+        \System::loadLanguageFile('tl_form_field');
+
+        $arrFields = $GLOBALS['TL_FFL'];
+
+        // Add the translation
+        foreach (array_keys($arrFields) as $key)
+        {
+            $arrFields[$key] = $GLOBALS['TL_LANG']['FFL'][$key][0];
+        }
+
+        return $arrFields;
+    }
+
+    /**
+     * Get all modules and return them as array
+     *
+     * @return array
+     */
+    public function getModules()
+    {
+        $groups = array();
+
+        foreach ($GLOBALS['FE_MOD'] as $k=>$v)
         {
             foreach (array_keys($v) as $kk)
             {

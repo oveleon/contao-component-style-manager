@@ -16,8 +16,12 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property string  $category
  * @property string  $chosen
  * @property string  $cssClasses
+ * @property integer $extendLayout
  * @property integer $extendPage
+ * @property integer $extendModule
  * @property integer $extendArticle
+ * @property integer $extendForm
+ * @property integer $extendFormFields
  * @property integer $extendContentElement
  * @property integer $contentElements
  *
@@ -26,8 +30,12 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static StyleManagerModel|null findOneByTstamp($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByCssClasses($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByCategory($col, $val, $opt=array())
+ * @method static StyleManagerModel|null findOneByExtendLayout($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendPage($col, $val, $opt=array())
+ * @method static StyleManagerModel|null findOneByExtendModule($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendArticle($col, $val, $opt=array())
+ * @method static StyleManagerModel|null findOneByExtendForm($col, $val, $opt=array())
+ * @method static StyleManagerModel|null findOneByExtendFormFields($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendContentElement($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByContentElements($col, $val, $opt=array())
  *
@@ -36,8 +44,12 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByTitle($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByCssClasses($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByCategory($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendLayout($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendPage($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendModule($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendArticle($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendForm($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendFormFields($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendContentElement($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByContentElements($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findAll(array $opt=array())
@@ -47,8 +59,12 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static integer countByTitle($id, array $opt=array())
  * @method static integer countByCssClasses($id, array $opt=array())
  * @method static integer countByCategory($id, array $opt=array())
+ * @method static integer countByExtendLayout($id, array $opt=array())
  * @method static integer countByExtendPage($id, array $opt=array())
+ * @method static integer countByExtendModule($id, array $opt=array())
  * @method static integer countByExtendArticle($id, array $opt=array())
+ * @method static integer countByExtendForm($id, array $opt=array())
+ * @method static integer countByExtendFormFields($id, array $opt=array())
  * @method static integer countByExtendContentElement($id, array $opt=array())
  * @method static integer countByContentElements($id, array $opt=array())
  *
@@ -77,10 +93,18 @@ class StyleManagerModel extends \Model
 
         switch ($strTable)
         {
+            case 'tl_layout':
+                return static::findByExtendLayout(1, $arrOptions);
             case 'tl_page':
                 return static::findByExtendPage(1, $arrOptions);
+            case 'tl_module':
+                return static::findByExtendModule(1, $arrOptions);
             case 'tl_article':
                 return static::findByExtendArticle(1, $arrOptions);
+            case 'tl_form':
+                return static::findByExtendForm(1, $arrOptions);
+            case 'tl_form_field':
+                return static::findByExtendFormFields(1, $arrOptions);
             case 'tl_content':
                 return static::findByExtendContentElement(1, $arrOptions);
             default:

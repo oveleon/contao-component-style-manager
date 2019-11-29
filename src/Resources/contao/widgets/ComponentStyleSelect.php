@@ -42,7 +42,7 @@ class ComponentStyleSelect extends \Widget
 	{
         $isEmpty = true;
         $arrCategories = array();
-		$objStyleGroups = StyleManagerModel::findByTable($this->strTable);
+		$objStyleGroups = StyleManagerModel::findByTable($this->strTable, array('order'=>'category'));
 
 		if($objStyleGroups === null)
         {
@@ -55,8 +55,7 @@ class ComponentStyleSelect extends \Widget
             $strClass = 'tl_select';
             $arrFieldOptions = array(array('value'=>'', 'label'=>'-'));
 
-            $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
-
+            // skip specific content elements
             if(!!$objStyleGroups->extendContentElement && $this->strTable === 'tl_content')
             {
                 $arrContentElements = \StringUtil::deserialize($objStyleGroups->contentElements);
@@ -66,6 +65,30 @@ class ComponentStyleSelect extends \Widget
                     continue;
                 }
             }
+
+            // skip specific form fields
+            if(!!$objStyleGroups->extendFormFields && $this->strTable === 'tl_form_field')
+            {
+                $arrFormFields = \StringUtil::deserialize($objStyleGroups->formFields);
+
+                if($arrFormFields !== null && !in_array($this->activeRecord->type, $arrFormFields))
+                {
+                    continue;
+                }
+            }
+
+            // skip specific modules
+            if(!!$objStyleGroups->extendModule && $this->strTable === 'tl_module')
+            {
+                $arrModules = \StringUtil::deserialize($objStyleGroups->modules);
+
+                if($arrModules !== null && !in_array($this->activeRecord->type, $arrModules))
+                {
+                    continue;
+                }
+            }
+
+            $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
 
             // prepare data for older versions
             if($opts !== null)
@@ -124,7 +147,7 @@ class ComponentStyleSelect extends \Widget
             }
 
             // set categories
-            $categoryAlias = $objStyleGroups->category ? \StringUtil::standardize($objStyleGroups->category) : 'no_category';
+            $categoryAlias = $objStyleGroups->category ? \StringUtil::generateAlias($objStyleGroups->category) : 'no_category';
 
             if(!in_array($categoryAlias, array_keys($arrCategories)))
             {
@@ -152,7 +175,7 @@ class ComponentStyleSelect extends \Widget
 		if($isEmpty)
 		{
 		    \System::loadLanguageFile('tl_style_manager');
-		    return '<div class="no_styles"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+		    return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
         }
 
         $arrFieldsets = array();

@@ -11,9 +11,17 @@ class StyleManager
 {
     /**
      * Valid CSS-Class fields in tables
+     *
+     * field => size
+     *
      * @var array
      */
-    public $validCssClassFields = array('cssID', 'cssClass');
+    public $validCssClassFields = array(
+        'cssID'      => 2,
+        'cssClass'   => 1,
+        'class'      => 1,
+        'attributes' => 2
+    );
 
     /**
      * Clear StyleManager classes from css class field
@@ -25,7 +33,7 @@ class StyleManager
      */
     public function clearStyleManager($varValue, $dc)
     {
-        if($dc->field === 'cssID')
+        if($this->isMultipleField($dc->field))
         {
             $cssID = \StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1];
@@ -42,7 +50,7 @@ class StyleManager
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }
 
-        if($dc->field === 'cssID')
+        if($this->isMultipleField($dc->field))
         {
             $varValue = serialize(array($cssID[0], $varValue));
         }
@@ -60,7 +68,7 @@ class StyleManager
      */
     public function updateStyleManager($varValue, $dc)
     {
-        if($dc->field === 'cssID')
+        if($this->isMultipleField($dc->field))
         {
             $cssID = \StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1];
@@ -70,7 +78,7 @@ class StyleManager
         $varValues = array_filter($varValues);
         $varValue .= ($varValue ? ' ' : '') . (count($varValues) ? implode(' ', $varValues) : '');
 
-        if($dc->field === 'cssID')
+        if($this->isMultipleField($dc->field))
         {
             $varValue = array($cssID[0], $varValue);
         }
@@ -89,7 +97,7 @@ class StyleManager
      */
     private function resetStyleManagerClasses($varValue, $dc, $strTable)
     {
-        if($dc->field === 'cssID')
+        if($this->isMultipleField($dc->field))
         {
             $cssID = \StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1];
@@ -120,7 +128,7 @@ class StyleManager
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }
 
-        if($dc->field === 'cssID')
+        if($this->isMultipleField($dc->field))
         {
             $varValue = serialize(array($cssID[0], $varValue));
         }
@@ -149,7 +157,7 @@ class StyleManager
                 // Get new value
                 $value = $this->resetStyleManagerClasses($dc->activeRecord->{$field}, $stdClass, $dc->table);
                 $value = $this->updateStyleManager($value, $stdClass);
-                $value = $field === 'cssID' ? serialize($value) : $value;
+                $value = $this->isMultipleField($field) ? serialize($value) : $value;
 
                 // Update css class field
                 $dc->Database->prepare('UPDATE ' . $dc->table . ' SET ' . $field . '=? WHERE id=?')
@@ -171,7 +179,7 @@ class StyleManager
     {
         \Backend::loadDataContainer($strTable);
 
-        foreach ($this->validCssClassFields as $field)
+        foreach ($this->validCssClassFields as $field => $size)
         {
             if(isset($GLOBALS['TL_DCA'][ $strTable ]['fields'][ $field ]))
             {
@@ -180,6 +188,18 @@ class StyleManager
         }
 
         return false;
+    }
+
+    /**
+     * Checks the passed array and removes non-existent values
+     *
+     * @param $strField
+     *
+     * @return bool
+     */
+    public function isMultipleField($strField)
+    {
+        return $this->validCssClassFields[ $strField ] > 1;
     }
 
     /**
@@ -224,6 +244,10 @@ class StyleManager
                         unset($arrValues[$key]);
                     }
                 }
+            }
+            else
+            {
+                $arrValues = array();
             }
         }
     }

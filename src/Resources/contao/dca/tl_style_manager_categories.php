@@ -114,7 +114,11 @@ $GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
             'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(255) NOT NULL default ''"
+            'sql'                     => "varchar(255) NOT NULL default ''",
+            'save_callback' => array
+            (
+                array('tl_style_manager_categories', 'updateCategories')
+            ),
         )
     )
 );
@@ -144,5 +148,37 @@ class tl_style_manager_categories extends \Backend
     public function checkPermission()
     {
         return;
+    }
+
+    /**
+     * Auto-generate the group alias if it has not been set yet
+     *
+     * @param mixed          $varValue
+     * @param \DataContainer $dc
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public function updateCategories($varValue, \DataContainer $dc)
+    {
+        if(!trim($dc->activeRecord->title))
+        {
+            return $varValue;
+        }
+
+        $objCategories = $this->Database->prepare("SELECT id FROM tl_style_manager WHERE category=?")
+                                        ->execute($dc->activeRecord->title, $dc->id);
+
+        // Check whether the group alias exists
+        if ($objCategories->numRows)
+        {
+            $arrIds = array_map(function ($e) { return $e['id']; }, $objCategories->fetchAllAssoc());
+
+            $this->Database->prepare("UPDATE tl_style_manager SET category=? WHERE id IN (" . implode(',', $arrIds) . ")")
+                           ->execute($varValue);
+        }
+
+        return $varValue;
     }
 }

@@ -84,29 +84,65 @@
       <trans-unit id="tl_style_manager.cssClasses.1">
         <source>Define the CSS classes and their descriptions that are available in this group.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager.extendLayout.0">
+        <source>Layouts</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendLayout.1">
+        <source>Provides the CSS classes in layouts.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.0">
+        <source>Forms</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.1">
+        <source>Provides the CSS classes in forms.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.0">
+        <source>Form fields</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.1">
+        <source>Provides the CSS classes in form fields.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager.extendPage.0">
-        <source>Publish for pages</source>
+        <source>Pages</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendPage.1">
         <source>Provides the CSS classes in pages.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendArticle.0">
-        <source>Publish for articles</source>
+        <source>Articles</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendArticle.1">
         <source>Provides the CSS classes in articles.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager.extendModule.0">
+        <source>Modules</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendModule.1">
+        <source>Provides the CSS classes in modules.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager.extendContentElement.0">
-        <source>Publish for Content-Elements</source>
+        <source>Content elements</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendContentElement.1">
         <source>Provides the CSS classes in content elements.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.contentElements.0">
-        <source>Content elements</source>
+        <source>Available content elements</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.contentElements.1">
         <source>Select the content elements that this group may be displayed for.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.formFields.0">
+        <source>Available form fields</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.formFields.1">
+        <source>Select the form fields that this group may be displayed for.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modules.0">
+        <source>Available modules</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modules.1">
+        <source>Select the modules that this group may be displayed for.</source>
       </trans-unit>
     </body>
   </file>
