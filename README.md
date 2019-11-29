@@ -19,6 +19,8 @@ This plugin is designed to simplify theme customizations without the need for cu
 
 > Feel free to use it as you need it.
 
+---
+
 ### Examples
 #### Admin:
 ##### List-View: Groups
@@ -32,6 +34,8 @@ This plugin is designed to simplify theme customizations without the need for cu
 ##### Article
 ![Customer View: Article](https://www.oveleon.de/share/github-assets/contao-component-style-manager/customer-120.png)
 
+---
+
 ### Support Rocksolid Custom Elements
 see: https://github.com/madeyourday/contao-rocksolid-custom-elements
 
@@ -41,6 +45,8 @@ Use the callback function `onloadCallback` in your custom element configuration 
       array('Oveleon\ContaoComponentStyleManager\Support', 'extendRockSolidCustomElementsPalettes')
   )
 ```
+
+---
 
 ### Latest Updates
 #### 1.2.0
