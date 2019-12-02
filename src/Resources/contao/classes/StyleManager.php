@@ -10,7 +10,7 @@ namespace Oveleon\ContaoComponentStyleManager;
 class StyleManager
 {
     /**
-     * Valid CSS-Class fields in tables
+     * Valid CSS-Class fields
      *
      * field => size
      *
@@ -46,7 +46,13 @@ class StyleManager
 
         if(count($arrValues))
         {
-            $varValue = str_replace($arrValues, '', $varValue);
+            foreach ($arrValues as $k => $v)
+            {
+                $arrValues[ $k ] = ' ' . $v . ' ';
+            }
+
+            $varValue = ' ' . $varValue . ' ';
+            $varValue = str_replace($arrValues, ' ', $varValue);
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }
 
@@ -77,6 +83,7 @@ class StyleManager
         $varValues = \StringUtil::deserialize($dc->activeRecord->styleManager, true);
         $varValues = array_filter($varValues);
         $varValue .= ($varValue ? ' ' : '') . (count($varValues) ? implode(' ', $varValues) : '');
+        $varValue  = trim($varValue);
 
         if($this->isMultipleField($dc->field))
         {
@@ -105,7 +112,6 @@ class StyleManager
 
         $objStyles = StyleManagerModel::findByTable($strTable);
         $arrStyles = array();
-        $varValue  = ' ' . $varValue . ' ';
 
         if($objStyles !== null)
         {
@@ -124,6 +130,8 @@ class StyleManager
 
         if(count($arrStyles))
         {
+            $varValue  = ' ' . $varValue . ' ';
+
             $varValue = str_replace($arrStyles, ' ', $varValue);
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }

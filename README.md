@@ -5,7 +5,7 @@ Allows you to add your own groups of CSS classes provided in layouts, pages, art
 This plugin is designed to simplify theme customizations without the need for customers to manually add classes or create new layouts.
 
 ### Overview
-- Many possibilities of use (grid, designs, animations, content properties, ...)
+- Many possibilities of use (grid, animations, content properties, ...)
 - Clear representation in the backend
 - Groups and Categories
 - Available for
@@ -21,6 +21,13 @@ This plugin is designed to simplify theme customizations without the need for cu
 
 ---
 
+### Install
+```
+composer require oveleon/contao-component-style-manager
+```
+
+---
+
 ### Examples
 #### Admin:
 ##### List-View: Groups
@@ -31,7 +38,7 @@ This plugin is designed to simplify theme customizations without the need for cu
 ![Admin View: Mask](https://www.oveleon.de/share/github-assets/contao-component-style-manager/content-elements-120.png)
 
 #### Customer:
-##### Article
+##### Content Elements
 ![Customer View: Article](https://www.oveleon.de/share/github-assets/contao-component-style-manager/customer-120.png)
 
 ---
@@ -48,18 +55,7 @@ Use the callback function `onloadCallback` in your custom element configuration 
 
 ---
 
-### Latest Updates
-#### 1.2.0
-- Categories
-- Better visualization in the backend
-- Rocksolid CustomElement Support
-- Further availability for
-    - Layouts
-    - Forms
-    - Form-Fields
-    - Modules
-
-##### Fixes
+### Latest Fixes
 - Multiple editing in the backend
 - Additional security - classes remain after deleting groups or their values
 - Alias has been removed from the palette and is created dynamically
