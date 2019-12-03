@@ -1,4 +1,8 @@
 # Contao Component Style Manager
+[![Latest Stable Version](https://poser.pugx.org/oveleon/contao-component-style-manager/v/stable)](https://packagist.org/packages/oveleon/contao-component-style-manager)
+[![Total Downloads](https://poser.pugx.org/oveleon/contao-component-style-manager/downloads)](https://packagist.org/packages/oveleon/contao-component-style-manager)
+[![Latest Unstable Version](https://poser.pugx.org/oveleon/contao-component-style-manager/v/unstable)](https://packagist.org/packages/oveleon/contao-component-style-manager)
+[![License](https://poser.pugx.org/oveleon/contao-component-style-manager/license)](https://packagist.org/packages/oveleon/contao-component-style-manager)
 
 Allows you to add your own groups of CSS classes provided in layouts, pages, articles, modules, forms, form elements and content elements to your customers.
 
@@ -60,3 +64,8 @@ Use the callback function `onloadCallback` in your custom element configuration 
 - Additional security - classes remain after deleting groups or their values
 - Alias has been removed from the palette and is created dynamically
 - Sort by category-title
+
+### Planned for the future
+- Output groups in tabs
+- Default values
+- ...
