@@ -1,8 +1,8 @@
 # Contao Component Style Manager
-[![Latest Stable Version](https://poser.pugx.org/oveleon/contao-component-style-manager/v/stable)](https://packagist.org/packages/oveleon/contao-component-style-manager)
-[![Total Downloads](https://poser.pugx.org/oveleon/contao-component-style-manager/downloads)](https://packagist.org/packages/oveleon/contao-component-style-manager)
-[![Latest Unstable Version](https://poser.pugx.org/oveleon/contao-component-style-manager/v/unstable)](https://packagist.org/packages/oveleon/contao-component-style-manager)
-[![License](https://poser.pugx.org/oveleon/contao-component-style-manager/license)](https://packagist.org/packages/oveleon/contao-component-style-manager)
+![GitHub](https://img.shields.io/badge/stable-master-%23D6AF23?style=flat-square)
+![GitHub](https://img.shields.io/badge/unstable-develop-F38041?style=flat-square)
+![Packagist](https://img.shields.io/packagist/dt/oveleon/contao-component-style-manager?color=%230A7BBC&style=flat-square)
+![GitHub](https://img.shields.io/github/license/oveleon/contao-component-style-manager?style=flat-square)
 
 Allows you to add your own groups of CSS classes provided in layouts, pages, articles, modules, forms, form elements and content elements to your customers.
 
@@ -11,7 +11,7 @@ This plugin is designed to simplify theme customizations without the need for cu
 ### Overview
 - Many possibilities of use (grid, animations, content properties, ...)
 - Clear representation in the backend
-- Groups and Categories
+- Groups and Archives/Categories
 - Available for
     - Layouts
     - Pages
