@@ -259,4 +259,26 @@ class StyleManager
             }
         }
     }
+
+    /**
+     * Add a new regexp "variable"
+     * @param $strRegexp
+     * @param $varValue
+     * @param \Widget $objWidget
+     * @return bool
+     */
+    public function addVariableRegexp($strRegexp, $varValue, \Widget $objWidget)
+    {
+        if ($strRegexp == 'variable')
+        {
+            if (!preg_match('/^[a-zA-Z](?:_?[a-zA-Z0-9]+)$/', $varValue))
+            {
+                $objWidget->addError('Field ' . $objWidget->label . ' must begin with a letter and may not contain any spaces or special characters (e.g. myVariable).');
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }

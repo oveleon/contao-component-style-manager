@@ -11,6 +11,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * Reads and writes fields from style manager
  *
  * @property integer $id
+ * @property integer $pid
  * @property integer $tstamp
  * @property string  $title
  * @property string  $category
@@ -26,6 +27,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property integer $contentElements
  *
  * @method static StyleManagerModel|null findById($id, array $opt=array())
+ * @method static StyleManagerModel|null findByPid($id, array $opt=array())
  * @method static StyleManagerModel|null findOneBy($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByTstamp($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByCssClasses($col, $val, $opt=array())
@@ -40,6 +42,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static StyleManagerModel|null findOneByContentElements($col, $val, $opt=array())
  *
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findMultipleByIds($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByPids($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByTstamp($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByTitle($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByCssClasses($val, array $opt=array())
@@ -55,6 +58,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())
+ * @method static integer countByPid($id, array $opt=array())
  * @method static integer countByTstamp($id, array $opt=array())
  * @method static integer countByTitle($id, array $opt=array())
  * @method static integer countByCssClasses($id, array $opt=array())

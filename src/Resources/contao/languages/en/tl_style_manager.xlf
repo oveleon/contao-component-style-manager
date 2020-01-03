@@ -54,18 +54,6 @@
       <trans-unit id="tl_style_manager.description.1">
         <source>Here you can enter a field description.</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager.category.0">
-        <source>Category</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.category.1">
-        <source>Here you can define the category.</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.categories.0">
-        <source>Manage Categories</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.categories.1">
-        <source>Manage Categories</source>
-      </trans-unit>
       <trans-unit id="tl_style_manager.alias.0">
         <source>Alias</source>
       </trans-unit>

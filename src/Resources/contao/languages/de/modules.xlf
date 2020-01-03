@@ -10,11 +10,11 @@
         <source>Manage styles and CSS classes</source>
         <target>Styles und CSS-Klasse verwalten</target>
       </trans-unit>
-      <trans-unit id="MOD.style_manager_categories.0">
+      <trans-unit id="MOD.style_manager_archive.0">
         <source>Style Manager Categories</source>
         <target>Style Manager Kategorien</target>
       </trans-unit>
-      <trans-unit id="MOD.style_manager_categories.1">
+      <trans-unit id="MOD.style_manager_archive.1">
         <source>Manage categories</source>
         <target>Kategorien verwalten</target>
       </trans-unit>

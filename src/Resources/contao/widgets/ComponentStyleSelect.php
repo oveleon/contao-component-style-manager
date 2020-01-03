@@ -40,15 +40,29 @@ class ComponentStyleSelect extends \Widget
 	 */
 	public function generate()
 	{
-        $isEmpty = true;
-        $arrCategories = array();
-		$objStyleGroups = StyleManagerModel::findByTable($this->strTable, array('order'=>'category'));
+        $objStyleArchives = StyleManagerArchiveModel::findAll();
+		$objStyleGroups = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid'));
 
-		if($objStyleGroups === null)
+		if($objStyleGroups === null || $objStyleArchives === null)
         {
             return '';
         }
 
+        $isEmpty = true;
+        $arrCollection = array();
+        $arrArchives = array();
+
+		// Prepare archives
+		while($objStyleArchives->next())
+        {
+            $arrArchives[ $objStyleArchives->id ] = array(
+                'title'      => $objStyleArchives->title,
+                'identifier' => $objStyleArchives->identifier,
+                'model'      => $objStyleArchives->current()
+            );
+        }
+
+        // Prepare group fields
         while($objStyleGroups->next())
         {
             $arrOptions = array();
@@ -89,20 +103,6 @@ class ComponentStyleSelect extends \Widget
             }
 
             $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
-
-            // prepare data for older versions
-            if($opts !== null)
-            {
-                if(!isset($opts[0]['key']))
-                {
-                    foreach ($opts as &$item) {
-                        $item = array(
-                            'key' => $item,
-                            'value' => ''
-                        );
-                    }
-                }
-            }
 
             foreach ($opts as $opt) {
                 $arrFieldOptions[] = array(
@@ -146,18 +146,18 @@ class ComponentStyleSelect extends \Widget
                 $strClass .= ' tl_chosen';
             }
 
-            // set categories
-            $categoryAlias = $objStyleGroups->category ? \StringUtil::generateAlias($objStyleGroups->category) : 'no_category';
+            // create collection
+            $collectionAlias = $arrArchives[ $objStyleGroups->pid ]['identifier'];
 
-            if(!in_array($categoryAlias, array_keys($arrCategories)))
+            if(!in_array($collectionAlias, array_keys($arrCollection)))
             {
-                $arrCategories[ $categoryAlias ] = array(
-                    'label'  => $objStyleGroups->category,
+                $arrCollection[ $collectionAlias ] = array(
+                    'label'  => $arrArchives[ $objStyleGroups->pid ]['title'],
                     'fields' => array()
                 );
             }
 
-            $arrCategories[ $categoryAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
+            $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
                 '<div><h3><label>' . $objStyleGroups->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
@@ -180,7 +180,7 @@ class ComponentStyleSelect extends \Widget
 
         $arrFieldsets = array();
 
-        foreach ($arrCategories as $alias => $category)
+        foreach ($arrCollection as $alias => $category)
         {
             $label = $category['label'];
 

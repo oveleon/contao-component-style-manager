@@ -5,19 +5,21 @@
  * (c) https://www.oveleon.de/
 */
 
-$GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
+$GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
 (
 
     // Config
     'config' => array
     (
         'dataContainer'               => 'Table',
+        'ctable'                      => array('tl_style_manager'),
         'switchToEdit'                => true,
         'enableVersioning'            => true,
         'markAsCopy'                  => 'title',
         'onload_callback' => array
         (
-            array('tl_style_manager_categories', 'checkPermission')
+            array('tl_style_manager_archive', 'checkPermission'),
+            array('tl_style_manager_archive', 'checkIdentifier')
         ),
         'sql' => array
         (
@@ -41,17 +43,11 @@ $GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
         'label' => array
         (
             'fields'                  => array('title'),
-            'format'                  => '%s'
+            'format'                  => '%s',
+            'label_callback'          => array('tl_style_manager_archive', 'addIdentifier')
         ),
         'global_operations' => array
         (
-            'groups' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_categories']['groups'],
-                'href'                => 'do=style_manager',
-                'icon'                => 'css.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            ),
             'all' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -62,28 +58,33 @@ $GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
         ),
         'operations' => array
         (
+            'edit' => array
+            (
+                'href'                => 'table=tl_style_manager',
+                'icon'                => 'edit.svg'
+            ),
             'editheader' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_categories']['editheader'],
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['editheader'],
                 'href'                => 'act=edit',
-                'icon'                => 'edit.svg'
+                'icon'                => 'header.svg',
             ),
             'copy' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_categories']['copy'],
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['copy'],
                 'href'                => 'act=copy',
                 'icon'                => 'copy.svg'
             ),
             'delete' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_categories']['delete'],
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['delete'],
                 'href'                => 'act=delete',
                 'icon'                => 'delete.svg',
                 'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
             ),
             'show' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_categories']['show'],
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['show'],
                 'href'                => 'act=show',
                 'icon'                => 'show.svg'
             )
@@ -93,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title;'
+        'default'                     => '{title_legend},title,identifier;'
     ),
 
     // Fields
@@ -109,16 +110,21 @@ $GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
         ),
         'title' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager_categories']['title'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['title'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(255) NOT NULL default ''",
-            'save_callback' => array
-            (
-                array('tl_style_manager_categories', 'updateCategories')
-            ),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ),
+        'identifier' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['identifier'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => array('mandatory'=>true, 'rgxp'=>'variable', 'nospace'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(255) NOT NULL default ''"
         )
     )
 );
@@ -129,7 +135,10 @@ $GLOBALS['TL_DCA']['tl_style_manager_categories'] = array
  *
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
-class tl_style_manager_categories extends \Backend
+
+use Oveleon\ContaoComponentStyleManager\StyleManagerArchiveModel;
+
+class tl_style_manager_archive extends \Backend
 {
     /**
      * Import the back end user object
@@ -141,7 +150,7 @@ class tl_style_manager_categories extends \Backend
     }
 
     /**
-     * Check permissions to edit table tl_style_manager_categories
+     * Check permissions to edit table tl_style_manager_archive
      *
      * @throws Contao\CoreBundle\Exception\AccessDeniedException
      */
@@ -151,34 +160,37 @@ class tl_style_manager_categories extends \Backend
     }
 
     /**
-     * Auto-generate the group alias if it has not been set yet
+     * Add identifier information
      *
-     * @param mixed          $varValue
-     * @param \DataContainer $dc
+     * @param array         $row
+     * @param string        $label
+     * @param DataContainer $dc
+     * @param array         $args
      *
-     * @return string
-     *
-     * @throws Exception
+     * @return array
      */
-    public function updateCategories($varValue, \DataContainer $dc)
+    public function addIdentifier($row, $label, DataContainer $dc, $args)
     {
-        if(!trim($dc->activeRecord->title))
+        if($row['identifier'])
         {
-            return $varValue;
+            $args[0] .= '<span style="color:#999;padding-left:3px">[' . $row['identifier'] . ']</span>';
         }
 
-        $objCategories = $this->Database->prepare("SELECT id FROM tl_style_manager WHERE category=?")
-                                        ->execute($dc->activeRecord->title, $dc->id);
+        return $args;
+    }
 
-        // Check whether the group alias exists
-        if ($objCategories->numRows)
+    /**
+     * Check identifier
+     *
+     * @param $dc
+     */
+    public function checkIdentifier($dc){
+        $objArchive = StyleManagerArchiveModel::findById($dc->id);
+
+        if($objArchive->identifier)
         {
-            $arrIds = array_map(function ($e) { return $e['id']; }, $objCategories->fetchAllAssoc());
-
-            $this->Database->prepare("UPDATE tl_style_manager SET category=? WHERE id IN (" . implode(',', $arrIds) . ")")
-                           ->execute($varValue);
+            $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['mandatory'] = false;
+            $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['disabled'] = true;
         }
-
-        return $varValue;
     }
 }

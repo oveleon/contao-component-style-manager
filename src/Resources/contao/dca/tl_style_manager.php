@@ -11,6 +11,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'config' => array
     (
         'dataContainer'               => 'Table',
+        'ptable'                      => 'tl_style_manager_archive',
         'switchToEdit'                => true,
         'enableVersioning'            => true,
         'markAsCopy'                  => 'title',
@@ -32,26 +33,16 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     (
         'sorting' => array
         (
-            'mode'                    => 1,
-            'fields'                  => array('category'),
-            'flag'                    => 11,
-            'panelLayout'             => 'filter;search,limit'
-        ),
-        'label' => array
-        (
+            'mode'                    => 4,
             'fields'                  => array('title'),
-            'format'                  => '%s',
-            'label_callback'          => array('tl_style_manager', 'addExtendedInfo')
+            'headerFields'            => array('title'),
+            'panelLayout'             => 'filter;sort,search,limit',
+            'disableGrouping'         => true,
+            'child_record_callback'   => array('tl_style_manager', 'listGroupRecords'),
+            'child_record_class'      => 'no_padding'
         ),
         'global_operations' => array
         (
-            'categories' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['categories'],
-                'href'                => 'do=style_manager_categories',
-                'icon'                => 'rows.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            ),
             'all' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -94,7 +85,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'palettes' => array
     (
         '__selector__'                => array('extendContentElement','extendFormFields','extendModule'),
-        'default'                     => '{title_legend},title,description,category;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen;'
+        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen;'
     ),
 
     // Sub-Palettes
@@ -111,6 +102,12 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'id' => array
         (
             'sql'                     => "int(10) unsigned NOT NULL auto_increment"
+        ),
+        'pid' => array
+        (
+            'foreignKey'              => 'tl_style_manager_archive.title',
+            'sql'                     => "int(10) unsigned NOT NULL default 0",
+            'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
         ),
         'tstamp' => array
         (
@@ -142,14 +139,6 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'inputType'               => 'text',
             'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) NOT NULL default ''"
-        ),
-        'category' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['category'],
-            'inputType'               => 'select',
-            'options_callback'        => array('tl_style_manager', 'getAllCategories'),
-            'eval'                    => array('chosen'=>true, 'tl_class'=>'w50', 'includeBlankOption'=>true),
-            'sql'                     => "varchar(64) NOT NULL default ''"
         ),
         'cssClasses' => array
         (
@@ -263,8 +252,6 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 
-use Oveleon\ContaoComponentStyleManager\StyleManagerCategoriesModel;
-
 class tl_style_manager extends \Backend
 {
     /**
@@ -317,26 +304,31 @@ class tl_style_manager extends \Backend
     }
 
     /**
-     * Returns all allowed page types as array
+     * List a group record
      *
-     * @param DataContainer $dc
+     * @param array $row
      *
-     * @return array
+     * @return string
      */
-    public function getAllCategories(DataContainer $dc)
+    public function listGroupRecords($row)
     {
-        $arrCategories = StyleManagerCategoriesModel::findAll();
-        $arrResult = array();
+        $arrExtends = null;
+        $label = $row['title'];
 
-        if($arrCategories !== null)
+        foreach ($row as $field => $value)
         {
-            while($arrCategories->next())
+            if(strpos($field, 'extend') === 0 && !!$value)
             {
-                $arrResult[] = $arrCategories->title;
+                $arrExtends[] = &$GLOBALS['TL_LANG']['tl_style_manager'][ $field ][0];
             }
         }
 
-        return $arrResult;
+        if($arrExtends !== null)
+        {
+            $label .= '<span style="color:#999;padding-left:3px">[' . implode(", ", $arrExtends) . ']</span>';
+        }
+
+        return $label;
     }
 
     /**
