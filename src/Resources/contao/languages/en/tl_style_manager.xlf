@@ -66,6 +66,12 @@
       <trans-unit id="tl_style_manager.chosen.1">
         <source>Use of chosen for a search field within the select box.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.0">
+        <source>Use as template variable</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.1">
+        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->myVariable)</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager.cssClasses.0">
         <source>CSS classes</source>
       </trans-unit>

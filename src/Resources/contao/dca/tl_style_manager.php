@@ -85,7 +85,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'palettes' => array
     (
         '__selector__'                => array('extendContentElement','extendFormFields','extendModule'),
-        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen;'
+        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate;'
     ),
 
     // Sub-Palettes
@@ -155,6 +155,14 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'chosen' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['chosen'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 m12'),
+            'sql'                     => "char(1) NOT NULL default '1'"
+        ),
+        'passToTemplate' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['passToTemplate'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 m12'),

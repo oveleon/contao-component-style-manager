@@ -199,7 +199,7 @@ class StyleManager
     }
 
     /**
-     * Checks the passed array and removes non-existent values
+     * Checks whether a field is multiple
      *
      * @param $strField
      *
@@ -262,9 +262,11 @@ class StyleManager
 
     /**
      * Add a new regexp "variable"
+     *
      * @param $strRegexp
      * @param $varValue
      * @param \Widget $objWidget
+     *
      * @return bool
      */
     public function addVariableRegexp($strRegexp, $varValue, \Widget $objWidget)

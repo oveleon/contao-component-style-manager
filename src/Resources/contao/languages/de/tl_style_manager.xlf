@@ -86,6 +86,14 @@
         <source>Use of chosen for a search field within the select box.</source>
         <target>Verwendung von chosen für ein Suchfeld innerhalb der Select-Box.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.0">
+        <source>Use as template variable</source>
+        <target>Als Templatevariable verwenden</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.1">
+        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->myVariable)</source>
+        <target>Die gewählte Klasse wird nicht direkt gesetzt, sondern an das gewählte Template übergeben und kann über die Kennung der Kategorie abgerufen werden (Bspw. $this->myVariable)</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager.cssClasses.0">
         <source>CSS classes</source>
         <target>CSS-Klassen</target>

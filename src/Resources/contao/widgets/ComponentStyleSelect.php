@@ -45,7 +45,8 @@ class ComponentStyleSelect extends \Widget
 
 		if($objStyleGroups === null || $objStyleArchives === null)
         {
-            return '';
+            \System::loadLanguageFile('tl_style_manager');
+            return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
         }
 
         $isEmpty = true;
