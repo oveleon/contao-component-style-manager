@@ -41,7 +41,7 @@ class ComponentStyleSelect extends \Widget
 	public function generate()
 	{
         $objStyleArchives = StyleManagerArchiveModel::findAll();
-		$objStyleGroups = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid'));
+		$objStyleGroups = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid,sorting'));
 
 		if($objStyleGroups === null || $objStyleArchives === null)
         {

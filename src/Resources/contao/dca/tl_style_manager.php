@@ -23,7 +23,8 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'keys' => array
             (
-                'id' => 'primary'
+                'id' => 'primary',
+                'pid,sorting' => 'index'
             )
         )
     ),
@@ -34,7 +35,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'sorting' => array
         (
             'mode'                    => 4,
-            'fields'                  => array('title'),
+            'fields'                  => array('sorting'),
             'headerFields'            => array('title', 'identifier'),
             'panelLayout'             => 'filter;sort,search,limit',
             'disableGrouping'         => true,
@@ -108,6 +109,10 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'foreignKey'              => 'tl_style_manager_archive.title',
             'sql'                     => "int(10) unsigned NOT NULL default 0",
             'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
+        ),
+        'sorting' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default 0"
         ),
         'tstamp' => array
         (
