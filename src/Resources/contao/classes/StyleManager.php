@@ -344,7 +344,8 @@ class StyleManager
             {
                 foreach ($arrStyles['__vars__'] as $identifier=>$values)
                 {
-                    $template->{$identifier} = implode(" ", $values);
+                    $newKey = 'sm_' . $identifier;
+                    $template->{$newKey} = implode(" ", $values);
                 }
             }
         }
