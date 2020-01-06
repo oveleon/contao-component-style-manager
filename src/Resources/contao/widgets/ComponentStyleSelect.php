@@ -63,6 +63,9 @@ class ComponentStyleSelect extends \Widget
             );
         }
 
+        // Restore default value
+        $this->varValue = StyleManager::deserializeValues($this->varValue);
+
         // Prepare group fields
         while($objStyleGroups->next())
         {
@@ -194,4 +197,42 @@ class ComponentStyleSelect extends \Widget
 
 		return implode("",$arrFieldsets);
 	}
+
+    /**
+     * Check for a valid option and prepare template variables
+     */
+    public function validate()
+    {
+        $this->varValue = $this->getPost($this->strName);
+
+        if($this->varValue === null)
+        {
+            return;
+        }
+
+        if($arrValue = StyleManager::serializeValues($this->varValue, $this->strTable))
+        {
+            $this->varValue = $arrValue;
+        }
+
+        // Update css class fields on multi edit
+        if (\Input::get('act') === 'editAll')
+        {
+            if($field = StyleManager::getClassFieldNameByTable($this->strTable))
+            {
+                $stdClass = new \stdClass();
+                $stdClass->field = $field;
+                $stdClass->table = $this->strTable;
+                $stdClass->activeRecord->styleManager = $this->varValue;
+
+                $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
+                $value = StyleManager::updateClasses($value, $stdClass);
+                $value = StyleManager::isMultipleField($field) ? serialize($value) : $value;
+
+                // Update css class field
+                \Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
+                    ->execute($value, $this->activeRecord->id);
+            }
+        }
+    }
 }

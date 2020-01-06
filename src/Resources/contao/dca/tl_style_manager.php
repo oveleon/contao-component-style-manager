@@ -35,7 +35,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'mode'                    => 4,
             'fields'                  => array('title'),
-            'headerFields'            => array('title'),
+            'headerFields'            => array('title', 'identifier'),
             'panelLayout'             => 'filter;sort,search,limit',
             'disableGrouping'         => true,
             'child_record_callback'   => array('tl_style_manager', 'listGroupRecords'),
@@ -166,7 +166,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'exclude'                 => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 m12'),
-            'sql'                     => "char(1) NOT NULL default '1'"
+            'sql'                     => "char(1) NOT NULL default ''"
         ),
         'extendLayout' => array
         (
@@ -282,36 +282,6 @@ class tl_style_manager extends \Backend
     }
 
     /**
-     * Add extended information
-     *
-     * @param array         $row
-     * @param string        $label
-     * @param DataContainer $dc
-     * @param array         $args
-     *
-     * @return array
-     */
-    public function addExtendedInfo($row, $label, DataContainer $dc, $args)
-    {
-        $arrExtends = null;
-
-        foreach ($row as $field => $value)
-        {
-            if(strpos($field, 'extend') === 0 && !!$value)
-            {
-                $arrExtends[] = &$GLOBALS['TL_LANG']['tl_style_manager'][ $field ][0];
-            }
-        }
-
-        if($arrExtends !== null)
-        {
-            $args[0] .= '<span style="color:#999;padding-left:3px">[' . implode(", ", $arrExtends) . ']</span>';
-        }
-
-        return $args;
-    }
-
-    /**
      * List a group record
      *
      * @param array $row
@@ -322,6 +292,15 @@ class tl_style_manager extends \Backend
     {
         $arrExtends = null;
         $label = $row['title'];
+
+        if($row['passToTemplate'])
+        {
+            $label = '<span class="sm_list_token var">$</span> ' . $label;
+        }
+        else
+        {
+            $label = '<span class="sm_list_token">C</span> ' . $label;
+        }
 
         foreach ($row as $field => $value)
         {

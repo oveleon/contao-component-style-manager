@@ -16,6 +16,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property string  $title
  * @property string  $category
  * @property string  $chosen
+ * @property string  $passToTemplate
  * @property string  $cssClasses
  * @property integer $extendLayout
  * @property integer $extendPage

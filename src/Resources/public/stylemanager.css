@@ -47,6 +47,23 @@
   font-size: 0.75rem;
 }
 
+#tl_listing .sm_list_token {
+  display: inline-block;
+  font-size: 0.8em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 1px 3px;
+  width: 8px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  background-color: #f1f1f1;
+}
+#tl_listing .sm_list_token.var {
+  background-color: #f1e3c8;
+  border-color: #f1b56d;
+}
+
 .navigation.style_manager_categories {
   display: none !important;
 }
