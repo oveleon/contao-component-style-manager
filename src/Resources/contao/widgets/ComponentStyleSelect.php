@@ -151,7 +151,7 @@ class ComponentStyleSelect extends \Widget
             }
 
             // create collection
-            $groupAlias      = $arrArchives[ $objStyleGroups->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroups->pid ]['identifier'];
+            $groupAlias      = ($arrArchives[ $objStyleGroups->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroups->pid ]['identifier']) . '-' . $this->id;
             $collectionAlias = $arrArchives[ $objStyleGroups->pid ]['identifier'];
 
             if(!in_array($collectionAlias, array_keys($arrCollection)))
@@ -202,8 +202,8 @@ class ComponentStyleSelect extends \Widget
 
             foreach ($groups as $key => $group)
             {
-                $arrNavigation[] = sprintf('<input type="radio" id="nav-%s-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s-%s" onclick="Backend.getScrollOffset()">%s</label>', $i, $key, $groupAlias, ($i===1 ? 'checked' : ''), $i, $key, $group['label']);
-                $arrContent[]   = sprintf('<div id="tab-%s-%s" class="tab-content">%s</div>', $i, $key, implode("", $group['fields']));
+                $arrNavigation[] = sprintf('<input type="radio" id="nav-%s-%s-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s-%s-%s" onclick="Backend.getScrollOffset()">%s</label>', $i, $key, $this->id, $groupAlias, ($i===1 ? 'checked' : ''), $i, $key, $this->id, $group['label']);
+                $arrContent[]   = sprintf('<div id="tab-%s-%s-%s" class="tab-content">%s</div>', $i, $key, $this->id, implode("", $group['fields']));
 
                 $i++;
             }
