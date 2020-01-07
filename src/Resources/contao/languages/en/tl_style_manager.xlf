@@ -120,6 +120,12 @@
       <trans-unit id="tl_style_manager.extendNews.1">
         <source>Provides the CSS classes in news.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.0">
+        <source>Events</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.1">
+        <source>Provides the CSS classes in events.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager.extendContentElement.0">
         <source>Content elements</source>
       </trans-unit>
