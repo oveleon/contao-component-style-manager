@@ -2,6 +2,14 @@
 <xliff version="1.1">
   <file datatype="php" original="src/Resources/contao/languages/en/tl_style_manager_archive.php" source-language="en" target-language="de">
     <body>
+      <trans-unit id="tl_style_manager_archive.title_legend">
+        <source>Title</source>
+        <target>Titel</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.group_legend">
+        <source>Group</source>
+        <target>Gruppe</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
         <target>Neue Kategorie</target>
@@ -22,10 +30,6 @@
         <source>Show category info</source>
         <target>Kategorieinformatinoen anzeigen</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.title_legend">
-        <source>Title</source>
-        <target>Titel</target>
-      </trans-unit>
       <trans-unit id="tl_style_manager_archive.title.0">
         <source>Title</source>
         <target>Titel</target>
@@ -41,6 +45,14 @@
       <trans-unit id="tl_style_manager_archive.identifier.1">
         <source>The identifier is used to receive the group classes if they is passed to the template. (e.g. $this->sm_identifierName)</source>
         <target>Die Kennung dient zum entgegennehmen der Gruppenklassen, sofern diese an das Template übergeben werden. (Bspw. $this->sm_kennungName)</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.groupAlias.0">
+        <source>Group-Identifier</source>
+        <target>Gruppenkennung</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.groupAlias.1">
+        <source>The group identifier is used to group categories together. Categories with identical group identifier are displayed in the backend as one section with several tabs.</source>
+        <target>Die Gruppenkennung dient zum zusammenfassen von Kategorien. Kategorien mit identischer Gruppenkennung werden im Backend als einen Abschntt mit mehreren Tabs dargestellt.</target>
       </trans-unit>
     </body>
   </file>

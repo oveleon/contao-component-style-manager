@@ -14,6 +14,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property integer $tstamp
  * @property string  $title
  * @property string  $identifier
+ * @property string  $groupAlias
  * @property string  $description
  *
  * @method static StyleManagerArchiveModel|null findById($id, array $opt=array())
@@ -26,12 +27,14 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByTstamp($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByTitle($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByIdentifier($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByGroupAlias($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())
  * @method static integer countByTstamp($id, array $opt=array())
  * @method static integer countByTitle($id, array $opt=array())
  * @method static integer countByIdentifier($id, array $opt=array())
+ * @method static integer countByGroupAlias($id, array $opt=array())
  *
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */

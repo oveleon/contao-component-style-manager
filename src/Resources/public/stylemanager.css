@@ -7,36 +7,6 @@
   margin-right: 15px;
   clear: both;
 }
-.widget.stylemanager fieldset {
-  position: relative;
-  border: 1px solid #e6e6e8;
-  background: #fdfdfd;
-  margin-top: 12px;
-  margin-bottom: 10px;
-  padding: 5px 5px 15px 5px;
-}
-.widget.stylemanager fieldset.legend {
-  margin-top: 37px;
-}
-.widget.stylemanager fieldset legend {
-  position: absolute;
-  font-size: 14px;
-  line-height: 18px;
-  bottom: 100%;
-  margin-bottom: -1px;
-  left: -1px;
-  border: 1px solid #e6e6e8;
-  border-bottom: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 5px 10px;
-  background: #fdfdfd;
-  color: #6a6a6c;
-}
-.widget.stylemanager fieldset > div {
-  margin-left: 15px;
-  margin-right: 15px;
-  min-height: 80px;
-}
 .widget.stylemanager .no_styles {
   min-height: auto;
 }
@@ -45,6 +15,77 @@
 }
 .widget.stylemanager .tl_help {
   font-size: 0.75rem;
+}
+.widget.stylemanager .tab-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+.widget.stylemanager .tab-container > label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  z-index: 1;
+  padding: 10px;
+  margin-right: 4px;
+  color: #737373;
+  background: #f1f1f1;
+  border: solid #e6e6e8;
+  border-width: 1px 1px 0 1px;
+}
+.widget.stylemanager .tab-container:last-child {
+  margin-bottom: 0;
+}
+.widget.stylemanager .tab-content {
+  display: none;
+  border: 1px solid #e6e6e8;
+  background: #fdfdfd;
+  padding: 5px 5px 15px 5px;
+}
+.widget.stylemanager .tab-content > div {
+  margin-left: 15px;
+  margin-right: 15px;
+  min-height: 80px;
+}
+.widget.stylemanager .tab-content:after {
+  display: block;
+  content: "";
+  clear: both;
+}
+.widget.stylemanager .tab-nav {
+  display: none;
+}
+.widget.stylemanager .tab-container [id^=nav-1]:checked ~ [id^=tab-1],
+.widget.stylemanager .tab-container [id^=nav-2]:checked ~ [id^=tab-2],
+.widget.stylemanager .tab-container [id^=nav-3]:checked ~ [id^=tab-3],
+.widget.stylemanager .tab-container [id^=nav-4]:checked ~ [id^=tab-4],
+.widget.stylemanager .tab-container [id^=nav-5]:checked ~ [id^=tab-5],
+.widget.stylemanager .tab-container [id^=nav-6]:checked ~ [id^=tab-6],
+.widget.stylemanager .tab-container [id^=nav-7]:checked ~ [id^=tab-7],
+.widget.stylemanager .tab-container [id^=nav-8]:checked ~ [id^=tab-8],
+.widget.stylemanager .tab-container [id^=nav-9]:checked ~ [id^=tab-9],
+.widget.stylemanager .tab-container [id^=nav-10]:checked ~ [id^=tab-10],
+.widget.stylemanager .tab-container [id^=nav-11]:checked ~ [id^=tab-11],
+.widget.stylemanager .tab-container [id^=nav-12]:checked ~ [id^=tab-12],
+.widget.stylemanager .tab-container [id^=nav-13]:checked ~ [id^=tab-13],
+.widget.stylemanager .tab-container [id^=nav-14]:checked ~ [id^=tab-14],
+.widget.stylemanager .tab-container [id^=nav-15]:checked ~ [id^=tab-15],
+.widget.stylemanager .tab-container [id^=nav-16]:checked ~ [id^=tab-16],
+.widget.stylemanager .tab-container [id^=nav-17]:checked ~ [id^=tab-17],
+.widget.stylemanager .tab-container [id^=nav-18]:checked ~ [id^=tab-18],
+.widget.stylemanager .tab-container [id^=nav-19]:checked ~ [id^=tab-19],
+.widget.stylemanager .tab-container [id^=nav-20]:checked ~ [id^=tab-20],
+.widget.stylemanager .tab-container [id^=nav-21]:checked ~ [id^=tab-21],
+.widget.stylemanager .tab-container [id^=nav-22]:checked ~ [id^=tab-22],
+.widget.stylemanager .tab-container [id^=nav-23]:checked ~ [id^=tab-23],
+.widget.stylemanager .tab-container [id^=nav-24]:checked ~ [id^=tab-24],
+.widget.stylemanager .tab-container [id^=nav-25]:checked ~ [id^=tab-25] {
+  display: block;
+}
+.widget.stylemanager .tab-container [id^=nav-]:checked + label {
+  top: 1px;
+  padding-bottom: 11px;
+  color: #444;
+  background: #FDFDFD;
 }
 
 #tl_listing .sm_list_token {
@@ -62,6 +103,7 @@
 #tl_listing .sm_list_token.var {
   background-color: #f1e3c8;
   border-color: #f1b56d;
+  cursor: help;
 }
 
 .navigation.style_manager_categories {
@@ -69,13 +111,13 @@
 }
 
 @media (min-width: 600px) {
-  .widget.stylemanager fieldset > div {
+  .widget.stylemanager .tab-content > div {
     width: calc(50% - 30px);
     float: left;
   }
 }
 @media (min-width: 1200px) {
-  .widget.stylemanager fieldset > div {
+  .widget.stylemanager .tab-content > div {
     width: calc(33.333% - 30px);
     float: left;
   }

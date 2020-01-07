@@ -64,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'copy' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['copy'],
-                'href'                => 'act=copy',
+                'href'                => 'act=paste&mode=copy',
                 'icon'                => 'copy.svg'
             ),
             'delete' => array
@@ -123,6 +123,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['alias'],
             'inputType'               => 'text',
+            'search'                  => true,
             'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''",
             'save_callback' => array
@@ -170,6 +171,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['passToTemplate'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 m12'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -178,6 +180,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendLayout'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -186,6 +189,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendPage'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -194,6 +198,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendArticle'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -202,6 +207,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendForm'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -210,6 +216,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendFormFields'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -226,6 +233,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendContentElement'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -243,6 +251,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendModule'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"

@@ -41,24 +41,24 @@ class ComponentStyleSelect extends \Widget
 	public function generate()
 	{
         $objStyleArchives = StyleManagerArchiveModel::findAll();
-		$objStyleGroups = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid,sorting'));
+		$objStyleGroups   = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid,sorting'));
 
 		if($objStyleGroups === null || $objStyleArchives === null)
         {
-            \System::loadLanguageFile('tl_style_manager');
-            return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+            return $this->renderEmptyMessage();
         }
 
-        $isEmpty = true;
+        $isEmpty       = true;
         $arrCollection = array();
-        $arrArchives = array();
+        $arrArchives   = array();
 
-		// Prepare archives
+        // Prepare archives
 		while($objStyleArchives->next())
         {
             $arrArchives[ $objStyleArchives->id ] = array(
                 'title'      => $objStyleArchives->title,
                 'identifier' => $objStyleArchives->identifier,
+                'group'      => $objStyleArchives->groupAlias,
                 'model'      => $objStyleArchives->current()
             );
         }
@@ -69,8 +69,8 @@ class ComponentStyleSelect extends \Widget
         // Prepare group fields
         while($objStyleGroups->next())
         {
-            $arrOptions = array();
-            $strClass = 'tl_select';
+            $arrOptions      = array();
+            $strClass        = 'tl_select';
             $arrFieldOptions = array(array('value'=>'', 'label'=>'-'));
 
             // skip specific content elements
@@ -151,12 +151,14 @@ class ComponentStyleSelect extends \Widget
             }
 
             // create collection
+            $groupAlias      = $arrArchives[ $objStyleGroups->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroups->pid ]['identifier'];
             $collectionAlias = $arrArchives[ $objStyleGroups->pid ]['identifier'];
 
             if(!in_array($collectionAlias, array_keys($arrCollection)))
             {
                 $arrCollection[ $collectionAlias ] = array(
                     'label'  => $arrArchives[ $objStyleGroups->pid ]['title'],
+                    'group'  => $groupAlias,
                     'fields' => array()
                 );
             }
@@ -178,24 +180,38 @@ class ComponentStyleSelect extends \Widget
 
 		if($isEmpty)
 		{
-		    \System::loadLanguageFile('tl_style_manager');
-		    return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+            return $this->renderEmptyMessage();
         }
 
-        $arrFieldsets = array();
+        $arrGroups   = array();
+        $arrSections = array();
 
-        foreach ($arrCollection as $alias => $category)
+		// collect groups
+        foreach ($arrCollection as $alias => $collection)
         {
-            $label = $category['label'];
-
-            $arrFieldsets[] = sprintf('<fieldset%s>%s%s</fieldset>',
-                $label ? ' class="legend"' : '',
-                $label ? '<legend>' . $label . '</legend>' : '',
-                implode("",$category['fields'])
-            );
+            $arrGroups[ $collection['group'] ][ $alias ] = $collection;
         }
 
-		return implode("",$arrFieldsets);
+        // create group tabs and content
+        foreach ($arrGroups as $groupAlias => $groups)
+        {
+            $arrNavigation = array();
+            $arrContent = array();
+
+            $i = 1;
+
+            foreach ($groups as $key => $group)
+            {
+                $arrNavigation[] = sprintf('<input type="radio" id="nav-%s-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s-%s" onclick="Backend.getScrollOffset()">%s</label>', $i, $key, $groupAlias, ($i===1 ? 'checked' : ''), $i, $key, $group['label']);
+                $arrContent[]   = sprintf('<div id="tab-%s-%s" class="tab-content">%s</div>', $i, $key, implode("", $group['fields']));
+
+                $i++;
+            }
+
+            $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
+        }
+
+		return implode("", $arrSections);
 	}
 
     /**
@@ -234,5 +250,16 @@ class ComponentStyleSelect extends \Widget
                     ->execute($value, $this->activeRecord->id);
             }
         }
+    }
+
+    /**
+     * Return the empty message
+     *
+     * @return string
+     */
+    public function renderEmptyMessage()
+    {
+        \System::loadLanguageFile('tl_style_manager');
+        return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
     }
 }

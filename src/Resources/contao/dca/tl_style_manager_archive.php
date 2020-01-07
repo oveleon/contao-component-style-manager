@@ -94,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title,identifier;'
+        'default'                     => '{title_legend},title,identifier;{group_legend},groupAlias'
     ),
 
     // Fields
@@ -123,7 +123,16 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'rgxp'=>'variable', 'nospace'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+            'eval'                    => array('mandatory'=>true, 'rgxp'=>'variable', 'nospace'=>true, 'maxlength'=>255, 'tl_class'=>'w50', 'doNotCopy'=>true),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ),
+        'groupAlias' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['groupAlias'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => array('rgxp'=>'variable', 'nospace'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) NOT NULL default ''"
         )
     )
