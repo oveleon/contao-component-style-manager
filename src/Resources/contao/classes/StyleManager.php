@@ -338,10 +338,8 @@ class StyleManager
      */
     public function onParseTemplate($template)
     {
-        if (TL_MODE === 'FE' && ($arrStyles = \StringUtil::deserialize($template->styleManager)) !== null)
-        {
-            $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
-        }
+        $arrStyles = \StringUtil::deserialize($template->styleManager);
+        $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
     }
 
     /**
