@@ -65,10 +65,14 @@ If the variable "Use as template variable" is set, these are not automatically p
 To access the variables, we can access the corresponding class collection via the StyleManager object.
 
 #### Examples:
-##### Return a collection of a category
-`<?=$this->styleManager->get('classGroup')?>`
+##### Return of all selected CSS classes of a category
+```
+<?=$this->styleManager->get('myCategoryIdentifier')?>
+```
 ##### Return just specific groups of a category
-`<?=$this->styleManager->get('classGroup', ['group1', 'group2'])?>`
+```
+<?=$this->styleManager->get('myCategoryIdentifier', ['group1', 'group2'])?>
+```
 ##### Another Example
 ```
 <div class="<?=$this->styleManager->get('myCategoryIdentifier', ['group1'])?>" data-attr="<?=$this->styleManager->get('myCategoryIdentifier', ['group2'])?>"></div>
