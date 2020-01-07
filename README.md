@@ -75,7 +75,10 @@ To access the variables, we can access the corresponding class collection via th
 ```
 ##### Another Example
 ```
-<div class="<?=$this->styleManager->get('myCategoryIdentifier', ['group1'])?>" data-attr="<?=$this->styleManager->get('myCategoryIdentifier', ['group2'])?>"></div>
+<div 
+    class="<?=$this->styleManager->get('myCategoryIdentifier', ['group1'])?>" 
+    data-attr="<?=$this->styleManager->get('myCategoryIdentifier', ['group2'])?>">
+</div>
 ```
 
 ![Passing Variables: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/template-var-list.png)
