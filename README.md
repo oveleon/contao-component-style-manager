@@ -24,6 +24,8 @@ This plugin is designed to simplify theme customizations without the need for cu
     - Form-Fields
     - News ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
     - Events ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
+- Overarching support
+    - Rocksolid Custom Elements 
 
 
 > Feel free to use it as you need it
@@ -82,8 +84,6 @@ To access the variables, we can access the corresponding class collection via th
 ```
 
 ![Passing Variables: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/template-var-list.png)
----
-
 ---
 
 ### Support Rocksolid Custom Elements
