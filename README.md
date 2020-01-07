@@ -4,14 +4,16 @@
 ![Packagist](https://img.shields.io/packagist/dt/oveleon/contao-component-style-manager?color=%230A7BBC&style=flat-square)
 ![GitHub](https://img.shields.io/github/license/oveleon/contao-component-style-manager?style=flat-square)
 
-Allows you to add your own groups of CSS classes provided in layouts, pages, articles, modules, forms, form elements and content elements to your customers.
+Allows you to add your own groups of CSS classes provided in layouts, pages, articles, modules, news, events, forms, form elements and content elements to your customers.
 
 This plugin is designed to simplify theme customizations without the need for customers to manually add classes or create new layouts.
 
 ### Overview
 - Many possibilities of use (grid, animations, content properties, ...)
 - Clear representation in the backend
-- Groups and Archives/Categories
+- Groups and Categories
+    - Combine and output as tabs ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
+- Passing variables to the template ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
 - Available for
     - Layouts
     - Pages
@@ -20,14 +22,17 @@ This plugin is designed to simplify theme customizations without the need for cu
     - Content-Elements
     - Forms
     - Form-Fields
+    - News ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
+    - Events ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
 
-> Feel free to use it as you need it.
+
+> Feel free to use it as you need it 😉
 
 ---
 
 ### Install
 ```
-composer require oveleon/contao-component-style-manager
+$ composer require oveleon/contao-component-style-manager
 ```
 
 ---
