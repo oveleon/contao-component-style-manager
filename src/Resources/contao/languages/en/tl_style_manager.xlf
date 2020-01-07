@@ -70,7 +70,7 @@
         <source>Use as template variable</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.passToTemplate.1">
-        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->myVariable)</source>
+        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->styleManager->get('myCategoryIdentifier'))</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.cssClasses.0">
         <source>CSS classes</source>

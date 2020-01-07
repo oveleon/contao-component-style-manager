@@ -340,14 +340,7 @@ class StyleManager
     {
         if (TL_MODE === 'FE' && ($arrStyles = \StringUtil::deserialize($template->styleManager)) !== null)
         {
-            if(isset($arrStyles['__vars__']))
-            {
-                foreach ($arrStyles['__vars__'] as $identifier=>$values)
-                {
-                    $newKey = 'sm_' . $identifier;
-                    $template->{$newKey} = implode(" ", $values);
-                }
-            }
+            $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
         }
     }
 

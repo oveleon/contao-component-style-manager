@@ -17,7 +17,8 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'markAsCopy'                  => 'title',
         'onload_callback' => array
         (
-            array('tl_style_manager', 'checkPermission')
+            array('tl_style_manager', 'checkPermission'),
+            array('tl_style_manager', 'checkAlias')
         ),
         'sql' => array
         (
@@ -86,7 +87,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'palettes' => array
     (
         '__selector__'                => array('extendContentElement','extendFormFields','extendModule'),
-        'default'                     => '{title_legend},title,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate;'
+        'default'                     => '{title_legend},title,alias,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate;'
     ),
 
     // Sub-Palettes
@@ -122,8 +123,12 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['alias'],
             'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'folderalias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''"
+            'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''",
+            'save_callback' => array
+            (
+                array('tl_style_manager', 'generateAlias')
+            ),
         ),
         'title' => array
         (
@@ -132,10 +137,6 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
-            'save_callback' => array
-            (
-                array('tl_style_manager', 'generateAlias')
-            ),
             'sql'                     => "varchar(255) NOT NULL default ''"
         ),
         'description' => array
@@ -265,6 +266,8 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 
+use Oveleon\ContaoComponentStyleManager\StyleManagerModel;
+
 class tl_style_manager extends \Backend
 {
     /**
@@ -300,7 +303,7 @@ class tl_style_manager extends \Backend
 
         if($row['passToTemplate'])
         {
-            $label = '<span class="sm_list_token var">$</span> ' . $label;
+            $label = '<span class="sm_list_token var" title="$this->styleManager->get(string: identifier [, array: ' . $row['alias'] . '])">$</span> ' . $label;
         }
         else
         {
@@ -324,37 +327,48 @@ class tl_style_manager extends \Backend
     }
 
     /**
-     * Auto-generate the group alias if it has not been set yet
+     * Auto-generate an style group alias if it has not been set yet
      *
-     * @param mixed          $varValue
-     * @param \DataContainer $dc
+     * @param mixed                $varValue
+     * @param Contao\DataContainer $dc
      *
      * @return string
      *
      * @throws Exception
      */
-    public function generateAlias($varValue, \DataContainer $dc)
+    public function generateAlias($varValue, Contao\DataContainer $dc)
     {
-        if($dc->activeRecord->alias)
+        $aliasExists = function (string $alias) use ($dc): bool
         {
-            return $varValue;
-        }
+            return $this->Database->prepare("SELECT id FROM tl_style_manager WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+        };
 
-        $strAlias = \StringUtil::generateAlias($varValue);
-
-        $objAlias = $this->Database->prepare("SELECT id FROM tl_style_manager WHERE alias=? AND id!=?")
-            ->execute($strAlias, $dc->id);
-
-        // Check whether the group alias exists
-        if ($objAlias->numRows)
+        // Generate an alias if there is none
+        if ($varValue == '')
         {
-            $strAlias .= '-' . $dc->id;
+            $varValue = Contao\System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, $dc->id, $aliasExists);
         }
-
-        $objAlias = $this->Database->prepare("UPDATE tl_style_manager SET alias=? WHERE id=?")
-            ->execute($strAlias, $dc->id);
+        elseif ($aliasExists($varValue))
+        {
+            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+        }
 
         return $varValue;
+    }
+
+    /**
+     * Check identifier
+     *
+     * @param $dc
+     */
+    public function checkAlias($dc){
+        $objGroup = StyleManagerModel::findById($dc->id);
+
+        if($objGroup->alias)
+        {
+            $GLOBALS['TL_DCA']['tl_style_manager']['fields']['alias']['eval']['mandatory'] = false;
+            $GLOBALS['TL_DCA']['tl_style_manager']['fields']['alias']['eval']['disabled'] = true;
+        }
     }
 
     /**

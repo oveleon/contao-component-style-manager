@@ -14,6 +14,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property integer $pid
  * @property integer $tstamp
  * @property string  $title
+ * @property string  $alias
  * @property string  $category
  * @property string  $chosen
  * @property string  $passToTemplate

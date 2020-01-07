@@ -91,8 +91,8 @@
         <target>Als Templatevariable verwenden</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.passToTemplate.1">
-        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->myVariable)</source>
-        <target>Die gewählte Klasse wird nicht direkt gesetzt, sondern an das gewählte Template übergeben und kann über die Kennung der Kategorie abgerufen werden (Bspw. $this->myVariable)</target>
+        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->styleManager->get('myCategoryIdentifier'))</source>
+        <target>Die gewählte Klasse wird nicht direkt gesetzt, sondern an das gewählte Template übergeben und kann über die Kennung der Kategorie abgerufen werden (Bspw. $this->styleManager->get('meineKategorieKennung'))</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.cssClasses.0">
         <source>CSS classes</source>
