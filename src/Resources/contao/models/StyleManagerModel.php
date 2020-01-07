@@ -27,6 +27,8 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property integer $extendFormFields
  * @property integer $extendContentElement
  * @property integer $contentElements
+ * @property integer $extendNews
+ * @property integer $extendEvents
  *
  * @method static StyleManagerModel|null findById($id, array $opt=array())
  * @method static StyleManagerModel|null findByPid($id, array $opt=array())
@@ -42,6 +44,8 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static StyleManagerModel|null findOneByExtendFormFields($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendContentElement($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByContentElements($col, $val, $opt=array())
+ * @method static StyleManagerModel|null findOneByExtendNews($col, $val, $opt=array())
+ * @method static StyleManagerModel|null findOneByExtendEvents($col, $val, $opt=array())
  *
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findMultipleByIds($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByPids($val, array $opt=array())
@@ -57,6 +61,8 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendFormFields($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendContentElement($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByContentElements($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendNews($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendEvents($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())
@@ -73,6 +79,8 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @method static integer countByExtendFormFields($id, array $opt=array())
  * @method static integer countByExtendContentElement($id, array $opt=array())
  * @method static integer countByContentElements($id, array $opt=array())
+ * @method static integer countByExtendNews($id, array $opt=array())
+ * @method static integer countByExtendEvents($id, array $opt=array())
  *
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
@@ -89,14 +97,13 @@ class StyleManagerModel extends \Model
     /**
      * Find published news items by their parent ID
      *
-     * @param array   $arrOptions An optional options array
+     * @param $strTable
+     * @param array $arrOptions An optional options array
      *
      * @return \Model\Collection|StyleManagerModel[]|StyleManagerModel|null A collection of models or null if there are no news
      */
     public static function findByTable($strTable, array $arrOptions=array())
     {
-        $t = static::$strTable;
-
         switch ($strTable)
         {
             case 'tl_layout':
@@ -113,6 +120,10 @@ class StyleManagerModel extends \Model
                 return static::findByExtendFormFields(1, $arrOptions);
             case 'tl_content':
                 return static::findByExtendContentElement(1, $arrOptions);
+            case 'tl_news':
+                return static::findByExtendNews(1, $arrOptions);
+            case 'tl_calendar_events':
+                return static::findByExtendEvents(1, $arrOptions);
             default:
                 return null;
         }

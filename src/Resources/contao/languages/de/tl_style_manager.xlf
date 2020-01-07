@@ -134,6 +134,22 @@
         <source>Provides the CSS classes in modules.</source>
         <target>Stellt die CSS-Klassen in Modulen zur Verfügung.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.0">
+        <source>News</source>
+        <target>Nachrichten</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.1">
+        <source>Provides the CSS classes in news.</source>
+        <target>Stellt die CSS-Klassen in Nachrichten zur Verfügung.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.0">
+        <source>Events</source>
+        <target>Events</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.1">
+        <source>Provides the CSS classes in events.</source>
+        <target>Stellt die CSS-Klassen in Events zur Verfügung.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager.extendForm.0">
         <source>Forms</source>
         <target>Formulare</target>

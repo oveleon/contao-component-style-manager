@@ -114,6 +114,12 @@
       <trans-unit id="tl_style_manager.extendModule.1">
         <source>Provides the CSS classes in modules.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.0">
+        <source>News</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.1">
+        <source>Provides the CSS classes in news.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager.extendContentElement.0">
         <source>Content elements</source>
       </trans-unit>

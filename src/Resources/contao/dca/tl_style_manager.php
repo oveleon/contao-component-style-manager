@@ -87,7 +87,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'palettes' => array
     (
         '__selector__'                => array('extendContentElement','extendFormFields','extendModule'),
-        'default'                     => '{title_legend},title,alias,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate;'
+        'default'                     => '{title_legend},title,alias,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendNews,extendEvents,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate;'
     ),
 
     // Sub-Palettes
@@ -265,6 +265,24 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'w50 clr'),
             'sql'                     => "blob NULL"
         ),
+        'extendNews' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendNews'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'extendEvents' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendEvents'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        )
     )
 );
 
@@ -295,6 +313,18 @@ class tl_style_manager extends \Backend
      */
     public function checkPermission()
     {
+        $bundles = Contao\System::getContainer()->getParameter('kernel.bundles');
+
+        if (!isset($bundles['ContaoCalendarBundle']))
+        {
+            unset($GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendEvents']);
+        }
+
+        if (!isset($bundles['ContaoNewsBundle']))
+        {
+            unset($GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendNews']);
+        }
+
         return;
     }
 

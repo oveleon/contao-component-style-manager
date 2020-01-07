@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\ContaoManager;
 
 use Contao\CoreBundle\ContaoCoreBundle;
+use Contao\CalendarBundle\ContaoCalendarBundle;
+use Contao\NewsBundle\ContaoNewsBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
@@ -25,7 +27,7 @@ class Plugin implements BundlePluginInterface
     {
         return [
             BundleConfig::create(ContaoComponentStyleManager::class)
-                ->setLoadAfter([ContaoCoreBundle::class])
+                ->setLoadAfter([ContaoCoreBundle::class, ContaoCalendarBundle::class, ContaoNewsBundle::class])
                 ->setReplace(['componentStyleManager']),
         ];
     }

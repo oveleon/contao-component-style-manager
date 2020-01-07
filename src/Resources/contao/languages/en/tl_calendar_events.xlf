@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_calendar_events.php" source-language="en">
+    <body>
+      <trans-unit id="tl_calendar_events.style_manager_legend">
+        <source>Style Manager</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.styleManager.0">
+        <source>Style Manager</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
