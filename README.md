@@ -1,12 +1,12 @@
 # Contao Component Style Manager
-![GitHub](https://img.shields.io/badge/stable-master-%23D6AF23?style=flat-square)
-![GitHub](https://img.shields.io/badge/unstable-develop-F38041?style=flat-square)
-![Packagist](https://img.shields.io/packagist/dt/oveleon/contao-component-style-manager?color=%230A7BBC&style=flat-square)
-![GitHub](https://img.shields.io/github/license/oveleon/contao-component-style-manager?style=flat-square)
+![stable](https://img.shields.io/badge/stable-master-%23D6AF23?style=flat-square)
+![unstable](https://img.shields.io/badge/unstable-develop-F38041?style=flat-square)
+![downloads](https://img.shields.io/packagist/dt/oveleon/contao-component-style-manager?color=%230A7BBC&style=flat-square)
+![license](https://img.shields.io/github/license/oveleon/contao-component-style-manager?style=flat-square)
 
-Allows you to add your own groups of CSS classes provided in layouts, pages, articles, modules, news, events, forms, form elements and content elements to your customers.
+Allows you to easily manager you own groups CSS classes provided in layouts, pages, articles, modules, news, events, forms, form elements and content elements.
 
-This plugin is designed to simplify theme customizations without the need for customers to manually add classes or create new layouts.
+This plugin is designed to simplify theme customizations without the need of manually adding classes or creating new layouts.
 
 ### Overview
 - Many possibilities of use (grid, animations, content properties, ...)
@@ -24,7 +24,7 @@ This plugin is designed to simplify theme customizations without the need for cu
     - Form-Fields
     - News ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
     - Events ![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)
-- Overarching support
+- Third-Party plugin support
     - Rocksolid Custom Elements 
 
 
