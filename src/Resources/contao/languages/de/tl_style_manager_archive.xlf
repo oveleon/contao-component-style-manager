@@ -6,9 +6,9 @@
         <source>Title</source>
         <target>Titel</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.group_legend">
-        <source>Group</source>
-        <target>Gruppe</target>
+      <trans-unit id="tl_style_manager_archive.config_legend">
+        <source>Config</source>
+        <target>Konfiguration</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
@@ -53,6 +53,14 @@
       <trans-unit id="tl_style_manager_archive.groupAlias.1">
         <source>The group identifier is used to group categories together. Categories with identical group identifier are displayed in the backend as one section with several tabs.</source>
         <target>Die Gruppenkennung dient zum zusammenfassen von Kategorien. Kategorien mit identischer Gruppenkennung werden im Backend als einen Abschntt mit mehreren Tabs dargestellt.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.sorting.0">
+        <source>Sort-Index</source>
+        <target>Sortierindex</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.sorting.1">
+        <source>Enter a freely definable number here to define the sort index. This is used to determine the order of the categories in the backend.</source>
+        <target>Geben Sie hier frei definierbare Zahl ein, um den Sortierindex zu definieren. Dieser dient dazu, die Reihenfolge der Kategorien im Backend zu bestimmen.</target>
       </trans-unit>
     </body>
   </file>

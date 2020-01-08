@@ -40,7 +40,7 @@ class ComponentStyleSelect extends \Widget
 	 */
 	public function generate()
 	{
-        $objStyleArchives = StyleManagerArchiveModel::findAll();
+        $objStyleArchives = StyleManagerArchiveModel::findAll(array('order'=>'sorting'));
 		$objStyleGroups   = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid,sorting'));
 
 		if($objStyleGroups === null || $objStyleArchives === null)
@@ -51,6 +51,7 @@ class ComponentStyleSelect extends \Widget
         $isEmpty       = true;
         $arrCollection = array();
         $arrArchives   = array();
+        $arrOrder      = array();
 
         // Prepare archives
 		while($objStyleArchives->next())
@@ -61,6 +62,8 @@ class ComponentStyleSelect extends \Widget
                 'group'      => $objStyleArchives->groupAlias,
                 'model'      => $objStyleArchives->current()
             );
+
+            $arrOrder[] = $objStyleArchives->identifier;
         }
 
         // Restore default value
@@ -186,6 +189,11 @@ class ComponentStyleSelect extends \Widget
         $arrGroups   = array();
         $arrSections = array();
 
+        // sort collection by sort-index
+        uksort($arrCollection, function($key1, $key2) use ($arrOrder) {
+            return (array_search($key1, $arrOrder) > array_search($key2, $arrOrder));
+        });
+
 		// collect groups
         foreach ($arrCollection as $alias => $collection)
         {
@@ -202,8 +210,9 @@ class ComponentStyleSelect extends \Widget
 
             foreach ($groups as $key => $group)
             {
-                $arrNavigation[] = sprintf('<input type="radio" id="nav-%s-%s-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s-%s-%s" onclick="Backend.getScrollOffset()">%s</label>', $i, $key, $this->id, $groupAlias, ($i===1 ? 'checked' : ''), $i, $key, $this->id, $group['label']);
-                $arrContent[]   = sprintf('<div id="tab-%s-%s-%s" class="tab-content">%s</div>', $i, $key, $this->id, implode("", $group['fields']));
+                $identifier      = sprintf('%s-%s-%s', $i, $key, $this->id);
+                $arrNavigation[] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" onclick="Backend.getScrollOffset()">%s</label>', $identifier, $groupAlias, ($i===1 ? 'checked' : ''), $identifier, $group['label']);
+                $arrContent[]    = sprintf('<div id="tab-%s" class="tab-content">%s</div>', $identifier, implode("", $group['fields']));
 
                 $i++;
             }
