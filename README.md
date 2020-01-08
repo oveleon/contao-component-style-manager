@@ -45,7 +45,7 @@ $ composer require oveleon/contao-component-style-manager
 - `Sort-Index`: This field is used to determine the order of the categories in the backend
 
 #### Examples:
-![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categorie-edit.png)
+![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categorie-edit-1.png)
 
 ![Manage Categories: Image 2](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categories.png)
 
@@ -70,12 +70,13 @@ To access the variables, we can access the corresponding class collection via th
 #### Examples:
 ```php
 // Return of all selected CSS classes of a category
-<?=$this->styleManager->get('myCategoryIdentifier')?>
+$this->styleManager->get('myCategoryIdentifier');
 
 // Return of all selected CSS classes in specific groups of a category
-<?=$this->styleManager->get('myCategoryIdentifier', ['group1', 'group2'])?>
-
-// Example of use
+$this->styleManager->get('myCategoryIdentifier', ['group1', 'group2']);
+```
+##### Example of use
+```html
 <div 
     class="<?=$this->styleManager->get('myCategoryIdentifier', ['group1'])?>" 
     data-attr="<?=$this->styleManager->get('myCategoryIdentifier', ['group2'])?>">
@@ -85,7 +86,7 @@ To access the variables, we can access the corresponding class collection via th
 ![Passing Variables: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/template-var-list.png)
 
 ## Support Rocksolid Custom Elements
-see: https://github.com/madeyourday/contao-rocksolid-custom-elements
+see: [Rocksolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)
 
 Use the callback function `onloadCallback` in your custom element configuration and reference the following function:
 ```

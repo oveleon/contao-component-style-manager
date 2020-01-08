@@ -14,20 +14,17 @@
       <trans-unit id="tl_style_manager.expert_legend">
         <source>Expert settings</source>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.ow_key">
         <source>CSS Class</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.ow_value">
         <source>Title / Description</source>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.noStylesDefined">
         <source>No styles have yet been defined yet for this area.</source>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.new.0">
-        <source>Add group</source>
+        <source>New css group</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.editheader.1">
         <source>Edit group</source>
@@ -41,7 +38,6 @@
       <trans-unit id="tl_style_manager.show.1">
         <source>Show group info</source>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.title.0">
         <source>Title</source>
       </trans-unit>
@@ -58,7 +54,7 @@
         <source>Alias</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.alias.1">
-        <source>Here you can enter an alias.</source>
+        <source>Here you can define an alias which is needed to receive the selected CSS class of this group in templates. (For example $this->styleManager->get('myCategoryIdentifier', ['thisAlias']).</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.chosen.0">
         <source>Add search field</source>

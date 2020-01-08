@@ -18,7 +18,6 @@
         <source>Expert settings</source>
         <target>Experteneinstellungen</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.ow_key">
         <source>CSS Class</source>
         <target>CSS-Klasse</target>
@@ -27,15 +26,13 @@
         <source>Title / Description</source>
         <target>Titel / Beschreibung</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.noStylesDefined">
         <source>No styles have yet been defined yet for this area.</source>
         <target>Für diesen Bereich sind noch keine Stile hinterlegt.</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.new.0">
-        <source>Add group</source>
-        <target>Neue Gruppe</target>
+        <source>New css group</source>
+        <target>Neue CSS-Gruppe</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.editheader.1">
         <source>Edit group</source>
@@ -53,7 +50,6 @@
         <source>Show group info</source>
         <target>Gruppeinformationen anzeigen</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.title.0">
         <source>Title</source>
         <target>Titel</target>
@@ -75,8 +71,8 @@
         <target>Alias</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.alias.1">
-        <source>Here you can enter an alias.</source>
-        <target>Hier können Sie einen Alias eingeben.</target>
+        <source>Here you can define an alias which is needed to receive the selected CSS class of this group in templates. (For example $this->styleManager->get('myCategoryIdentifier', ['thisAlias']).</source>
+        <target>Hier können Sie einen Alias definieren, welcher benötigt wird, um die gewählte CSS-Klasse dieser Gruppe in Templates entgegennehmen zu können. (Bspw. $this->styleManager->get('myCategoryIdentifier', ['thisAlias'])).</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.chosen.0">
         <source>Add search field</source>
