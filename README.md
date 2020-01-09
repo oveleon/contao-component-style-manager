@@ -49,7 +49,7 @@ $ composer require oveleon/contao-component-style-manager
 
 ![Manage Categories: Image 2](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categories-2.png)
 
-##### Example view of the combined categories (Group-Idenfifier: "grid"):
+##### Example view of the combined categories (Group-Idenfifier: "Layout"):
 ![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/backend-view.png)
 
 ## Manage style groups:
