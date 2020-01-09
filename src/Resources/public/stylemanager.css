@@ -61,6 +61,7 @@
 .widget.stylemanager .tab-nav {
   display: none;
 }
+.widget.stylemanager .tab-container [id^=nav-0]:checked ~ [id^=tab-0],
 .widget.stylemanager .tab-container [id^=nav-1]:checked ~ [id^=tab-1],
 .widget.stylemanager .tab-container [id^=nav-2]:checked ~ [id^=tab-2],
 .widget.stylemanager .tab-container [id^=nav-3]:checked ~ [id^=tab-3],

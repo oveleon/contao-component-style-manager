@@ -175,7 +175,7 @@ class ComponentStyleSelect extends \Widget
                 $this->getAttributes(),
                 implode('', $arrOptions),
                 $this->wizard,
-                '<p class="tl_help tl_tip" title="">'.$objStyleGroups->description.'</p></div>'
+                '<p class="tl_help ' . ($objStyleGroups->description ? 'tl_tip' : '') . ' title="">'.$objStyleGroups->description.'</p></div>'
             );
 
             $isEmpty = false;
@@ -185,6 +185,9 @@ class ComponentStyleSelect extends \Widget
 		{
             return $this->renderEmptyMessage();
         }
+
+        $objSession = \System::getContainer()->get('session')->getBag('contao_backend');
+        $arrSession = $objSession->get('stylemanager_section_states');
 
         $arrGroups   = array();
         $arrSections = array();
@@ -206,15 +209,42 @@ class ComponentStyleSelect extends \Widget
             $arrNavigation = array();
             $arrContent = array();
 
-            $i = 1;
+            $i = 0;
 
             foreach ($groups as $key => $group)
             {
-                $identifier      = sprintf('%s-%s-%s', $i, $key, $this->id);
-                $arrNavigation[] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" onclick="Backend.getScrollOffset()">%s</label>', $identifier, $groupAlias, ($i===1 ? 'checked' : ''), $identifier, $group['label']);
-                $arrContent[]    = sprintf('<div id="tab-%s" class="tab-content">%s</div>', $identifier, implode("", $group['fields']));
+                $identifier = sprintf('%s-%s-%s', $i, $key, $this->id);
+                $isSelected = !isset($arrSession[ $groupAlias ]) && $i===0 ? 'checked' : ($arrSession[ $groupAlias ] === $identifier ? 'checked' : '');
+                $index      = $isSelected ? $isSelected : $i;
+
+                $onClick = sprintf('onclick="Backend.getScrollOffset(); new Request.Contao().post({\'action\':\'selectStyleManagerSection\', \'id\':\'%s\', \'groupAlias\':\'%s\', \'identifier\':\'%s\', \'REQUEST_TOKEN\':\'%s\'});"',
+                    $this->id,
+                    $groupAlias,
+                    $identifier,
+                    REQUEST_TOKEN
+                );
+
+                $arrNavigation[ $index ] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" %s>%s</label>',
+                    $identifier,
+                    $groupAlias,
+                    $isSelected,
+                    $identifier,
+                    $onClick,
+                    $group['label']
+                );
+
+                $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s</div>',
+                    $identifier,
+                    implode("", $group['fields'])
+                );
 
                 $i++;
+            }
+
+            // if no entry is selected, the first one must be selected
+            if(!array_key_exists('checked', $arrNavigation))
+            {
+                $arrNavigation[0] = str_replace("><label", "checked><label", $arrNavigation[0]);
             }
 
             $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
@@ -266,7 +296,7 @@ class ComponentStyleSelect extends \Widget
      *
      * @return string
      */
-    public function renderEmptyMessage()
+    private function renderEmptyMessage()
     {
         \System::loadLanguageFile('tl_style_manager');
         return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';

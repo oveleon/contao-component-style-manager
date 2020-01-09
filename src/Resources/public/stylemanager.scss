@@ -84,6 +84,7 @@
       display: none;
     }
 
+    .tab-container [id^="nav-0"]:checked ~ [id^="tab-0"],
     .tab-container [id^="nav-1"]:checked ~ [id^="tab-1"],
     .tab-container [id^="nav-2"]:checked ~ [id^="tab-2"],
     .tab-container [id^="nav-3"]:checked ~ [id^="tab-3"],

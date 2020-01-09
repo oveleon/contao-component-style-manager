@@ -28,8 +28,9 @@ $GLOBALS['TL_MODELS']['tl_style_manager']         = '\\Oveleon\\ContaoComponentS
 $GLOBALS['TL_MODELS']['tl_style_manager_archive'] = '\\Oveleon\\ContaoComponentStyleManager\\StyleManagerArchiveModel';
 
 // Hooks
-$GLOBALS['TL_HOOKS']['parseTemplate'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onParseTemplate');
-$GLOBALS['TL_HOOKS']['addCustomRegexp'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addVariableRegexp');
+$GLOBALS['TL_HOOKS']['parseTemplate'][]      = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onParseTemplate');
+$GLOBALS['TL_HOOKS']['addCustomRegexp'][]    = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addVariableRegexp');
+$GLOBALS['TL_HOOKS']['executePostActions'][] = array('\\Oveleon\\ContaoComponentStyleManager\\Ajax', 'executePostActions');
 
 // Style sheet
 if (TL_MODE == 'BE')

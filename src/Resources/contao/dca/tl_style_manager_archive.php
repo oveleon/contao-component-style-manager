@@ -36,15 +36,14 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
         'sorting' => array
         (
             'mode'                    => 1,
-            'fields'                  => array('title'),
-            'flag'                    => 1,
+            'fields'                  => array('groupAlias', 'sorting'),
             'panelLayout'             => 'filter;search,limit'
         ),
         'label' => array
         (
             'fields'                  => array('title'),
             'format'                  => '%s',
-            'label_callback'          => array('tl_style_manager_archive', 'addIdentifier')
+            'label_callback'          => array('tl_style_manager_archive', 'addIdentifierInfo')
         ),
         'global_operations' => array
         (
@@ -123,7 +122,11 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
             'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('mandatory'=>true, 'rgxp'=>'variable', 'nospace'=>true, 'maxlength'=>255, 'tl_class'=>'w50', 'doNotCopy'=>true),
-            'sql'                     => "varchar(255) NOT NULL default ''"
+            'sql'                     => "varchar(255) NOT NULL default ''",
+            'save_callback' => array
+            (
+                array('tl_style_manager_archive', 'saveIdentifier')
+            ),
         ),
         'groupAlias' => array
         (
@@ -186,7 +189,7 @@ class tl_style_manager_archive extends \Backend
      *
      * @return array
      */
-    public function addIdentifier($row, $label, DataContainer $dc, $args)
+    public function addIdentifierInfo($row, $label, DataContainer $dc, $args)
     {
         if($row['identifier'])
         {
@@ -209,5 +212,30 @@ class tl_style_manager_archive extends \Backend
             $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['mandatory'] = false;
             $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['disabled'] = true;
         }
+    }
+
+    /**
+     * Check if identifier already exists
+     *
+     * @param mixed                $varValue
+     * @param Contao\DataContainer $dc
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public function saveIdentifier($varValue, Contao\DataContainer $dc)
+    {
+        $aliasExists = function (string $alias) use ($dc): bool
+        {
+            return $this->Database->prepare("SELECT id FROM tl_style_manager_archive WHERE identifier=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+        };
+
+        if ($aliasExists($varValue))
+        {
+            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['identifierExists'], $varValue));
+        }
+
+        return $varValue;
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/default.php" source-language="en">
+    <body>
+      <trans-unit id="ERR.identifierExists">
+        <source>The Identifier &quot;%s&quot; already exists!</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

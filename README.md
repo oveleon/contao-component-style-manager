@@ -4,7 +4,7 @@
 [![downloads](https://img.shields.io/packagist/dt/oveleon/contao-component-style-manager?color=%230A7BBC&style=flat-square)](https://packagist.org/packages/oveleon/contao-component-style-manager)
 [![license](https://img.shields.io/github/license/oveleon/contao-component-style-manager?style=flat-square)](https://github.com/oveleon/contao-component-style-manager/blob/master/LICENSE)
 
-Allows you to easily manage you own CSS classes as groups provided in layouts, pages, articles, modules, news, events, forms, form elements and content elements.
+Allows you to easily manage your own CSS classes as groups provided in layouts, pages, articles, modules, news, events, forms, form elements and content elements.
 
 This plugin is designed to simplify theme customizations without the need of manually adding classes or creating new layouts.
 
@@ -45,12 +45,12 @@ $ composer require oveleon/contao-component-style-manager
 - `Sort-Index`: This field is used to determine the order of the categories in the backend
 
 #### Examples:
-![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categorie-edit-1.png)
+![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categorie-edit-2.png)
 
-![Manage Categories: Image 2](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categories.png)
+![Manage Categories: Image 2](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categories-2.png)
 
 ##### Example view of the combined categories (Group-Idenfifier: "grid"):
-![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/user-grid.png)
+![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/backend-view.png)
 
 ## Manage style groups:
 #### Fields:
@@ -58,14 +58,14 @@ $ composer require oveleon/contao-component-style-manager
 - `Use as template variable`: This field declares whether this style group is set in the class of the corresponding element or passed to the template.
 
 #### Examples:
-![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/style-groups-edit.png)
+![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)
 
-![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/style-groups-list.png)
+![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-list.png)
 
 ## Passing style group variables to a template:
 If the checkbox "Use as template variable" is set, these are not automatically passed to the class of the corresponding element but are available in the template.
 
-To access the variables, we can access the corresponding class collection via the StyleManager object.
+To access the variables, we can access the corresponding class collection via the `styleManager` object.
 
 #### Examples:
 ```php
@@ -83,7 +83,7 @@ $this->styleManager->get('myCategoryIdentifier', ['group1', 'group2']);
 </div>
 ```
 
-![Passing Variables: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/template-var-list.png)
+![Passing Variables: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/template-vars-list.png)
 
 ## Support Rocksolid Custom Elements
 see: [Rocksolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)
