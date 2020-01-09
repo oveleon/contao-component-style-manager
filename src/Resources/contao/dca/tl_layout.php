@@ -18,11 +18,8 @@ $GLOBALS['TL_DCA']['tl_layout']['fields']['styleManager'] = array
     'exclude'                 => true,
     'inputType'               => 'stylemanager',
     'eval'                    => array('tl_class'=>'clr stylemanager'),
-    'sql'                     => "blob NULL",
-    'save_callback'           => array(
-        array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'updateOnMultiEdit')
-    )
+    'sql'                     => "blob NULL"
 );
 
-$GLOBALS['TL_DCA']['tl_layout']['fields']['cssClass']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'clearStyleManager');
-$GLOBALS['TL_DCA']['tl_layout']['fields']['cssClass']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'updateStyleManager');
+$GLOBALS['TL_DCA']['tl_layout']['fields']['cssClass']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
+$GLOBALS['TL_DCA']['tl_layout']['fields']['cssClass']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');

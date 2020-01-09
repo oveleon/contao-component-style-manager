@@ -18,39 +18,8 @@
     margin-right: 15px;
     clear: both;
 
-    fieldset{
-      position: relative;
-      border: 1px solid #e6e6e8;
-      background: #fdfdfd;
-      margin-top: 12px;
-      margin-bottom: 10px;
-      padding: 5px 5px 15px 5px;
-
-      &.legend{
-        margin-top: 37px;
-      }
-
-      legend{
-        position: absolute;
-        font-size: 14px;
-        line-height: 18px;
-        bottom: 100%;
-        margin-bottom: -1px;
-        left: -1px;
-
-        border: 1px solid #e6e6e8;
-        border-bottom: 0;
-        border-radius: 3px 3px 0 0;
-        padding: 5px 10px;
-        background: #fdfdfd;
-        color: #6a6a6c;
-      }
-
-      > div{
-        margin-left: 15px;
-        margin-right: 15px;
-        min-height: 80px;
-      }
+    > h3{
+      margin-bottom: 15px;
     }
 
     .no_styles{
@@ -63,6 +32,115 @@
 
     .tl_help{
       font-size: .75rem;
+    }
+
+    .tab-container{
+      position: relative;
+      margin-bottom: 10px;
+
+      > label{
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+        z-index: 1;
+        padding: 8px 10px;
+        margin-right: 4px;
+        background: #f1f1f1;
+        border: solid #e6e6e8;
+        border-width: 1px 1px 0 1px;
+        border-radius: 3px 3px 0 0;
+        opacity: .8;
+
+        &:hover{
+          opacity: 1;
+        }
+      }
+
+      &:last-child{
+        margin-bottom: 0;
+      }
+    }
+
+    .tab-content{
+      display: none;
+      border: 1px solid #e6e6e8;
+      background: #fdfdfd;
+      padding: 5px 5px 15px 5px;
+
+      > div{
+        margin-left: 15px;
+        margin-right: 15px;
+        min-height: 80px;
+      }
+
+      &:after{
+        display: block;
+       content: '';
+       clear: both;
+      }
+    }
+
+    .tab-nav{
+      display: none;
+    }
+
+    .tab-container [id^="nav-0"]:checked ~ [id^="tab-0"],
+    .tab-container [id^="nav-1"]:checked ~ [id^="tab-1"],
+    .tab-container [id^="nav-2"]:checked ~ [id^="tab-2"],
+    .tab-container [id^="nav-3"]:checked ~ [id^="tab-3"],
+    .tab-container [id^="nav-4"]:checked ~ [id^="tab-4"],
+    .tab-container [id^="nav-5"]:checked ~ [id^="tab-5"],
+    .tab-container [id^="nav-6"]:checked ~ [id^="tab-6"],
+    .tab-container [id^="nav-7"]:checked ~ [id^="tab-7"],
+    .tab-container [id^="nav-8"]:checked ~ [id^="tab-8"],
+    .tab-container [id^="nav-9"]:checked ~ [id^="tab-9"],
+    .tab-container [id^="nav-10"]:checked ~ [id^="tab-10"],
+    .tab-container [id^="nav-11"]:checked ~ [id^="tab-11"],
+    .tab-container [id^="nav-12"]:checked ~ [id^="tab-12"],
+    .tab-container [id^="nav-13"]:checked ~ [id^="tab-13"],
+    .tab-container [id^="nav-14"]:checked ~ [id^="tab-14"],
+    .tab-container [id^="nav-15"]:checked ~ [id^="tab-15"],
+    .tab-container [id^="nav-16"]:checked ~ [id^="tab-16"],
+    .tab-container [id^="nav-17"]:checked ~ [id^="tab-17"],
+    .tab-container [id^="nav-18"]:checked ~ [id^="tab-18"],
+    .tab-container [id^="nav-19"]:checked ~ [id^="tab-19"],
+    .tab-container [id^="nav-20"]:checked ~ [id^="tab-20"],
+    .tab-container [id^="nav-21"]:checked ~ [id^="tab-21"],
+    .tab-container [id^="nav-22"]:checked ~ [id^="tab-22"],
+    .tab-container [id^="nav-23"]:checked ~ [id^="tab-23"],
+    .tab-container [id^="nav-24"]:checked ~ [id^="tab-24"],
+    .tab-container [id^="nav-25"]:checked ~ [id^="tab-25"]{
+      display: block;
+    }
+
+    .tab-container [id^="nav-"]:checked + label{
+      top: 1px;
+      padding-bottom: 9px;
+      background: #FDFDFD;
+      opacity: 1;
+      cursor: default;
+    }
+  }
+}
+
+#tl_listing{
+
+  .sm_list_token{
+    display: inline-block;
+    font-size: .8em;
+    line-height: 1;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 1px 3px;
+    width: 8px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background-color: #f1f1f1;
+
+    &.var{
+      background-color: #f1e3c8;
+      border-color: #f1b56d;
+      cursor: help;
     }
   }
 }
@@ -79,7 +157,7 @@
 
     &.stylemanager {
 
-      fieldset{
+      .tab-content{
 
         > div{
           width: calc(50% - 30px);
@@ -96,7 +174,7 @@
 
     &.stylemanager {
 
-      fieldset{
+      .tab-content{
 
         > div{
           width: calc(33.333% - 30px);

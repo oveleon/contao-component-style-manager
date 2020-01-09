@@ -18,7 +18,6 @@
         <source>Expert settings</source>
         <target>Experteneinstellungen</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.ow_key">
         <source>CSS Class</source>
         <target>CSS-Klasse</target>
@@ -27,15 +26,13 @@
         <source>Title / Description</source>
         <target>Titel / Beschreibung</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.noStylesDefined">
         <source>No styles have yet been defined yet for this area.</source>
         <target>Für diesen Bereich sind noch keine Stile hinterlegt.</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.new.0">
-        <source>Add group</source>
-        <target>Neue Gruppe</target>
+        <source>New css group</source>
+        <target>Neue CSS-Gruppe</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.editheader.1">
         <source>Edit group</source>
@@ -53,7 +50,6 @@
         <source>Show group info</source>
         <target>Gruppeinformationen anzeigen</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager.title.0">
         <source>Title</source>
         <target>Titel</target>
@@ -70,29 +66,13 @@
         <source>Here you can enter a field description.</source>
         <target>Hier können Sie eine Feldbeschreibung eingeben.</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.category.0">
-        <source>Category</source>
-        <target>Kategorie</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.category.1">
-        <source>Here you can define the category.</source>
-        <target>Hier können Sie eine Kategorie festlegen.</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.categories.0">
-        <source>Manage Categories</source>
-        <target>Kategorien verwalten</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.categories.1">
-        <source>Manage Categories</source>
-        <target>Kategorien verwalten</target>
-      </trans-unit>
       <trans-unit id="tl_style_manager.alias.0">
         <source>Alias</source>
         <target>Alias</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.alias.1">
-        <source>Here you can enter an alias.</source>
-        <target>Hier können Sie einen Alias eingeben.</target>
+        <source>Here you can define an alias which is needed to receive the selected CSS class of this group in templates. (For example $this->styleManager->get('myCategoryIdentifier', ['thisAlias']).</source>
+        <target>Hier können Sie einen Alias definieren, welcher benötigt wird, um die gewählte CSS-Klasse dieser Gruppe in Templates entgegennehmen zu können. (Bspw. $this->styleManager->get('myCategoryIdentifier', ['thisAlias'])).</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.chosen.0">
         <source>Add search field</source>
@@ -101,6 +81,14 @@
       <trans-unit id="tl_style_manager.chosen.1">
         <source>Use of chosen for a search field within the select box.</source>
         <target>Verwendung von chosen für ein Suchfeld innerhalb der Select-Box.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.0">
+        <source>Use as template variable</source>
+        <target>Als Templatevariable verwenden</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.1">
+        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->styleManager->get('myCategoryIdentifier'))</source>
+        <target>Die gewählte Klasse wird nicht direkt gesetzt, sondern an das gewählte Template übergeben und kann über die Kennung der Kategorie abgerufen werden (Bspw. $this->styleManager->get('meineKategorieKennung'))</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.cssClasses.0">
         <source>CSS classes</source>
@@ -141,6 +129,22 @@
       <trans-unit id="tl_style_manager.extendModule.1">
         <source>Provides the CSS classes in modules.</source>
         <target>Stellt die CSS-Klassen in Modulen zur Verfügung.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.0">
+        <source>News</source>
+        <target>Nachrichten</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.1">
+        <source>Provides the CSS classes in news.</source>
+        <target>Stellt die CSS-Klassen in Nachrichten zur Verfügung.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.0">
+        <source>Events</source>
+        <target>Events</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.1">
+        <source>Provides the CSS classes in events.</source>
+        <target>Stellt die CSS-Klassen in Events zur Verfügung.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendForm.0">
         <source>Forms</source>

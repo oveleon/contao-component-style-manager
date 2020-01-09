@@ -40,19 +40,40 @@ class ComponentStyleSelect extends \Widget
 	 */
 	public function generate()
 	{
-        $isEmpty = true;
-        $arrCategories = array();
-		$objStyleGroups = StyleManagerModel::findByTable($this->strTable, array('order'=>'category'));
+        $objStyleArchives = StyleManagerArchiveModel::findAll(array('order'=>'sorting'));
+		$objStyleGroups   = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid,sorting'));
 
-		if($objStyleGroups === null)
+		if($objStyleGroups === null || $objStyleArchives === null)
         {
-            return '';
+            return $this->renderEmptyMessage();
         }
 
+        $isEmpty       = true;
+        $arrCollection = array();
+        $arrArchives   = array();
+        $arrOrder      = array();
+
+        // Prepare archives
+		while($objStyleArchives->next())
+        {
+            $arrArchives[ $objStyleArchives->id ] = array(
+                'title'      => $objStyleArchives->title,
+                'identifier' => $objStyleArchives->identifier,
+                'group'      => $objStyleArchives->groupAlias,
+                'model'      => $objStyleArchives->current()
+            );
+
+            $arrOrder[] = $objStyleArchives->identifier;
+        }
+
+        // Restore default value
+        $this->varValue = StyleManager::deserializeValues($this->varValue);
+
+        // Prepare group fields
         while($objStyleGroups->next())
         {
-            $arrOptions = array();
-            $strClass = 'tl_select';
+            $arrOptions      = array();
+            $strClass        = 'tl_select';
             $arrFieldOptions = array(array('value'=>'', 'label'=>'-'));
 
             // skip specific content elements
@@ -90,20 +111,6 @@ class ComponentStyleSelect extends \Widget
 
             $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
 
-            // prepare data for older versions
-            if($opts !== null)
-            {
-                if(!isset($opts[0]['key']))
-                {
-                    foreach ($opts as &$item) {
-                        $item = array(
-                            'key' => $item,
-                            'value' => ''
-                        );
-                    }
-                }
-            }
-
             foreach ($opts as $opt) {
                 $arrFieldOptions[] = array(
                     'label' => $opt['value'] ?: $opt['key'],
@@ -121,7 +128,7 @@ class ComponentStyleSelect extends \Widget
                 {
                     $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
                         \StringUtil::specialchars($arrOption['value']),
-                        $this->isSelected($arrOption),
+                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
                         $arrOption['label']);
                 }
                 else
@@ -132,7 +139,7 @@ class ComponentStyleSelect extends \Widget
                     {
                         $arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
                             \StringUtil::specialchars($arrOptgroup['value']),
-                            $this->isSelected($arrOptgroup),
+                            static::optionSelected($arrOptgroup['value'], $this->varValue[ $objStyleGroups->alias ]),
                             $arrOptgroup['label']);
                     }
 
@@ -146,18 +153,20 @@ class ComponentStyleSelect extends \Widget
                 $strClass .= ' tl_chosen';
             }
 
-            // set categories
-            $categoryAlias = $objStyleGroups->category ? \StringUtil::generateAlias($objStyleGroups->category) : 'no_category';
+            // create collection
+            $groupAlias      = ($arrArchives[ $objStyleGroups->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroups->pid ]['identifier']) . '-' . $this->id;
+            $collectionAlias = $arrArchives[ $objStyleGroups->pid ]['identifier'];
 
-            if(!in_array($categoryAlias, array_keys($arrCategories)))
+            if(!in_array($collectionAlias, array_keys($arrCollection)))
             {
-                $arrCategories[ $categoryAlias ] = array(
-                    'label'  => $objStyleGroups->category,
+                $arrCollection[ $collectionAlias ] = array(
+                    'label'  => $arrArchives[ $objStyleGroups->pid ]['title'],
+                    'group'  => $groupAlias,
                     'fields' => array()
                 );
             }
 
-            $arrCategories[ $categoryAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
+            $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
                 '<div><h3><label>' . $objStyleGroups->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
@@ -166,7 +175,7 @@ class ComponentStyleSelect extends \Widget
                 $this->getAttributes(),
                 implode('', $arrOptions),
                 $this->wizard,
-                '<p class="tl_help tl_tip" title="">'.$objStyleGroups->description.'</p></div>'
+                '<p class="tl_help ' . ($objStyleGroups->description ? 'tl_tip' : '') . ' title="">'.$objStyleGroups->description.'</p></div>'
             );
 
             $isEmpty = false;
@@ -174,23 +183,122 @@ class ComponentStyleSelect extends \Widget
 
 		if($isEmpty)
 		{
-		    \System::loadLanguageFile('tl_style_manager');
-		    return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+            return $this->renderEmptyMessage();
         }
 
-        $arrFieldsets = array();
+        $objSession = \System::getContainer()->get('session')->getBag('contao_backend');
+        $arrSession = $objSession->get('stylemanager_section_states');
 
-        foreach ($arrCategories as $alias => $category)
+        $arrGroups   = array();
+        $arrSections = array();
+
+        // sort collection by sort-index
+        uksort($arrCollection, function($key1, $key2) use ($arrOrder) {
+            return (array_search($key1, $arrOrder) > array_search($key2, $arrOrder));
+        });
+
+		// collect groups
+        foreach ($arrCollection as $alias => $collection)
         {
-            $label = $category['label'];
-
-            $arrFieldsets[] = sprintf('<fieldset%s>%s%s</fieldset>',
-                $label ? ' class="legend"' : '',
-                $label ? '<legend>' . $label . '</legend>' : '',
-                implode("",$category['fields'])
-            );
+            $arrGroups[ $collection['group'] ][ $alias ] = $collection;
         }
 
-		return implode("",$arrFieldsets);
+        // create group tabs and content
+        foreach ($arrGroups as $groupAlias => $groups)
+        {
+            $arrNavigation = array();
+            $arrContent = array();
+
+            $i = 0;
+
+            foreach ($groups as $key => $group)
+            {
+                $identifier = sprintf('%s-%s-%s', $i, $key, $this->id);
+                $isSelected = !isset($arrSession[ $groupAlias ]) && $i===0 ? 'checked' : ($arrSession[ $groupAlias ] === $identifier ? 'checked' : '');
+                $index      = $isSelected ? $isSelected : $i;
+
+                $onClick = sprintf('onclick="Backend.getScrollOffset(); new Request.Contao().post({\'action\':\'selectStyleManagerSection\', \'id\':\'%s\', \'groupAlias\':\'%s\', \'identifier\':\'%s\', \'REQUEST_TOKEN\':\'%s\'});"',
+                    $this->id,
+                    $groupAlias,
+                    $identifier,
+                    REQUEST_TOKEN
+                );
+
+                $arrNavigation[ $index ] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" %s>%s</label>',
+                    $identifier,
+                    $groupAlias,
+                    $isSelected,
+                    $identifier,
+                    $onClick,
+                    $group['label']
+                );
+
+                $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s</div>',
+                    $identifier,
+                    implode("", $group['fields'])
+                );
+
+                $i++;
+            }
+
+            // if no entry is selected, the first one must be selected
+            if(!array_key_exists('checked', $arrNavigation))
+            {
+                $arrNavigation[0] = str_replace("><label", "checked><label", $arrNavigation[0]);
+            }
+
+            $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
+        }
+
+		return implode("", $arrSections);
 	}
+
+    /**
+     * Check for a valid option and prepare template variables
+     */
+    public function validate()
+    {
+        $this->varValue = $this->getPost($this->strName);
+
+        if($this->varValue === null)
+        {
+            return;
+        }
+
+        if($arrValue = StyleManager::serializeValues($this->varValue, $this->strTable))
+        {
+            $this->varValue = $arrValue;
+        }
+
+        // Update css class fields on multi edit
+        if (\Input::get('act') === 'editAll')
+        {
+            if($field = StyleManager::getClassFieldNameByTable($this->strTable))
+            {
+                $stdClass = new \stdClass();
+                $stdClass->field = $field;
+                $stdClass->table = $this->strTable;
+                $stdClass->activeRecord->styleManager = $this->varValue;
+
+                $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
+                $value = StyleManager::updateClasses($value, $stdClass);
+                $value = StyleManager::isMultipleField($field) ? serialize($value) : $value;
+
+                // Update css class field
+                \Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
+                    ->execute($value, $this->activeRecord->id);
+            }
+        }
+    }
+
+    /**
+     * Return the empty message
+     *
+     * @return string
+     */
+    private function renderEmptyMessage()
+    {
+        \System::loadLanguageFile('tl_style_manager');
+        return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+    }
 }

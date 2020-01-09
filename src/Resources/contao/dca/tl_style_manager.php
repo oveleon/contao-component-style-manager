@@ -11,18 +11,21 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'config' => array
     (
         'dataContainer'               => 'Table',
+        'ptable'                      => 'tl_style_manager_archive',
         'switchToEdit'                => true,
         'enableVersioning'            => true,
         'markAsCopy'                  => 'title',
         'onload_callback' => array
         (
-            array('tl_style_manager', 'checkPermission')
+            array('tl_style_manager', 'checkPermission'),
+            array('tl_style_manager', 'checkAlias')
         ),
         'sql' => array
         (
             'keys' => array
             (
-                'id' => 'primary'
+                'id' => 'primary',
+                'pid,sorting' => 'index'
             )
         )
     ),
@@ -32,26 +35,16 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     (
         'sorting' => array
         (
-            'mode'                    => 1,
-            'fields'                  => array('category'),
-            'flag'                    => 11,
-            'panelLayout'             => 'filter;search,limit'
-        ),
-        'label' => array
-        (
-            'fields'                  => array('title'),
-            'format'                  => '%s',
-            'label_callback'          => array('tl_style_manager', 'addExtendedInfo')
+            'mode'                    => 4,
+            'fields'                  => array('sorting'),
+            'headerFields'            => array('title', 'identifier'),
+            'panelLayout'             => 'filter;sort,search,limit',
+            'disableGrouping'         => true,
+            'child_record_callback'   => array('tl_style_manager', 'listGroupRecords'),
+            'child_record_class'      => 'no_padding'
         ),
         'global_operations' => array
         (
-            'categories' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['categories'],
-                'href'                => 'do=style_manager_categories',
-                'icon'                => 'rows.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            ),
             'all' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -71,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'copy' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_style_manager']['copy'],
-                'href'                => 'act=copy',
+                'href'                => 'act=paste&mode=copy',
                 'icon'                => 'copy.svg'
             ),
             'delete' => array
@@ -94,7 +87,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'palettes' => array
     (
         '__selector__'                => array('extendContentElement','extendFormFields','extendModule'),
-        'default'                     => '{title_legend},title,description,category;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen;'
+        'default'                     => '{title_legend},title,alias,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendNews,extendEvents,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate;'
     ),
 
     // Sub-Palettes
@@ -112,6 +105,16 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'sql'                     => "int(10) unsigned NOT NULL auto_increment"
         ),
+        'pid' => array
+        (
+            'foreignKey'              => 'tl_style_manager_archive.title',
+            'sql'                     => "int(10) unsigned NOT NULL default 0",
+            'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
+        ),
+        'sorting' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default 0"
+        ),
         'tstamp' => array
         (
             'sql'                     => "int(10) unsigned NOT NULL default '0'"
@@ -120,8 +123,13 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['alias'],
             'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'folderalias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''"
+            'search'                  => true,
+            'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''",
+            'save_callback' => array
+            (
+                array('tl_style_manager', 'generateAlias')
+            ),
         ),
         'title' => array
         (
@@ -130,10 +138,6 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
-            'save_callback' => array
-            (
-                array('tl_style_manager', 'generateAlias')
-            ),
             'sql'                     => "varchar(255) NOT NULL default ''"
         ),
         'description' => array
@@ -142,14 +146,6 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'inputType'               => 'text',
             'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) NOT NULL default ''"
-        ),
-        'category' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['category'],
-            'inputType'               => 'select',
-            'options_callback'        => array('tl_style_manager', 'getAllCategories'),
-            'eval'                    => array('chosen'=>true, 'tl_class'=>'w50', 'includeBlankOption'=>true),
-            'sql'                     => "varchar(64) NOT NULL default ''"
         ),
         'cssClasses' => array
         (
@@ -171,10 +167,20 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'eval'                    => array('tl_class'=>'w50 m12'),
             'sql'                     => "char(1) NOT NULL default '1'"
         ),
+        'passToTemplate' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['passToTemplate'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 m12'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
         'extendLayout' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendLayout'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -183,6 +189,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendPage'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -191,6 +198,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendArticle'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -199,6 +207,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendForm'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr'),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -207,6 +216,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendFormFields'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -223,6 +233,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendContentElement'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -240,6 +251,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendModule'],
             'exclude'                 => true,
+            'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50 clr', 'submitOnChange'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
@@ -253,6 +265,24 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'w50 clr'),
             'sql'                     => "blob NULL"
         ),
+        'extendNews' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendNews'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'extendEvents' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendEvents'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 clr'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        )
     )
 );
 
@@ -263,7 +293,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 
-use Oveleon\ContaoComponentStyleManager\StyleManagerCategoriesModel;
+use Oveleon\ContaoComponentStyleManager\StyleManagerModel;
 
 class tl_style_manager extends \Backend
 {
@@ -283,22 +313,41 @@ class tl_style_manager extends \Backend
      */
     public function checkPermission()
     {
+        $bundles = Contao\System::getContainer()->getParameter('kernel.bundles');
+
+        if (!isset($bundles['ContaoCalendarBundle']))
+        {
+            unset($GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendEvents']);
+        }
+
+        if (!isset($bundles['ContaoNewsBundle']))
+        {
+            unset($GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendNews']);
+        }
+
         return;
     }
 
     /**
-     * Add extended information
+     * List a group record
      *
-     * @param array         $row
-     * @param string        $label
-     * @param DataContainer $dc
-     * @param array         $args
+     * @param array $row
      *
-     * @return array
+     * @return string
      */
-    public function addExtendedInfo($row, $label, DataContainer $dc, $args)
+    public function listGroupRecords($row)
     {
         $arrExtends = null;
+        $label = $row['title'];
+
+        if($row['passToTemplate'])
+        {
+            $label = '<span class="sm_list_token var" title="$this->styleManager->get(string: identifier [, array: ' . $row['alias'] . '])">$</span> ' . $label;
+        }
+        else
+        {
+            $label = '<span class="sm_list_token">C</span> ' . $label;
+        }
 
         foreach ($row as $field => $value)
         {
@@ -310,67 +359,55 @@ class tl_style_manager extends \Backend
 
         if($arrExtends !== null)
         {
-            $args[0] .= '<span style="color:#999;padding-left:3px">[' . implode(", ", $arrExtends) . ']</span>';
+            $label .= '<span style="color:#999;padding-left:3px">[' . implode(", ", $arrExtends) . ']</span>';
         }
 
-        return $args;
+        return $label;
     }
 
     /**
-     * Returns all allowed page types as array
+     * Auto-generate an style group alias if it has not been set yet
      *
-     * @param DataContainer $dc
-     *
-     * @return array
-     */
-    public function getAllCategories(DataContainer $dc)
-    {
-        $arrCategories = StyleManagerCategoriesModel::findAll();
-        $arrResult = array();
-
-        if($arrCategories !== null)
-        {
-            while($arrCategories->next())
-            {
-                $arrResult[] = $arrCategories->title;
-            }
-        }
-
-        return $arrResult;
-    }
-
-    /**
-     * Auto-generate the group alias if it has not been set yet
-     *
-     * @param mixed          $varValue
-     * @param \DataContainer $dc
+     * @param mixed                $varValue
+     * @param Contao\DataContainer $dc
      *
      * @return string
      *
      * @throws Exception
      */
-    public function generateAlias($varValue, \DataContainer $dc)
+    public function generateAlias($varValue, Contao\DataContainer $dc)
     {
-        if($dc->activeRecord->alias)
+        $aliasExists = function (string $alias) use ($dc): bool
         {
-            return $varValue;
-        }
+            return $this->Database->prepare("SELECT id FROM tl_style_manager WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+        };
 
-        $strAlias = \StringUtil::generateAlias($varValue);
-
-        $objAlias = $this->Database->prepare("SELECT id FROM tl_style_manager WHERE alias=? AND id!=?")
-            ->execute($strAlias, $dc->id);
-
-        // Check whether the group alias exists
-        if ($objAlias->numRows)
+        // Generate an alias if there is none
+        if ($varValue == '')
         {
-            $strAlias .= '-' . $dc->id;
+            $varValue = Contao\System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, $dc->id, $aliasExists);
         }
-
-        $objAlias = $this->Database->prepare("UPDATE tl_style_manager SET alias=? WHERE id=?")
-            ->execute($strAlias, $dc->id);
+        elseif ($aliasExists($varValue))
+        {
+            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+        }
 
         return $varValue;
+    }
+
+    /**
+     * Check identifier
+     *
+     * @param $dc
+     */
+    public function checkAlias($dc){
+        $objGroup = StyleManagerModel::findById($dc->id);
+
+        if($objGroup->alias)
+        {
+            $GLOBALS['TL_DCA']['tl_style_manager']['fields']['alias']['eval']['mandatory'] = false;
+            $GLOBALS['TL_DCA']['tl_style_manager']['fields']['alias']['eval']['disabled'] = true;
+        }
     }
 
     /**

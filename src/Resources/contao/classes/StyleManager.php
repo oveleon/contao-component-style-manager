@@ -16,7 +16,7 @@ class StyleManager
      *
      * @var array
      */
-    public $validCssClassFields = array(
+    public static $validCssClassFields = array(
         'cssID'      => 2,
         'cssClass'   => 1,
         'class'      => 1,
@@ -24,25 +24,52 @@ class StyleManager
     );
 
     /**
-     * Clear StyleManager classes from css class field
+     * Load callback for the CSS-Classes DCA-Field
      *
-     * @param mixed $varValue
-     * @param DataContainer $dc
+     * @param $varValue
+     * @param $dc
      *
      * @return mixed
      */
-    public function clearStyleManager($varValue, $dc)
+    public function onLoad($varValue, $dc)
     {
-        if($this->isMultipleField($dc->field))
+        return self::clearClasses($varValue, $dc);
+    }
+
+    /**
+     * Save callback for the CSS-Classes DCA-Field
+     *
+     * @param $varValue
+     * @param $dc
+     *
+     * @return mixed
+     */
+    public function onSave($varValue, $dc)
+    {
+        return self::updateClasses($varValue, $dc);
+    }
+
+    /**
+     * Clear StyleManager classes from css class field
+     *
+     * @param mixed $varValue
+     * @param $dc
+     *
+     * @return mixed
+     */
+    public static function clearClasses($varValue, $dc)
+    {
+        if(self::isMultipleField($dc->field))
         {
             $cssID = \StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1];
         }
 
         $arrValues = \StringUtil::deserialize($dc->activeRecord->styleManager, true);
+        $arrValues = self::deserializeValues($arrValues);
 
         // remove non-exiting values
-        $this->cleanupClasses($arrValues, $dc->table);
+        self::cleanupClasses($arrValues, $dc->table);
 
         if(count($arrValues))
         {
@@ -56,7 +83,7 @@ class StyleManager
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }
 
-        if($this->isMultipleField($dc->field))
+        if(self::isMultipleField($dc->field))
         {
             $varValue = serialize(array($cssID[0], $varValue));
         }
@@ -68,24 +95,31 @@ class StyleManager
      * Update StyleManager classes
      *
      * @param mixed $varValue
-     * @param DataContainer $dc
+     * @param $dc
      *
      * @return mixed
      */
-    public function updateStyleManager($varValue, $dc)
+    public static function updateClasses($varValue, $dc)
     {
-        if($this->isMultipleField($dc->field))
+        if(self::isMultipleField($dc->field))
         {
             $cssID = \StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1];
         }
 
         $varValues = \StringUtil::deserialize($dc->activeRecord->styleManager, true);
-        $varValues = array_filter($varValues);
+
+        // remove vars node
+        if(isset($varValues['__vars__']))
+        {
+            unset($varValues['__vars__']);
+        }
+
+        // append classes
         $varValue .= ($varValue ? ' ' : '') . (count($varValues) ? implode(' ', $varValues) : '');
         $varValue  = trim($varValue);
 
-        if($this->isMultipleField($dc->field))
+        if(self::isMultipleField($dc->field))
         {
             $varValue = array($cssID[0], $varValue);
         }
@@ -97,14 +131,14 @@ class StyleManager
      * Reset all StyleManager classes from css class field
      *
      * @param mixed $varValue
-     * @param DataContainer $dc
+     * @param $dc
      * @param $strTable
      *
      * @return mixed
      */
-    private function resetStyleManagerClasses($varValue, $dc, $strTable)
+    public static function resetClasses($varValue, $dc, $strTable)
     {
-        if($this->isMultipleField($dc->field))
+        if(self::isMultipleField($dc->field))
         {
             $cssID = \StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1];
@@ -136,7 +170,7 @@ class StyleManager
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }
 
-        if($this->isMultipleField($dc->field))
+        if(self::isMultipleField($dc->field))
         {
             $varValue = serialize(array($cssID[0], $varValue));
         }
@@ -145,78 +179,12 @@ class StyleManager
     }
 
     /**
-     * Update classes on multi edit
-     *
-     * @param mixed $varValue
-     * @param DataContainer $dc
-     *
-     * @return mixed
-     */
-    public function updateOnMultiEdit($varValue, $dc)
-    {
-        if (\Input::get('act') === 'editAll')
-        {
-            if($field = $this->getClassFieldNameByTable($dc->table))
-            {
-                $stdClass = $dc;
-                $stdClass->field = $field;
-                $stdClass->activeRecord->styleManager = $varValue;
-
-                // Get new value
-                $value = $this->resetStyleManagerClasses($dc->activeRecord->{$field}, $stdClass, $dc->table);
-                $value = $this->updateStyleManager($value, $stdClass);
-                $value = $this->isMultipleField($field) ? serialize($value) : $value;
-
-                // Update css class field
-                $dc->Database->prepare('UPDATE ' . $dc->table . ' SET ' . $field . '=? WHERE id=?')
-                             ->execute($value, $dc->activeRecord->id);
-            }
-        }
-
-        return $varValue;
-    }
-
-    /**
-     * Return the field name of css classes by table
-     *
-     * @param $strTable
-     *
-     * @return mixed
-     */
-    public function getClassFieldNameByTable($strTable)
-    {
-        \Backend::loadDataContainer($strTable);
-
-        foreach ($this->validCssClassFields as $field => $size)
-        {
-            if(isset($GLOBALS['TL_DCA'][ $strTable ]['fields'][ $field ]))
-            {
-                return $field;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks the passed array and removes non-existent values
-     *
-     * @param $strField
-     *
-     * @return bool
-     */
-    public function isMultipleField($strField)
-    {
-        return $this->validCssClassFields[ $strField ] > 1;
-    }
-
-    /**
      * Checks the passed array and removes non-existent values
      *
      * @param $arrValues
      * @param $strTable
      */
-    public function cleanupClasses(&$arrValues, $strTable)
+    public static function cleanupClasses(&$arrValues, $strTable)
     {
         if(is_array($arrValues))
         {
@@ -258,5 +226,143 @@ class StyleManager
                 $arrValues = array();
             }
         }
+    }
+
+    /**
+     * Return the field name of css classes by table
+     *
+     * @param $strTable
+     *
+     * @return mixed
+     */
+    public static function getClassFieldNameByTable($strTable)
+    {
+        \Backend::loadDataContainer($strTable);
+
+        foreach (self::$validCssClassFields as $field => $size)
+        {
+            if(isset($GLOBALS['TL_DCA'][ $strTable ]['fields'][ $field ]))
+            {
+                return $field;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether a field is multiple
+     *
+     * @param $strField
+     *
+     * @return bool
+     */
+    public static function isMultipleField($strField)
+    {
+        return self::$validCssClassFields[ $strField ] > 1;
+    }
+
+    /**
+     * Moves classes which should be passed to the template to the "vars" node
+     *
+     * @param $varValue
+     * @param $strTable
+     *
+     * @return array|bool
+     */
+    public static function serializeValues($varValue, $strTable){
+        $objStyleGroups = StyleManagerModel::findByTable($strTable);
+
+        if($objStyleGroups === null)
+        {
+            return false;
+        }
+
+        $arrArchives = array();
+        $objStyleArchives = StyleManagerArchiveModel::findAll();
+
+        // Prepare archives identifier
+        while($objStyleArchives->next())
+        {
+            $arrArchives[ $objStyleArchives->id ] =  $objStyleArchives->identifier;
+        }
+
+        // Remove unused classes
+        $arrValue = array_filter($varValue);
+
+        // Rebuild array for template variables
+        while($objStyleGroups->next())
+        {
+            if(array_key_exists($objStyleGroups->alias, $arrValue))
+            {
+                if(!!$objStyleGroups->passToTemplate)
+                {
+                    $identifier = $arrArchives[ $objStyleGroups->pid ];
+
+                    $arrValue['__vars__'][ $identifier ][ $objStyleGroups->alias ] = $arrValue[ $objStyleGroups->alias ];
+
+                    unset($arrValue[ $objStyleGroups->alias ]);
+                }
+            }
+        }
+
+        return $arrValue;
+    }
+
+    /**
+     * Restore the default value of the StyleManager Widget (without vars node)
+     *
+     * @param $arrValue
+     *
+     * @return mixed
+     */
+    public static function deserializeValues($arrValue){
+
+        if(isset($arrValue['__vars__']))
+        {
+            foreach ($arrValue['__vars__'] as $key => $values)
+            {
+                $arrValue = array_merge($arrValue, $values);
+            }
+
+            unset($arrValue['__vars__']);
+        }
+
+        return $arrValue;
+    }
+
+    /**
+     * Parse Template and set Variables
+     *
+     * @param $template
+     */
+    public function onParseTemplate($template)
+    {
+        $arrStyles = \StringUtil::deserialize($template->styleManager);
+        $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+    }
+
+    /**
+     * Add a new regexp "variable"
+     *
+     * @param $strRegexp
+     * @param $varValue
+     * @param \Widget $objWidget
+     *
+     * @return bool
+     */
+    public function addVariableRegexp($strRegexp, $varValue, \Widget $objWidget)
+    {
+        if ($strRegexp == 'variable')
+        {
+            if (!preg_match('/^[a-zA-Z](?:_?[a-zA-Z0-9]+)$/', $varValue))
+            {
+                $objWidget->addError('Field ' . $objWidget->label . ' must begin with a letter and may not contain any spaces or special characters (e.g. myVariable).');
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
