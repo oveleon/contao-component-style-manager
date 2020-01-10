@@ -338,8 +338,11 @@ class StyleManager
      */
     public function onParseTemplate($template)
     {
-        $arrStyles = \StringUtil::deserialize($template->styleManager);
-        $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+        if(!($template->styleManager instanceof Styles))
+        {
+            $arrStyles = \StringUtil::deserialize($template->styleManager);
+            $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+        }
     }
 
     /**
