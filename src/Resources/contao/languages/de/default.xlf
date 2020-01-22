@@ -3,7 +3,11 @@
     <body>
       <trans-unit id="ERR.identifierExists">
         <source>The Identifier &quot;%s&quot; already exists!</source>
-        <target>Der Identifier &quot;%s&quot; existiert bereits!</target>
+        <target>Die Kennung &quot;%s&quot; existiert bereits!</target>
+      </trans-unit>
+      <trans-unit id="ERR.groupAliasExists">
+        <source>The Alias &quot;%s&quot; already exists within this category!</source>
+        <target>Der Alias &quot;%s&quot; existiert bereits innerhalb dieser Kategorie!</target>
       </trans-unit>
     </body>
   </file>

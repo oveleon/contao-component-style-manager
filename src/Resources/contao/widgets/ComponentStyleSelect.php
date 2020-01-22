@@ -66,7 +66,7 @@ class ComponentStyleSelect extends \Widget
             $arrOrder[] = $objStyleArchives->identifier;
         }
 
-        // Restore default value
+        // Restore default values
         $this->varValue = StyleManager::deserializeValues($this->varValue);
 
         // Prepare group fields
@@ -119,8 +119,8 @@ class ComponentStyleSelect extends \Widget
             }
 
             // set options
-            $strFieldId   = $this->strId . '_' . $objStyleGroups->alias;
-            $strFieldName = $this->strName . '[' . $objStyleGroups->alias . ']';
+            $strFieldId   = $this->strId . '_' . $objStyleGroups->id;
+            $strFieldName = $this->strName . '[' . $objStyleGroups->id . ']';
 
             foreach ($arrFieldOptions as $strKey=>$arrOption)
             {
@@ -128,7 +128,7 @@ class ComponentStyleSelect extends \Widget
                 {
                     $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
                         \StringUtil::specialchars($arrOption['value']),
-                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
+                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]),
                         $arrOption['label']);
                 }
                 else
@@ -175,7 +175,7 @@ class ComponentStyleSelect extends \Widget
                 $this->getAttributes(),
                 implode('', $arrOptions),
                 $this->wizard,
-                '<p class="tl_help ' . ($objStyleGroups->description ? 'tl_tip' : '') . ' title="">'.$objStyleGroups->description.'</p></div>'
+                '<p class="tl_help' . ($objStyleGroups->description ? ' tl_tip' : '') . '" title="">'.$objStyleGroups->description.'</p></div>'
             );
 
             $isEmpty = false;
@@ -278,6 +278,8 @@ class ComponentStyleSelect extends \Widget
                 $stdClass = new \stdClass();
                 $stdClass->field = $field;
                 $stdClass->table = $this->strTable;
+
+                $stdClass->activeRecord = new \stdClass();
                 $stdClass->activeRecord->styleManager = $this->varValue;
 
                 $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
