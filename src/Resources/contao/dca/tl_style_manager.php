@@ -17,8 +17,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
         'markAsCopy'                  => 'title',
         'onload_callback' => array
         (
-            array('tl_style_manager', 'checkPermission'),
-            array('tl_style_manager', 'checkAlias')
+            array('tl_style_manager', 'checkPermission')
         ),
         'sql' => array
         (
@@ -124,7 +123,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['alias'],
             'inputType'               => 'text',
             'search'                  => true,
-            'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+            'eval'                    => array('rgxp'=>'alias', 'maxlength'=>128, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''",
             'save_callback' => array
             (
@@ -368,18 +367,18 @@ class tl_style_manager extends \Backend
     /**
      * Auto-generate an style group alias if it has not been set yet
      *
-     * @param mixed                $varValue
-     * @param Contao\DataContainer $dc
+     * @param mixed          $varValue
+     * @param \DataContainer $dc
      *
      * @return string
      *
      * @throws Exception
      */
-    public function generateAlias($varValue, Contao\DataContainer $dc)
+    public function generateAlias($varValue, \DataContainer $dc)
     {
         $aliasExists = function (string $alias) use ($dc): bool
         {
-            return $this->Database->prepare("SELECT id FROM tl_style_manager WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+            return $this->Database->prepare("SELECT id FROM tl_style_manager WHERE alias=? AND id!=? AND pid=?")->execute($alias, $dc->id, $dc->activeRecord->pid)->numRows > 0;
         };
 
         // Generate an alias if there is none
@@ -389,25 +388,10 @@ class tl_style_manager extends \Backend
         }
         elseif ($aliasExists($varValue))
         {
-            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['groupAliasExists'], $varValue));
         }
 
         return $varValue;
-    }
-
-    /**
-     * Check identifier
-     *
-     * @param $dc
-     */
-    public function checkAlias($dc){
-        $objGroup = StyleManagerModel::findById($dc->id);
-
-        if($objGroup->alias)
-        {
-            $GLOBALS['TL_DCA']['tl_style_manager']['fields']['alias']['eval']['mandatory'] = false;
-            $GLOBALS['TL_DCA']['tl_style_manager']['fields']['alias']['eval']['disabled'] = true;
-        }
     }
 
     /**
