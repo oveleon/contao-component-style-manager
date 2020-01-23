@@ -66,11 +66,11 @@ If the checkbox "Use as template variable" is set, these are not automatically p
 To access the variables, we can access the corresponding class collection via the `styleManager` object.
 
 #### There are two ways to receive the values:
-- `get`: Return selected CSS classes of a category or a specific group
+- **get**: Return selected CSS classes of a category or a specific group
     - Parameter:
         - `identifier: string`: Category identifier
         - `groups: null|array` (optional): Group aliases
-- `prepare` + `format`: Different from the get method, you can specify your own output format and a predefined or custom method to validate the output
+- **prepare** + **format**: Different from the get method, you can specify your own output format and a predefined or custom method to validate the output
     - `prepare`-Parameter: 
         - `identifier: string`: Category identifier
         - `groups: null|array` (optional): Group aliases
@@ -84,7 +84,9 @@ To access the variables, we can access the corresponding class collection via th
 #### Register your own method per Hook
 To set up a custom method for validating the values, the hook `styleManagerFormatMethod` can be registered.
 
-> Let us know if you know of any other useful methods that could be included in the standard
+<br/>
+
+> Let us know if you know of any other useful methods that could be included in the standard 👋
 
 #### Examples:
 ##### Using `get`-Method
