@@ -206,9 +206,13 @@ class Styles
         {
             return (float) $strValue;
         }
-        elseif(strtolower($strValue) === 'true' || strtolower($strValue) === 'false')
+        elseif(strtolower($strValue) === 'true')
         {
-            return (bool) $strValue;
+            return true;
+        }
+        elseif(strtolower($strValue) === 'false')
+        {
+            return false;
         }
 
         return $strValue;
