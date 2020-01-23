@@ -120,7 +120,7 @@ class Styles
                     {
                         if($value = $this->getGroupValue($arrVariable))
                         {
-                            $arrValues[ $alias ] = $value;
+                            $arrValues[ $alias ] = $this->parseValueType($value);
                         }
                     }
                 }
@@ -131,7 +131,7 @@ class Styles
                     {
                         if($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ]))
                         {
-                            $arrValues[ $alias ] = $value;
+                            $arrValues[ $alias ] = $this->parseValueType($value);
                         }
                     }
                 }
@@ -191,5 +191,26 @@ class Styles
     private function getGroupValue($arrVariable)
     {
         return $arrVariable['value'];
+    }
+
+    /**
+     * Return the value as correct type
+     *
+     * @param $strValue
+     *
+     * @return mixed
+     */
+    private function parseValueType($strValue)
+    {
+        if(is_numeric($strValue))
+        {
+            return (float) $strValue;
+        }
+        elseif(strtolower($strValue) === 'true' || strtolower($strValue) === 'false')
+        {
+            return (bool) $strValue;
+        }
+
+        return $strValue;
     }
 }
