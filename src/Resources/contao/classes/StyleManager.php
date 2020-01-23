@@ -79,7 +79,7 @@ class StyleManager
             }
 
             $varValue = ' ' . $varValue . ' ';
-            $varValue = str_replace($arrValues, ' ', $varValue);
+            $varValue = str_replace($arrValues, '  ', $varValue);
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }
 
@@ -197,6 +197,9 @@ class StyleManager
 
                 while($objStyles->next())
                 {
+                    $arrExistingKeys[] = $objStyles->id;
+
+                    // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
                     $arrExistingKeys[] = $objStyles->alias;
 
                     $arrGroup = \StringUtil::deserialize($objStyles->cssClasses, true);
@@ -293,15 +296,18 @@ class StyleManager
         // Rebuild array for template variables
         while($objStyleGroups->next())
         {
-            if(array_key_exists($objStyleGroups->alias, $arrValue))
+            if(array_key_exists($objStyleGroups->id, $arrValue))
             {
                 if(!!$objStyleGroups->passToTemplate)
                 {
                     $identifier = $arrArchives[ $objStyleGroups->pid ];
 
-                    $arrValue['__vars__'][ $identifier ][ $objStyleGroups->alias ] = $arrValue[ $objStyleGroups->alias ];
+                    $arrValue['__vars__'][ $identifier ][ $objStyleGroups->alias ] = array(
+                        'id'    => $objStyleGroups->id,
+                        'value' => $arrValue[ $objStyleGroups->id ]
+                    );
 
-                    unset($arrValue[ $objStyleGroups->alias ]);
+                    unset($arrValue[ $objStyleGroups->id ]);
                 }
             }
         }
@@ -322,7 +328,10 @@ class StyleManager
         {
             foreach ($arrValue['__vars__'] as $key => $values)
             {
-                $arrValue = array_merge($arrValue, $values);
+                foreach ($values as $alias => $arrItem)
+                {
+                    $arrValue[ $arrItem['id'] ] = $arrItem['value'];
+                }
             }
 
             unset($arrValue['__vars__']);
