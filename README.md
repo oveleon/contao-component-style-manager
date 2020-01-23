@@ -65,7 +65,7 @@ $ composer require oveleon/contao-component-style-manager
 If the checkbox "Use as template variable" is set, these are not automatically passed to the class of the corresponding element but are available in the template.
 To access the variables, we can access the corresponding class collection via the `styleManager` object.
 
-##### There are two ways to receive the values:
+#### There are two ways to receive the values:
 - `get`: Return selected CSS classes of a category or a specific group
     - Parameter:
         - `identifier: string`: Category identifier
@@ -78,10 +78,10 @@ To access the variables, we can access the corresponding class collection via th
         - `format: string`: The format parameter must contain a format string valid for `sprintf` (PHP: [sprintf](https://www.php.net/manual/de/function.sprintf.php))).
         - `method: string` (optional): Name of Method
         
-##### Predefined methods
+#### Predefined methods
 - `json`: Returns a JSON object using the alias and value (e.g. `{"alias1":"my-class-1","alias2":"my-class-2"}`)
 
-##### Register your own method per Hook
+#### Register your own method per Hook
 To set up a custom method for validating the values, the hook `styleManagerFormatMethod` can be registered.
 
 > Let us know if you know of any other useful methods that could be included in the standard

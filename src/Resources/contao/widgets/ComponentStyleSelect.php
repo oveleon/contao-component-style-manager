@@ -128,7 +128,10 @@ class ComponentStyleSelect extends \Widget
                 {
                     $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
                         \StringUtil::specialchars($arrOption['value']),
-                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]),
+
+                        // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
+                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]) ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
+
                         $arrOption['label']);
                 }
                 else
@@ -139,7 +142,10 @@ class ComponentStyleSelect extends \Widget
                     {
                         $arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
                             \StringUtil::specialchars($arrOptgroup['value']),
-                            static::optionSelected($arrOptgroup['value'], $this->varValue[ $objStyleGroups->alias ]),
+
+                            // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
+                            static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]) ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
+
                             $arrOptgroup['label']);
                     }
 

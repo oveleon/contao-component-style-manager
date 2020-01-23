@@ -199,6 +199,9 @@ class StyleManager
                 {
                     $arrExistingKeys[] = $objStyles->id;
 
+                    // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
+                    $arrExistingKeys[] = $objStyles->alias;
+
                     $arrGroup = \StringUtil::deserialize($objStyles->cssClasses, true);
 
                     foreach ($arrGroup as $opts)
