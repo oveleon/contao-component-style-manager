@@ -74,6 +74,14 @@
         <source>Here you can define an alias which is needed to receive the selected CSS class of this group in templates. (For example $this->styleManager->get('myCategoryIdentifier', ['thisAlias']).</source>
         <target>Hier können Sie einen Alias definieren, welcher benötigt wird, um die gewählte CSS-Klasse dieser Gruppe in Templates entgegennehmen zu können. (Bspw. $this->styleManager->get('myCategoryIdentifier', ['thisAlias'])).</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager.cssClass.0">
+        <source>CSS class</source>
+        <target>CSS-Klasse</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.cssClass.1">
+        <source>Here you can add custom classes to the backend field.</source>
+        <target>Hier können Sie dem Backend-Feld eigene Klassen hinzufügen.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager.chosen.0">
         <source>Add search field</source>
         <target>Suchfeld hinzufügen</target>

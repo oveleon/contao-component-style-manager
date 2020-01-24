@@ -42,26 +42,21 @@ $ composer require oveleon/contao-component-style-manager
 - `Group-Idenfifier`: In this field you can specify an alias that combines categories with the same alias and displays them as tabs in the backend.
 - `Sort-Index`: This field is used to determine the order of the categories in the backend
 
-#### Examples:
-![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categorie-edit-2.png)
+##### Example backend view of combined categories using `Group-Idenfifier`:
+![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/combined-groups.png)
 
-![Manage Categories: Image 2](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categories-2.png)
-
-##### Example view of the combined categories:
-![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/backend-view.png)
-
-## Manage style groups:
+## Manage CSS-Groups:
 #### Fields:
 - `Alias`: Define an alias with which the group can be accessed. This is only required for passing on to the template.
 - `Add search field`: Use of chosen for a search field within the select box
 - `Use as template variable`: This field declares whether this group is set in the class attribute of the corresponding element or passed to the template.
+- `CSS class`: To further customize the display of the backend fields, you can enter a selection of predefined CSS classes. (long, clr, seperator)
+> All other fields should be self-explanatory
 
-#### Examples:
-![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)
+##### Example css group:
+![Manage Groups: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)
 
-![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-list.png)
-
-## Passing style group variables to a template:
+## Passing css group variables to a template:
 If the checkbox "Use as template variable" is set, these are not automatically passed to the class of the corresponding element but are available in the template.
 To access the variables, we can access the corresponding class collection via the `styleManager` object.
 
