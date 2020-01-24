@@ -48,13 +48,14 @@ $ composer require oveleon/contao-component-style-manager
 ![Manage Categories: Image 2](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/categories-2.png)
 
 ##### Example view of the combined categories:
-![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/backend-view.png)
+![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/combined-groups.png)
 
 ## Manage style groups:
 #### Fields:
 - `Alias`: Define an alias with which the group can be accessed. This is only required for passing on to the template.
 - `Add search field`: Use of chosen for a search field within the select box
 - `Use as template variable`: This field declares whether this group is set in the class attribute of the corresponding element or passed to the template.
+- `CSS class`: To further customize the display of the backend fields, you can enter a selection of predefined CSS classes. (long, clr, seperator)
 
 #### Examples:
 ![Manage Categories: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)
