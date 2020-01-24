@@ -21,7 +21,7 @@
 }
 .widget.stylemanager .tab-container {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .widget.stylemanager .tab-container > label {
   display: inline-block;
@@ -52,6 +52,20 @@
   margin-left: 15px;
   margin-right: 15px;
   min-height: 80px;
+}
+.widget.stylemanager .tab-content > div.seperator {
+  clear: both;
+}
+.widget.stylemanager .tab-content > div.seperator:before {
+  content: "";
+  display: table;
+}
+.widget.stylemanager .tab-content > hr {
+  float: left;
+  clear: both;
+  width: calc(100% - 30px);
+  margin: 22px 15px 6px;
+  background: #e6e6e8;
 }
 .widget.stylemanager .tab-content:after {
   display: block;
@@ -92,6 +106,7 @@
 .widget.stylemanager .tab-container [id^=nav-]:checked + label {
   top: 1px;
   padding-bottom: 9px;
+  border-top-color: #f47c00;
   background: #FDFDFD;
   opacity: 1;
   cursor: default;
@@ -124,11 +139,17 @@
     width: calc(50% - 30px);
     float: left;
   }
+  .widget.stylemanager .tab-content > div.long {
+    width: calc(100% - 30px);
+  }
 }
 @media (min-width: 1200px) {
   .widget.stylemanager .tab-content > div {
     width: calc(33.333% - 30px);
     float: left;
+  }
+  .widget.stylemanager .tab-content > div.long {
+    width: calc(100% - 30px);
   }
 }
 
