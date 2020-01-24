@@ -173,7 +173,7 @@ class ComponentStyleSelect extends \Widget
             }
 
             $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
-                '<div><h3><label>' . $objStyleGroups->title . '</label></h3>',
+                ($objStyleGroups->cssClass === 'seperator' ? '<hr>' : '') . '<div' . ($objStyleGroups->cssClass ? ' class="' . $objStyleGroups->cssClass . '"' : '').'><h3><label>' . $objStyleGroups->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
                 $strClass,

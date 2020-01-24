@@ -86,7 +86,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
     'palettes' => array
     (
         '__selector__'                => array('extendContentElement','extendFormFields','extendModule'),
-        'default'                     => '{title_legend},title,alias,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendNews,extendEvents,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate;'
+        'default'                     => '{title_legend},title,alias,description;{config_legend},cssClasses;{publish_legend},extendLayout,extendPage,extendArticle,extendModule,extendNews,extendEvents,extendForm,extendFormFields,extendContentElement;{expert_legend:hide},chosen,passToTemplate,cssClass;'
     ),
 
     // Sub-Palettes
@@ -158,12 +158,22 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             ),
             'sql'                     => "blob NULL"
         ),
+        'cssClass' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['cssClass'],
+            'exclude'                 => true,
+            'inputType'               => 'text',
+            'reference'               => &$GLOBALS['TL_LANG']['tl_style_manager'],
+            'eval'                    => array('helpwizard'=>true, 'maxlength'=>64, 'tl_class'=>'w50'),
+            'explanation'             => 'styleManagerFieldClass',
+            'sql'                     => "varchar(64) NOT NULL default ''"
+        ),
         'chosen' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['chosen'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12'),
+            'eval'                    => array('tl_class'=>'w50'),
             'sql'                     => "char(1) NOT NULL default '1'"
         ),
         'passToTemplate' => array
@@ -172,7 +182,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'exclude'                 => true,
             'filter'                  => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12'),
+            'eval'                    => array('tl_class'=>'w50'),
             'sql'                     => "char(1) NOT NULL default ''"
         ),
         'extendLayout' => array
