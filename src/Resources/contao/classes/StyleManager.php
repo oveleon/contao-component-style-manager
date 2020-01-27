@@ -330,7 +330,15 @@ class StyleManager
             {
                 foreach ($values as $alias => $arrItem)
                 {
-                    $arrValue[ $arrItem['id'] ] = $arrItem['value'];
+                    if(!is_array($arrItem))
+                    {
+                        // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias)
+                        $arrValue[ $alias ] = $arrItem;
+                    }
+                    else
+                    {
+                        $arrValue[ $arrItem['id'] ] = $arrItem['value'];
+                    }
                 }
             }
 
