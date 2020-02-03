@@ -118,7 +118,7 @@ class Styles
                 {
                     foreach ($this->styles[ $this->currIdentifier ] as $alias => $arrVariable)
                     {
-                        if($value = $this->getGroupValue($arrVariable))
+                        if(($value = $this->getGroupValue($arrVariable)) !== '')
                         {
                             $arrValues[ $alias ] = $this->parseValueType($value);
                         }
@@ -129,7 +129,7 @@ class Styles
                 {
                     foreach ($this->currGroups as $alias)
                     {
-                        if($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ]))
+                        if(($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ])) !== '')
                         {
                             $arrValues[ $alias ] = $this->parseValueType($value);
                         }
