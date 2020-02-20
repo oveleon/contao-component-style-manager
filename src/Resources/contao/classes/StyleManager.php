@@ -291,7 +291,9 @@ class StyleManager
         }
 
         // Remove unused classes
-        $arrValue = array_filter($varValue);
+        $arrValue = array_filter($varValue, function($v){
+            return $v !== false && !is_null($v) && ($v != '' || $v == '0');
+        });
 
         // Rebuild array for template variables
         while($objStyleGroups->next())
