@@ -11,6 +11,18 @@
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.import.0">
+        <source>Import</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.export.0">
+        <source>Export</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.source.0">
+        <source>Source files</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.source.1">
+        <source>Here you can upload one .xml file to be imported.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.editheader.1">
         <source>Edit category</source>
       </trans-unit>

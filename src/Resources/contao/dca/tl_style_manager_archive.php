@@ -47,6 +47,18 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
         ),
         'global_operations' => array
         (
+            'import' => array
+            (
+                'href'                => 'key=import',
+                'class'               => 'header_style_manager_import',
+                'icon'                => 'theme_import.svg'
+            ),
+            'export' => array
+            (
+                'href'                => 'key=export',
+                'class'               => 'header_style_manager_export',
+                'icon'                => 'theme_export.svg'
+            ),
             'all' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
