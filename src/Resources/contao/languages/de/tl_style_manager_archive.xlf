@@ -14,6 +14,22 @@
         <source>Add category</source>
         <target>Neue Kategorie</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.import.0">
+        <source>Import</source>
+        <target>Importieren</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.export.0">
+        <source>Export</source>
+        <target>Exportieren</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.source.0">
+        <source>Source files</source>
+        <target>Quelldateien</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.source.1">
+        <source>Here you can upload one .xml file to be imported.</source>
+        <target>Hier können Sie eine .xml-Datei für den Import hochladen.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.editheader.1">
         <source>Edit category</source>
         <target>Kategorie bearbeiten</target>

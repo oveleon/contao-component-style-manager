@@ -12,7 +12,9 @@ array_insert($GLOBALS['BE_MOD'], count($GLOBALS['BE_MOD']['design']), array
     (
         'style_manager' => array
         (
-            'tables'                => array('tl_style_manager_archive', 'tl_style_manager')
+            'tables'  => array('tl_style_manager_archive', 'tl_style_manager'),
+            'export'  => array('\\Oveleon\\ContaoComponentStyleManager\\Sync', 'exportStyleManager'),
+            'import'  => array('\\Oveleon\\ContaoComponentStyleManager\\Sync', 'importStyleManager'),
         )
     )
 ));

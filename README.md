@@ -13,9 +13,10 @@ This plugin is designed to simplify theme customizations without the need of man
 - Many possibilities of use (grids, animations, content properties, ...)
 - Clear representation in the backend
 - Categories and Groups 
-    - Combine and output as tabs [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#manage-categories)
-- Passing variables to the template [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#passing-style-group-variables-to-a-template)
-    - Formatting output using predefined methods or your own [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#passing-style-group-variables-to-a-template)
+    - Combine and output as tabs
+- Passing variables to the template
+    - Formatting output using predefined methods or your own
+- Import / Export [![new](https://img.shields.io/badge/-new-83aa0e?style=flat-square)](#import--export) [![new](https://img.shields.io/badge/-BETA-F38041?style=flat-square)](#import--export)
 - Available for
     - Layouts
     - Pages
@@ -24,8 +25,8 @@ This plugin is designed to simplify theme customizations without the need of man
     - Content-Elements
     - Forms
     - Form-Fields
-    - News [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
-    - Events [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
+    - News
+    - Events
 - Third-Party plugin support
     - Rocksolid Custom Elements 
 
@@ -118,6 +119,13 @@ $this->styleManager->prepare('myCategoryIdentifier', ['alias1'])->format("data-s
 
 ##### Backend view
 ![Passing Variables: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/template-vars-list.png)
+
+## Import / Export
+To fill projects with a default setting, the Import and Export functions are available. 
+
+When importing, the categories as well as the CSS groups are only added additively. This allows CSS classes to be added to the actual project without being deleted after an import. 
+
+> Please note that the import completes the records by the identifier (categories) and the alias (CSS groups). So if the aliases are changed in the current project, they are not overwritten / added, but a new group is created after the import.
 
 ## Support Rocksolid Custom Elements
 see: [Rocksolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)

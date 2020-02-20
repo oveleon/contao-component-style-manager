@@ -129,4 +129,30 @@ class StyleManagerModel extends \Model
                 return null;
         }
     }
+
+    /**
+     * Find one item by alias by their parent ID
+     *
+     * @param $alias
+     * @param $pid
+     * @param array $arrOptions
+     *
+     * @return StyleManagerModel|null
+     */
+    public static function findByAliasAndPid($alias, $pid, $arrOptions=array())
+    {
+        $t = static::$strTable;
+
+        $arrColumns = array(
+            "$t.alias=?",
+            "$t.pid=?"
+        );
+
+        $arrValues = array(
+            $alias,
+            $pid
+        );
+
+        return static::findOneBy($arrColumns, $arrValues, $arrOptions);
+    }
 }
