@@ -129,7 +129,7 @@ When importing, the categories as well as the CSS groups are only added additive
 > Please note that the import completes the records by the identifier (categories) and the alias (CSS groups). So if the aliases are changed in the current project, they are not overwritten / added, but a new group is created after the import.
 
 ## Support Third-Party DCA 
-If you have your own DCA that you want to make available for the StyleManager, you can do this in two easy steps.
+If you have your own DCA that you want to make available for the StyleManager, you can do this in three easy steps.
 As in Contao itself, the DCA must contain a field where the CSS classes can be stored. The following fields are already included:
 
 - `cssID` (multiple field)
@@ -138,7 +138,8 @@ As in Contao itself, the DCA must contain a field where the CSS classes can be s
 - `attributes` (multiple field)
 
 > Please note that the field size must be observed!
-#### 1. Extending the CSS group fields
+
+#### 1. Extending the CSS group fields in DCA `tl_style_manager` 
 ```php
 // Extend the default palette
 Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -157,7 +158,30 @@ $GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendMyDca'] = array
 );
 ```
 
-#### 2. Provide the StyleManager the new DCA via the HOOK `styleManagerFindByTable`
+#### 2. Adding the styleManager legend and field to your dca
+```php
+// Extend the palette
+$palette = Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+    ->addLegend('style_manager_legend', 'expert_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_BEFORE)
+    ->addField(array('styleManager'), 'style_manager_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_mydca');
+
+// Extend fields
+$GLOBALS['TL_DCA']['tl_mydca']['fields']['styleManager'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_mydca']['styleManager'],
+    'exclude'                 => true,
+    'inputType'               => 'stylemanager',
+    'eval'                    => array('tl_class'=>'clr stylemanager'),
+    'sql'                     => "blob NULL"
+);
+
+// Adding callback methods for the CSS-Class field (cssID, cssClass, class or attributes)
+$GLOBALS['TL_DCA']['tl_mydca']['fields']['attributes']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
+$GLOBALS['TL_DCA']['tl_mydca']['fields']['attributes']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');
+```
+
+#### 3. Provide the StyleManager the new DCA via the HOOK `styleManagerFindByTable`
 ```php
 // HOOK
 $GLOBALS['TL_HOOKS']['styleManagerFindByTable'][] = array('\\Namespace\\Class', 'onFindByTable');
