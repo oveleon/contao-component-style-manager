@@ -15,6 +15,9 @@
   "require":{
     "contao/core-bundle":"^4.4"
   },
+  "suggest": {
+    "contao-thememanager/core": "Contao ThemeManager"
+  },
   "require-dev": {
     "contao/manager-plugin": "^2.0"
   },
