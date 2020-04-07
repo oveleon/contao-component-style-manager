@@ -96,12 +96,12 @@ class StyleManagerModel extends \Model
     protected static $strTable = 'tl_style_manager';
 
     /**
-     * Find published news items by their parent ID
+     * Find published css groups using their table
      *
      * @param $strTable
      * @param array $arrOptions An optional options array
      *
-     * @return \Model\Collection|StyleManagerModel[]|StyleManagerModel|null A collection of models or null if there are no news
+     * @return \Model\Collection|StyleManagerModel[]|StyleManagerModel|null A collection of models or null if there are no css groups
      */
     public static function findByTable($strTable, array $arrOptions=array())
     {
@@ -126,6 +126,15 @@ class StyleManagerModel extends \Model
             case 'tl_calendar_events':
                 return static::findByExtendEvents(1, $arrOptions);
             default:
+                // HOOK: add support for third-party tables
+                if (isset($GLOBALS['TL_HOOKS']['styleManagerFindByTable']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerFindByTable']))
+                {
+                    foreach ($GLOBALS['TL_HOOKS']['styleManagerFindByTable'] as $callback)
+                    {
+                        return \System::importStatic($callback[0])->{$callback[1]}($strTable, $arrOptions);
+                    }
+                }
+
                 return null;
         }
     }

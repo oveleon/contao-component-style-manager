@@ -16,7 +16,7 @@ This plugin is designed to simplify theme customizations without the need of man
     - Combine and output as tabs
 - Passing variables to the template
     - Formatting output using predefined methods or your own
-- Import / Export [![new](https://img.shields.io/badge/-new-83aa0e?style=flat-square)](#import--export) [![new](https://img.shields.io/badge/-BETA-F38041?style=flat-square)](#import--export)
+- Import / Export [![new](https://img.shields.io/badge/-new-83aa0e?style=flat-square)](#import--export)
 - Available for
     - Layouts
     - Pages
@@ -27,6 +27,7 @@ This plugin is designed to simplify theme customizations without the need of man
     - Form-Fields
     - News
     - Events
+    - Third-Party DCA [![new](https://img.shields.io/badge/-new-83aa0e?style=flat-square)](#support-third-party-dca)
 - Third-Party plugin support
     - Rocksolid Custom Elements 
 
@@ -126,6 +127,63 @@ To fill projects with a default setting, the Import and Export functions are ava
 When importing, the categories as well as the CSS groups are only added additively. This allows CSS classes to be added to the actual project without being deleted after an import. 
 
 > Please note that the import completes the records by the identifier (categories) and the alias (CSS groups). So if the aliases are changed in the current project, they are not overwritten / added, but a new group is created after the import.
+
+## Support Third-Party DCA 
+If you have your own DCA that you want to make available for the StyleManager, you can do this in two easy steps.
+As in Contao itself, the DCA must contain a field where the CSS classes can be stored. The following fields are already included:
+
+- `cssID` (multiple field)
+- `cssClass` (single field)
+- `class` (single field)
+- `attributes` (multiple field)
+
+> Please note that the field size must be observed!
+#### 1. Extending the CSS group fields
+```php
+// Extend the default palette
+Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+    ->addField(array('extendMyDca'), 'publish_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_style_manager');
+
+// Extend fields
+$GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendMyDca'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_style_manager']['extendMyDca'],
+    'exclude'                 => true,
+    'filter'                  => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('tl_class'=>'clr'),
+    'sql'                     => "char(1) NOT NULL default ''"
+);
+```
+
+#### 2. Provide the StyleManager the new DCA via the HOOK `styleManagerFindByTable`
+```php
+// HOOK
+$GLOBALS['TL_HOOKS']['styleManagerFindByTable'][] = array('\\Namespace\\Class', 'onFindByTable');
+```
+
+```php
+use Oveleon\ContaoComponentStyleManager\StyleManagerModel;
+
+/**
+ * Find css groups using their table
+ *
+ * @param string $strTable
+ * @param array $arrOptions
+ *
+ * @return \Model\Collection|StyleManagerModel[]|StyleManagerModel|null A collection of models or null if there are no css groups
+ */
+public function onFindByTable($strTable, $arrOptions)
+{
+    if($strTable === 'tl_mydca')
+    {
+        return StyleManagerModel::findBy(array('extendMyDca=1'), null, $arrOptions);
+    }
+
+    return null;
+}
+```
 
 ## Support Rocksolid Custom Elements
 see: [Rocksolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)
