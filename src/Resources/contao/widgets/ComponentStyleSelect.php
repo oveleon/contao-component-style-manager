@@ -109,6 +109,18 @@ class ComponentStyleSelect extends \Widget
                 }
             }
 
+            // skip third-party fields
+            if (isset($GLOBALS['TL_HOOKS']['styleManagerSkipField']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerSkipField']))
+            {
+                foreach ($GLOBALS['TL_HOOKS']['styleManagerSkipField'] as $callback)
+                {
+                    if(\System::importStatic($callback[0])->{$callback[1]}($objStyleGroups, $this))
+                    {
+                        continue 2;
+                    }
+                }
+            }
+
             $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
 
             foreach ($opts as $opt) {
