@@ -129,7 +129,7 @@ When importing, the categories as well as the CSS groups are only added additive
 > Please note that the import completes the records by the identifier (categories) and the alias (CSS groups). So if the aliases are changed in the current project, they are not overwritten / added, but a new group is created after the import.
 
 ## Support Third-Party DCA 
-If you have your own DCA that you want to make available for the StyleManager, you can do this in three easy steps.
+If you have your own DCA that you want to make available for the StyleManager, you can do this in **three to four steps**.
 As in Contao itself, the DCA must contain a field where the CSS classes can be stored. The following fields are already included:
 
 - `cssID` (multiple field)
@@ -139,7 +139,9 @@ As in Contao itself, the DCA must contain a field where the CSS classes can be s
 
 > Please note that the field size must be observed!
 
-#### 1. Extending the CSS group fields in DCA `tl_style_manager` 
+<details>
+  <summary><b>1.</b> Extending the <b>CSS group fields</b> in tl_style_manager DCA</summary>
+  
 ```php
 // Extend the default palette
 Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -157,8 +159,11 @@ $GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendMyDca'] = array
     'sql'                     => "char(1) NOT NULL default ''"
 );
 ```
+</details>
 
-#### 2. Adding the styleManager legend and field to your dca
+<details>
+  <summary><b>2.</b> Adding the styleManager <b>legend and field</b> to your DCA</summary>
+  
 ```php
 // Extend the palette
 $palette = Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -180,8 +185,13 @@ $GLOBALS['TL_DCA']['tl_mydca']['fields']['styleManager'] = array
 $GLOBALS['TL_DCA']['tl_mydca']['fields']['attributes']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
 $GLOBALS['TL_DCA']['tl_mydca']['fields']['attributes']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');
 ```
+</details>
 
-#### 3. Provide the StyleManager the new DCA via the HOOK `styleManagerFindByTable`
+<details>
+  <summary><b>3.</b> Provide the StyleManager the new DCA</summary>
+
+To get the selected CSS groups for the new DCA and to provide them in the backend, it is necessary to provide the StyleManager with the new DCA. In order to make this possible the **styleManagerFindByTable**-Hook is prepared.
+
 ```php
 // HOOK
 $GLOBALS['TL_HOOKS']['styleManagerFindByTable'][] = array('\\Namespace\\Class', 'onFindByTable');
@@ -208,6 +218,47 @@ public function onFindByTable($strTable, $arrOptions)
     return null;
 }
 ```
+</details>
+
+<details>
+  <summary><b>4.</b> <b>Skip fields</b> that should not be displayed in the Backend Select-Widget</summary>
+
+📌 _This step is only necessary for tables with different types like tl_content, tl_module or tl_form_fields_
+
+If the DCA provides several types, which can be selected individually under the CSS groups, a further check has to take place to display them only for certain types.
+
+```php
+// HOOK
+$GLOBALS['TL_HOOKS']['styleManagerSkipField'][] = array('\\Namespace\\Class', 'onSkipField');
+```
+
+```php
+/**
+ * StyleManager Support
+ *
+ * If the field is not selected in the CSS group, it is skipped
+ *
+ * @param $objStyleGroups
+ * @param $objWidget
+ *
+ * @return bool Skip field
+ */
+public function onSkipField($objStyleGroups, $objWidget)
+{
+    if(!!$objStyleGroups->extendMyDca && $objWidget->strTable === 'tl_mydca')
+    {
+        $arrDcaTypes = \StringUtil::deserialize($objStyleGroups->dcaTypes);
+
+        if($arrDcaTypes !== null && !in_array($objWidget->activeRecord->type, $arrDcaTypes))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+```
+</details>
 
 ## Support Rocksolid Custom Elements
 see: [Rocksolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)
