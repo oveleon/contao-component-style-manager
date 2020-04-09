@@ -273,24 +273,26 @@ class Sync extends \Backend
                                             }
 
                                             break;
-                                        case 'modules':
-                                        case 'formFields':
-                                        case 'contentElements':
-                                            $arrElements = \StringUtil::deserialize($objChildren->{$strName}, true);
-                                            $arrValues   = \StringUtil::deserialize($strValue, true);
+                                        default:
+                                            $dcaField = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$strName];
 
-                                            foreach($arrValues as $element)
+                                            if(isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
                                             {
-                                                if(in_array($element, $arrElements))
+                                                $arrElements = \StringUtil::deserialize($objChildren->{$strName}, true);
+                                                $arrValues   = \StringUtil::deserialize($strValue, true);
+
+                                                foreach($arrValues as $element)
                                                 {
-                                                    continue;
+                                                    if(in_array($element, $arrElements))
+                                                    {
+                                                        continue;
+                                                    }
+
+                                                    $arrElements[] = $element;
                                                 }
 
-                                                $arrElements[] = $element;
+                                                $strValue  = serialize($arrElements);
                                             }
-
-                                            $strValue  = serialize($arrElements);
-                                            break;
                                     }
 
                                     $objChildren->{$strName} = $strValue;
