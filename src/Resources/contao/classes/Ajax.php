@@ -19,12 +19,13 @@ class Ajax extends \Backend
      * @param \DataContainer $dc
      *
      * @throws \Exception
+     * @throws NoContentResponseException
      */
     public function executePostActions($strAction, \DataContainer $dc)
     {
         if($strAction !== 'selectStyleManagerSection')
         {
-            throw new NoContentResponseException();
+            return;
         }
 
         /** @var AttributeBagInterface $objSessionBag */
