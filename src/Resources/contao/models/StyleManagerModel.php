@@ -131,7 +131,10 @@ class StyleManagerModel extends \Model
                 {
                     foreach ($GLOBALS['TL_HOOKS']['styleManagerFindByTable'] as $callback)
                     {
-                        return \System::importStatic($callback[0])->{$callback[1]}($strTable, $arrOptions);
+                        if (null !== ($result = \Contao\System::importStatic($callback[0])->{$callback[1]}($strTable, $arrOptions)))
+                        {
+                            return $result;
+                        }
                     }
                 }
 
