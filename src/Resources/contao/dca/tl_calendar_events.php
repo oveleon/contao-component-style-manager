@@ -9,12 +9,6 @@ $bundles = Contao\System::getContainer()->getParameter('kernel.bundles');
 
 if (isset($bundles['ContaoCalendarBundle']))
 {
-    // Extend the regular palette
-    $palette = Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-        ->addLegend('style_manager_legend', 'expert_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_BEFORE)
-        ->addField(array('styleManager'), 'style_manager_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-        ->applyToPalette('default', 'tl_calendar_events');
-
     // Extend fields
     $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['styleManager'] = array
     (
@@ -25,6 +19,7 @@ if (isset($bundles['ContaoCalendarBundle']))
         'sql'                     => "blob NULL"
     );
 
+    $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
     $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['cssClass']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
     $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['cssClass']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');
 }

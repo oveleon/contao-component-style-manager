@@ -5,12 +5,6 @@
  * (c) https://www.oveleon.de/
  */
 
-// Extend the regular palette
-$palette = Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('style_manager_legend', 'expert_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_BEFORE)
-    ->addField(array('styleManager'), 'style_manager_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_article');
-
 // Extend fields
 $GLOBALS['TL_DCA']['tl_article']['fields']['styleManager'] = array
 (
@@ -21,5 +15,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['styleManager'] = array
     'sql'                     => "blob NULL"
 );
 
+$GLOBALS['TL_DCA']['tl_article']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
 $GLOBALS['TL_DCA']['tl_article']['fields']['cssID']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
 $GLOBALS['TL_DCA']['tl_article']['fields']['cssID']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');

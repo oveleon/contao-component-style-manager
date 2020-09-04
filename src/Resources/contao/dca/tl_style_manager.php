@@ -302,9 +302,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 
-use Oveleon\ContaoComponentStyleManager\StyleManagerModel;
-
-class tl_style_manager extends \Backend
+class tl_style_manager extends Contao\Backend
 {
     /**
      * Import the back end user object
