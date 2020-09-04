@@ -9,8 +9,7 @@ As in Contao itself, the DCA must contain a field where the CSS classes can be s
 
 > Please note that the field size must be observed!
 
-<details>
-  <summary><b>1.</b> Extending the <b>CSS group fields</b> in tl_style_manager DCA</summary>
+### 1. Extending the **CSS group fields** in `tl_style_manager` DCA
   
 ```php
 // Extend the default palette
@@ -29,10 +28,8 @@ $GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendMyDca'] = array
     'sql'                     => "char(1) NOT NULL default ''"
 );
 ```
-</details>
 
-<details>
-  <summary><b>2.</b> Adding the styleManager <b>legend and field</b> to your DCA</summary>
+### 2. Adding the styleManager **legend and field** to your DCA
   
 ```php
 // Extend fields
@@ -52,10 +49,8 @@ $GLOBALS['TL_DCA']['tl_mydca']['config']['onload_callback'][] = array('\\Oveleon
 $GLOBALS['TL_DCA']['tl_mydca']['fields']['attributes']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
 $GLOBALS['TL_DCA']['tl_mydca']['fields']['attributes']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');
 ```
-</details>
 
-<details>
-  <summary><b>3.</b> Provide the StyleManager the new DCA</summary>
+### 3. Provide the StyleManager the new DCA
 
 To get the selected CSS groups for the new DCA and to provide them in the backend, it is necessary to provide the StyleManager with the new DCA. In order to make this possible the **styleManagerFindByTable**-Hook is prepared.
 
@@ -85,11 +80,9 @@ public function onFindByTable($strTable, $arrOptions)
     return null;
 }
 ```
-</details>
 
-<details>
-  <summary><b>4.</b> <b>Skip fields</b> that should not be displayed in the Backend Select-Widget</summary>
-<br/>
+### 4. **Skip fields** that should not be displayed in the Backend Select-Widget
+
 📌 _This step is only necessary for tables with different types like tl_content, tl_module or tl_form_fields_
 
 If the DCA provides several types, which can be selected individually under the CSS groups, a further check has to take place to display them only for certain types.
@@ -125,7 +118,7 @@ public function onSkipField($objStyleGroups, $objWidget)
     return false;
 }
 ```
-</details>
+
 
 # Support Rocksolid Custom Elements
 see: [Rocksolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)
@@ -137,4 +130,4 @@ Use the callback function `onloadCallback` in your custom element configuration 
   )
 ```
 
-ℹ **From version 2.4 this callback is no longer needed**
+ℹ **From version `2.4` this callback is no longer needed**

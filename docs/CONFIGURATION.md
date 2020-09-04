@@ -8,6 +8,8 @@
 #### Example backend view of combined categories using `Group-Idenfifier`:
 ![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/combined-groups.png)
 
+<br/>
+
 # Manage CSS-Groups:
 ### Fields:
 - `Alias`: Define an alias with which the group can be accessed. This is only required for passing on to the template.
