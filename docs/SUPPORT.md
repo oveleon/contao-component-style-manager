@@ -42,7 +42,7 @@ $GLOBALS['TL_DCA']['tl_mydca']['fields']['styleManager'] = array
     'sql'                     => "blob NULL"
 );
 
-// Extend the palette
+// Extend the palette (Since version 2.4 this callback method can be used, before that the field "styleManager" must be added via the palette manipulator.)
 $GLOBALS['TL_DCA']['tl_mydca']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
 
 // Adding callback methods for the CSS-Class field (cssID, cssClass, class or attributes)
