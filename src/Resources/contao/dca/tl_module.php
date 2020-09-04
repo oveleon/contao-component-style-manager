@@ -5,20 +5,6 @@
  * (c) https://www.oveleon.de/
  */
 
-// Extend the regular palette
-$palette = Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('style_manager_legend', 'expert_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_BEFORE)
-    ->addField(array('styleManager'), 'style_manager_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND);
-
-foreach ($GLOBALS['TL_DCA']['tl_module']['palettes'] as $key=>$value){
-    if($key === '__selector__')
-    {
-        continue;
-    }
-
-    $palette->applyToPalette($key, 'tl_module');
-}
-
 // Extend fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['styleManager'] = array
 (
@@ -29,5 +15,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['styleManager'] = array
     'sql'                     => "blob NULL"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
 $GLOBALS['TL_DCA']['tl_module']['fields']['cssID']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
 $GLOBALS['TL_DCA']['tl_module']['fields']['cssID']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');

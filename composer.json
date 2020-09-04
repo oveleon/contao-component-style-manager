@@ -10,13 +10,15 @@
       "name":"Oveleon",
       "homepage":"https://oveleon.de/",
       "role":"Developer"
+    },
+    {
+      "name":"Daniele Sciannimanica",
+      "homepage":"https://github.com/doishub",
+      "role":"Developer"
     }
   ],
   "require":{
     "contao/core-bundle":"^4.4"
-  },
-  "suggest": {
-    "contao-thememanager/core": "Contao ThemeManager"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.0"
@@ -41,6 +43,9 @@
     ]
   },
   "extra":{
+    "branch-alias": {
+      "dev-master": "2.4.x-dev"
+    },
     "contao-manager-plugin": "Oveleon\\ContaoComponentStyleManager\\ContaoManager\\Plugin"
   }
 }
