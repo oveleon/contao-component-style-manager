@@ -389,6 +389,22 @@ class StyleManager
     }
 
     /**
+     * Add the type of input field
+     *
+     * @param array $arrRow
+     *
+     * @return string
+     */
+    public function listFormFields($arrRow)
+    {
+        $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
+        $arrRow['styleManager'] = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+
+        $formField = new \tl_form_field();
+        return $formField->listFormFields($arrRow);
+    }
+
+    /**
      * Add a new regexp "variable"
      *
      * @param $strRegexp
