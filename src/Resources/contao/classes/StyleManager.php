@@ -389,6 +389,24 @@ class StyleManager
     }
 
     /**
+     * Parse Template and set Variables
+     *
+     * @param $objWidget
+     *
+     * @return \Widget
+     */
+    public function onLoadFormField($objWidget)
+    {
+        if(!($objWidget->styleManager instanceof Styles))
+        {
+            $arrStyles = StringUtil::deserialize($objWidget->styleManager);
+            $objWidget->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+        }
+
+        return $objWidget;
+    }
+
+    /**
      * Add the type of input field
      *
      * @param array $arrRow
