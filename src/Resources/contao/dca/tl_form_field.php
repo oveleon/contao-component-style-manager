@@ -15,6 +15,8 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['styleManager'] = array
     'sql'                     => "blob NULL"
 );
 
+$GLOBALS['TL_DCA']['tl_form_field']['fields']['class']['sql'] = "text NOT NULL default ''";
+
 $GLOBALS['TL_DCA']['tl_form_field']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
 $GLOBALS['TL_DCA']['tl_form_field']['list']['sorting']['child_record_callback'] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'listFormFields');
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['class']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');

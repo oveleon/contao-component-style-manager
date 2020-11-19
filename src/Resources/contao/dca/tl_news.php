@@ -19,6 +19,8 @@ if (isset($bundles['ContaoNewsBundle']))
         'sql'                     => "blob NULL"
     );
 
+    $GLOBALS['TL_DCA']['tl_news']['fields']['cssClass']['sql'] = "text NOT NULL default ''";
+
     $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
     $GLOBALS['TL_DCA']['tl_news']['fields']['cssClass']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
     $GLOBALS['TL_DCA']['tl_news']['fields']['cssClass']['save_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onSave');
