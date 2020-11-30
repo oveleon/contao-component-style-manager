@@ -3,7 +3,7 @@
   "type":"contao-bundle",
   "description":"Style and CSS-Class Manager for Contao Open Source CMS",
   "keywords":["contao","styles","css","manager"],
-  "homepage":"https://www.oveleon.de/",
+  "homepage":"https://www.oveleon.de/stylemanager.html",
   "license":"MIT",
   "authors":[
     {
