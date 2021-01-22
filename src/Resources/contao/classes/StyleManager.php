@@ -363,7 +363,7 @@ class StyleManager
                     }
                     else
                     {
-                        $arrValue[ $arrItem['id'] ] = $arrItem['value'];
+                        $arrValue[ $arrItem['id'] ] = html_entity_decode($arrItem['value']);
                     }
                 }
             }
