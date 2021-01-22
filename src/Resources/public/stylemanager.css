@@ -53,10 +53,10 @@
   margin-right: 15px;
   min-height: 80px;
 }
-.widget.stylemanager .tab-content > div.seperator {
+.widget.stylemanager .tab-content > div.seperator, .widget.stylemanager .tab-content > div.separator {
   clear: both;
 }
-.widget.stylemanager .tab-content > div.seperator:before {
+.widget.stylemanager .tab-content > div.seperator:before, .widget.stylemanager .tab-content > div.separator:before {
   content: "";
   display: table;
 }
