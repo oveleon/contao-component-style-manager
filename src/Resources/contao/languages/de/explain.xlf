@@ -26,8 +26,8 @@
         <target>Hebt alle floats auf und umbricht das Element in die nächste Zeile.</target>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.3.0">
-        <source>seperator</source>
-        <target>seperator</target>
+        <source>separator</source>
+        <target>separator</target>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.3.1">
         <source>Cancels all floats and breaks the element into the next line. Additionally a line is added to create meaningful sections.</source>

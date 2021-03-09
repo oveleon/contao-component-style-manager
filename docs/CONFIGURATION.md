@@ -15,7 +15,7 @@
 - `Alias`: Define an alias with which the group can be accessed. This is only required for passing on to the template.
 - `Add search field`: Use of chosen for a search field within the select box
 - `Use as template variable`: This field declares whether this group is set in the class attribute of the corresponding element or passed to the template.
-- `CSS class`: To further customize the display of the backend fields, you can enter a selection of predefined CSS classes. (long, clr, seperator)
+- `CSS class`: To further customize the display of the backend fields, you can enter a selection of predefined CSS classes. (long, clr, separator)
 > All other fields should be self-explanatory
 
 #### Example css group:

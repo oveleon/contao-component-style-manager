@@ -20,7 +20,7 @@
         <source>Cancels all floats and breaks the element into the next line.</source>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.3.0">
-        <source>seperator</source>
+        <source>separator</source>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.3.1">
         <source>Cancels all floats and breaks the element into the next line. Additionally a line is added to create meaningful sections.</source>
