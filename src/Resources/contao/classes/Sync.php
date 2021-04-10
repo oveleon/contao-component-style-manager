@@ -330,6 +330,12 @@ class Sync extends \Backend
         // Archives
         $objArchive = StyleManagerArchiveModel::findAll(['order' => 'groupAlias,sorting']);
 
+        if (null === $objArchive)
+        {
+            \Message::addError($GLOBALS['TL_LANG']['ERR']['noStyleManagerConfigFound']);
+            self::redirect(self::getReferer());
+        }
+
         // Root element
         $archives = $xml->createElement('archives');
         $archives = $xml->appendChild($archives);
