@@ -4,6 +4,9 @@
       <trans-unit id="ERR.identifierExists">
         <source>The Identifier &quot;%s&quot; already exists!</source>
       </trans-unit>
+      <trans-unit id="ERR.groupAliasExists">
+        <source>The Alias &quot;%s&quot; already exists within this category!</source>
+      </trans-unit>
       <trans-unit id="ERR.noStyleManagerConfigFound">
         <source>No style manager config found!</source>
       </trans-unit>

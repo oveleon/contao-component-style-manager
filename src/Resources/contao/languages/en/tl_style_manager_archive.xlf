@@ -11,11 +11,20 @@
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.new.1">
+        <source>Create new category</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.import.0">
         <source>Import</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.import.1">
+        <source>Import a config</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.export.0">
         <source>Export</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.export.1">
+        <source>Export a config</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.source.0">
         <source>Source files</source>
@@ -23,23 +32,23 @@
       <trans-unit id="tl_style_manager_archive.source.1">
         <source>Here you can upload one .xml file to be imported.</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.editheader.1">
+      <trans-unit id="tl_style_manager_archive.editheader">
         <source>Edit category</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.copy.1">
+      <trans-unit id="tl_style_manager_archive.copy">
         <source>Copy category</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.delete.1">
+      <trans-unit id="tl_style_manager_archive.delete">
         <source>Delete category</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.show.1">
+      <trans-unit id="tl_style_manager_archive.show">
         <source>Show category info</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.title.0">
         <source>Title</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.title.1">
-        <source>Title or group name of the statements.</source>
+        <source>Title or category name.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.identifier.0">
         <source>Identifier</source>

@@ -34,19 +34,23 @@
         <source>New css group</source>
         <target>Neue CSS-Gruppe</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.editheader.1">
+      <trans-unit id="tl_style_manager.new.1">
+        <source>Create a new css group.</source>
+        <target>Neue CSS-Gruppe erstellen.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.editheader">
         <source>Edit group</source>
         <target>Gruppe bearbeiten</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.copy.1">
+      <trans-unit id="tl_style_manager.copy">
         <source>Copy group</source>
         <target>Gruppe kopieren</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.delete.1">
+      <trans-unit id="tl_style_manager.delete">
         <source>Delete group</source>
         <target>Gruppe löschen</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.show.1">
+      <trans-unit id="tl_style_manager.show">
         <source>Show group info</source>
         <target>Gruppeinformationen anzeigen</target>
       </trans-unit>
