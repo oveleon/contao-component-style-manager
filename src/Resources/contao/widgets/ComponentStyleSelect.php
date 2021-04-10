@@ -142,7 +142,7 @@ class ComponentStyleSelect extends \Widget
                         \StringUtil::specialchars($arrOption['value']),
 
                         // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]) ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
+                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ] ?? ''),
 
                         $arrOption['label']);
                 }
@@ -156,7 +156,7 @@ class ComponentStyleSelect extends \Widget
                             \StringUtil::specialchars($arrOptgroup['value']),
 
                             // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                            static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]) ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
+                            static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ] ?? ''),
 
                             $arrOptgroup['label']);
                     }
