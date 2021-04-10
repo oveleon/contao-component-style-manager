@@ -219,7 +219,7 @@ class tl_style_manager_archive extends \Backend
     public function checkIdentifier($dc){
         $objArchive = StyleManagerArchiveModel::findById($dc->id);
 
-        if($objArchive->identifier)
+        if(null !== $objArchive && $objArchive->identifier)
         {
             $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['mandatory'] = false;
             $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['disabled'] = true;
