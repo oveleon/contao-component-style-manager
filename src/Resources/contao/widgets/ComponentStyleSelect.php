@@ -74,7 +74,13 @@ class ComponentStyleSelect extends \Widget
         {
             $arrOptions      = array();
             $strClass        = 'tl_select';
-            $arrFieldOptions = array(array('value'=>'', 'label'=>'-'));
+            $arrFieldOptions = array();
+
+            // set blank option
+            if(!!$objStyleGroups->blankOption)
+            {
+                $arrFieldOptions[] = array('value'=>'', 'label'=>'-');
+            }
 
             // skip specific content elements
             if(!!$objStyleGroups->extendContentElement && $this->strTable === 'tl_content')
@@ -233,7 +239,7 @@ class ComponentStyleSelect extends \Widget
             {
                 $identifier = sprintf('%s-%s-%s', $i, $key, $this->id);
                 $isSelected = !isset($arrSession[ $groupAlias ]) && $i===0 ? 'checked' : ($arrSession[ $groupAlias ] === $identifier ? 'checked' : '');
-                $index      = $isSelected ? $isSelected : $i;
+                $index      = $isSelected ?: $i;
 
                 $onClick = sprintf('onclick="Backend.getScrollOffset(); new Request.Contao().post({\'action\':\'selectStyleManagerSection\', \'id\':\'%s\', \'groupAlias\':\'%s\', \'identifier\':\'%s\', \'REQUEST_TOKEN\':\'%s\'});"',
                     $this->id,
