@@ -49,12 +49,14 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
         (
             'import' => array
             (
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['import'],
                 'href'                => 'key=import',
                 'class'               => 'header_style_manager_import',
                 'icon'                => 'theme_import.svg'
             ),
             'export' => array
             (
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['export'],
                 'href'                => 'key=export',
                 'class'               => 'header_style_manager_export',
                 'icon'                => 'theme_export.svg'
@@ -71,6 +73,7 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
         (
             'edit' => array
             (
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['edit'],
                 'href'                => 'table=tl_style_manager',
                 'icon'                => 'edit.svg'
             ),

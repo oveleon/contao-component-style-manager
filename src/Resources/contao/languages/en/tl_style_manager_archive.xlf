@@ -32,16 +32,34 @@
       <trans-unit id="tl_style_manager_archive.source.1">
         <source>Here you can upload one .xml file to be imported.</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.editheader">
+      <trans-unit id="tl_style_manager_archive.editheader.0">
         <source>Edit category</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.copy">
+      <trans-unit id="tl_style_manager_archive.editheader.1">
+        <source>Edit category</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.edit.0">
+        <source>Edit group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.edit.1">
+        <source>Edit group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.copy.0">
         <source>Copy category</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.delete">
+      <trans-unit id="tl_style_manager_archive.copy.1">
+        <source>Copy category</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.delete.0">
         <source>Delete category</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.show">
+      <trans-unit id="tl_style_manager_archive.delete.1">
+        <source>Delete category</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.show.0">
+        <source>Show category info</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.show.1">
         <source>Show category info</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.title.0">
