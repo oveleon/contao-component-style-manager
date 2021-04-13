@@ -302,7 +302,6 @@ class ComponentStyleSelect extends \Widget
 
                 $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
                 $value = StyleManager::updateClasses($value, $stdClass);
-                $value = StyleManager::isMultipleField($field) ? serialize($value) : $value;
 
                 // Update css class field
                 \Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
