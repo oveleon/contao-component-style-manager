@@ -11,11 +11,20 @@
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.new.1">
+        <source>Create new category</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.import.0">
         <source>Import</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.import.1">
+        <source>Import a config</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.export.0">
         <source>Export</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.export.1">
+        <source>Export a config</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.source.0">
         <source>Source files</source>
@@ -23,14 +32,32 @@
       <trans-unit id="tl_style_manager_archive.source.1">
         <source>Here you can upload one .xml file to be imported.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.editheader.0">
+        <source>Edit category</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.editheader.1">
         <source>Edit category</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.edit.0">
+        <source>Edit group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.edit.1">
+        <source>Edit group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.copy.0">
+        <source>Copy category</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.copy.1">
         <source>Copy category</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.delete.0">
+        <source>Delete category</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.delete.1">
         <source>Delete category</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.show.0">
+        <source>Show category info</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.show.1">
         <source>Show category info</source>
@@ -39,7 +66,7 @@
         <source>Title</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.title.1">
-        <source>Title or group name of the statements.</source>
+        <source>Title or category name.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.identifier.0">
         <source>Identifier</source>
