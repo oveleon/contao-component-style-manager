@@ -110,6 +110,14 @@
         <source>Use of chosen for a search field within the select box.</source>
         <target>Verwendung von chosen für ein Suchfeld innerhalb der Select-Box.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager.blankOption.0">
+        <source>Include Blank Option</source>
+        <target>Leere Option hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.blankOption.1">
+        <source>Adds an empty option to the widget. If this option is not selected, it is mandatory to choose one of the CSS classes. The first defined CSS class will be set as default.</source>
+        <target>Fügt dem Widget eine leere Option hinzu. Sollte diese Option nicht ausgewählt sein, muss zwingend eine der CSS-Klassen gewählt werden. Die erste definierte CSS-Klasse wird dabei als Standard gesetzt.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager.passToTemplate.0">
         <source>Use as template variable</source>
         <target>Als Templatevariable verwenden</target>

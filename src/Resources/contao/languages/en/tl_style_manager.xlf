@@ -83,6 +83,12 @@
       <trans-unit id="tl_style_manager.chosen.1">
         <source>Use of chosen for a search field within the select box.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager.blankOption.0">
+        <source>Include Blank Option</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.blankOption.1">
+        <source>Adds an empty option to the widget. If this option is not selected, it is mandatory to choose one of the CSS classes. The first defined CSS class will be set as default.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager.passToTemplate.0">
         <source>Use as template variable</source>
       </trans-unit>
