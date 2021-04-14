@@ -7,6 +7,13 @@
 
 namespace Oveleon\ContaoComponentStyleManager;
 
+use Contao\BackendUser;
+use Contao\Database;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Widget;
+
 /**
  * Provide methods to handle select menus for style manager.
  *
@@ -18,7 +25,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  *
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
-class ComponentStyleSelect extends \Widget
+class ComponentStyleSelect extends Widget
 {
 
 	/**
@@ -74,12 +81,18 @@ class ComponentStyleSelect extends \Widget
         {
             $arrOptions      = array();
             $strClass        = 'tl_select';
-            $arrFieldOptions = array(array('value'=>'', 'label'=>'-'));
+            $arrFieldOptions = array();
+
+            // set blank option
+            if(!!$objStyleGroups->blankOption)
+            {
+                $arrFieldOptions[] = array('value'=>'', 'label'=>'-');
+            }
 
             // skip specific content elements
             if(!!$objStyleGroups->extendContentElement && $this->strTable === 'tl_content')
             {
-                $arrContentElements = \StringUtil::deserialize($objStyleGroups->contentElements);
+                $arrContentElements = StringUtil::deserialize($objStyleGroups->contentElements);
 
                 if($arrContentElements !== null && !in_array($this->activeRecord->type, $arrContentElements))
                 {
@@ -90,7 +103,7 @@ class ComponentStyleSelect extends \Widget
             // skip specific form fields
             if(!!$objStyleGroups->extendFormFields && $this->strTable === 'tl_form_field')
             {
-                $arrFormFields = \StringUtil::deserialize($objStyleGroups->formFields);
+                $arrFormFields = StringUtil::deserialize($objStyleGroups->formFields);
 
                 if($arrFormFields !== null && !in_array($this->activeRecord->type, $arrFormFields))
                 {
@@ -101,7 +114,7 @@ class ComponentStyleSelect extends \Widget
             // skip specific modules
             if(!!$objStyleGroups->extendModule && $this->strTable === 'tl_module')
             {
-                $arrModules = \StringUtil::deserialize($objStyleGroups->modules);
+                $arrModules = StringUtil::deserialize($objStyleGroups->modules);
 
                 if($arrModules !== null && !in_array($this->activeRecord->type, $arrModules))
                 {
@@ -114,14 +127,14 @@ class ComponentStyleSelect extends \Widget
             {
                 foreach ($GLOBALS['TL_HOOKS']['styleManagerSkipField'] as $callback)
                 {
-                    if(\System::importStatic($callback[0])->{$callback[1]}($objStyleGroups, $this))
+                    if(System::importStatic($callback[0])->{$callback[1]}($objStyleGroups, $this))
                     {
                         continue 2;
                     }
                 }
             }
 
-            $opts = \StringUtil::deserialize($objStyleGroups->cssClasses);
+            $opts = StringUtil::deserialize($objStyleGroups->cssClasses);
 
             foreach ($opts as $opt) {
                 $arrFieldOptions[] = array(
@@ -139,7 +152,7 @@ class ComponentStyleSelect extends \Widget
                 if (isset($arrOption['value']))
                 {
                     $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
-                        \StringUtil::specialchars($arrOption['value']),
+                        StringUtil::specialchars($arrOption['value']),
 
                         // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
                         static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]) ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
@@ -153,7 +166,7 @@ class ComponentStyleSelect extends \Widget
                     foreach ($arrOption as $arrOptgroup)
                     {
                         $arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
-                            \StringUtil::specialchars($arrOptgroup['value']),
+                            StringUtil::specialchars($arrOptgroup['value']),
 
                             // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
                             static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ]) ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ]),
@@ -161,7 +174,7 @@ class ComponentStyleSelect extends \Widget
                             $arrOptgroup['label']);
                     }
 
-                    $arrOptions[] = sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', \StringUtil::specialchars($strKey), implode('', $arrOptgroups));
+                    $arrOptions[] = sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', StringUtil::specialchars($strKey), implode('', $arrOptgroups));
                 }
             }
 
@@ -204,7 +217,7 @@ class ComponentStyleSelect extends \Widget
             return $this->renderEmptyMessage();
         }
 
-        $objSession = \System::getContainer()->get('session')->getBag('contao_backend');
+        $objSession = System::getContainer()->get('session')->getBag('contao_backend');
         $arrSession = $objSession->get('stylemanager_section_states');
 
         $arrGroups   = array();
@@ -233,7 +246,7 @@ class ComponentStyleSelect extends \Widget
             {
                 $identifier = sprintf('%s-%s-%s', $i, $key, $this->id);
                 $isSelected = !isset($arrSession[ $groupAlias ]) && $i===0 ? 'checked' : ($arrSession[ $groupAlias ] === $identifier ? 'checked' : '');
-                $index      = $isSelected ? $isSelected : $i;
+                $index      = $isSelected ?: $i;
 
                 $onClick = sprintf('onclick="Backend.getScrollOffset(); new Request.Contao().post({\'action\':\'selectStyleManagerSection\', \'id\':\'%s\', \'groupAlias\':\'%s\', \'identifier\':\'%s\', \'REQUEST_TOKEN\':\'%s\'});"',
                     $this->id,
@@ -288,26 +301,26 @@ class ComponentStyleSelect extends \Widget
             $this->varValue = $arrValue;
         }
 
-        // Update css class fields on multi edit
-        if (\Input::get('act') === 'editAll')
+        $field   = StyleManager::getClassFieldNameByTable($this->strTable);
+        $objUser = BackendUser::getInstance();
+
+        // Update css class fields in case of multiple editing or if a user has no rights for the field
+        if ($field && (Input::get('act') === 'editAll' || !$objUser->hasAccess($this->strTable . '::' . $field, 'alexf')))
         {
-            if($field = StyleManager::getClassFieldNameByTable($this->strTable))
-            {
-                $stdClass = new \stdClass();
-                $stdClass->field = $field;
-                $stdClass->table = $this->strTable;
+            $stdClass = new \stdClass();
+            $stdClass->field = $field;
+            $stdClass->table = $this->strTable;
 
-                $stdClass->activeRecord = new \stdClass();
-                $stdClass->activeRecord->styleManager = $this->varValue;
+            $stdClass->activeRecord = new \stdClass();
+            $stdClass->activeRecord->styleManager = $this->varValue;
 
-                $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
-                $value = StyleManager::updateClasses($value, $stdClass);
-                $value = StyleManager::isMultipleField($field) ? serialize($value) : $value;
+            $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
+            $value = StyleManager::updateClasses($value, $stdClass);
+            $value = StyleManager::isMultipleField($field) ? serialize($value) : $value;
 
-                // Update css class field
-                \Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
-                    ->execute($value, $this->activeRecord->id);
-            }
+            // Update css class field
+            Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
+                ->execute($value, $this->activeRecord->id);
         }
     }
 
@@ -318,7 +331,7 @@ class ComponentStyleSelect extends \Widget
      */
     private function renderEmptyMessage()
     {
-        \System::loadLanguageFile('tl_style_manager');
+        System::loadLanguageFile('tl_style_manager');
         return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
     }
 }
