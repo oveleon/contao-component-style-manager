@@ -145,7 +145,7 @@ class StyleManager
 
         if(self::isMultipleField($dc->field))
         {
-            $varValue = array($cssID[0], $varValue);
+            $varValue = serialize(array($cssID[0], $varValue));
         }
 
         return $varValue;

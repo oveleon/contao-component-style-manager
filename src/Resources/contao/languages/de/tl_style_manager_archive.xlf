@@ -14,13 +14,25 @@
         <source>Add category</source>
         <target>Neue Kategorie</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.new.1">
+        <source>Create new category</source>
+        <target>Neue Kategorie erstellen.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.import.0">
         <source>Import</source>
         <target>Importieren</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.import.1">
+        <source>Import a config</source>
+        <target>Konfiguration importieren</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.export.0">
         <source>Export</source>
         <target>Exportieren</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.export.1">
+        <source>Export a config</source>
+        <target>Konfiguration exportieren</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.source.0">
         <source>Source files</source>
@@ -30,17 +42,41 @@
         <source>Here you can upload one .xml file to be imported.</source>
         <target>Hier können Sie eine .xml-Datei für den Import hochladen.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.editheader.0">
+        <source>Edit category</source>
+        <target>Kategorie bearbeiten</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.editheader.1">
         <source>Edit category</source>
         <target>Kategorie bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.edit.0">
+        <source>Edit group</source>
+        <target>Gruppe bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.edit.1">
+        <source>Edit group</source>
+        <target>Gruppe bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.copy.0">
+        <source>Copy category</source>
+        <target>Kategorie kopieren</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.copy.1">
         <source>Copy category</source>
         <target>Kategorie kopieren</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.delete.0">
+        <source>Delete category</source>
+        <target>Kategorie löschen</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.delete.1">
         <source>Delete category</source>
         <target>Kategorie löschen</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.show.0">
+        <source>Show category info</source>
+        <target>Kategorieinformatinoen anzeigen</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.show.1">
         <source>Show category info</source>

@@ -9,6 +9,10 @@
         <source>The Alias &quot;%s&quot; already exists within this category!</source>
         <target>Der Alias &quot;%s&quot; existiert bereits innerhalb dieser Kategorie!</target>
       </trans-unit>
+      <trans-unit id="ERR.noStyleManagerConfigFound">
+        <source>No style manager config found!</source>
+        <target>Keine Konfiguration für den Style-Manager gefunden!</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
