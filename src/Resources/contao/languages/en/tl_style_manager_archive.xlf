@@ -68,6 +68,12 @@
       <trans-unit id="tl_style_manager_archive.title.1">
         <source>Title or category name.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.desc.0">
+        <source>Description</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.desc.1">
+        <source>Here you can enter a description for your CSS groups contained in this category. The description is displayed above the fields.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.identifier.0">
         <source>Identifier</source>
       </trans-unit>

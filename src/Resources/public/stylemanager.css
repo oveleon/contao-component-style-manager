@@ -60,6 +60,15 @@
   content: "";
   display: table;
 }
+.widget.stylemanager .tab-content > div.desc {
+  padding-top: 13px;
+  padding-bottom: 20px;
+  margin-bottom: 7px;
+  min-height: auto;
+  color: #4c4c4c;
+  line-height: 1.3;
+  border-bottom: 1px solid #e6e6e8;
+}
 .widget.stylemanager .tab-content > hr {
   float: left;
   clear: both;
@@ -152,5 +161,3 @@
     width: calc(100% - 30px);
   }
 }
-
-/*# sourceMappingURL=stylemanager.css.map */

@@ -207,7 +207,7 @@ class Sync extends \Backend
                             $strName  = $archive->item($a)->getAttribute('title');
                             $strValue = $archive->item($a)->nodeValue;
 
-                            if($strName === 'id')
+                            if($strName === 'id' || strtolower($strValue) === 'null')
                             {
                                 continue;
                             }

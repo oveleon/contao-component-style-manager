@@ -66,6 +66,7 @@ class ComponentStyleSelect extends Widget
             $arrArchives[ $objStyleArchives->id ] = array(
                 'title'      => $objStyleArchives->title,
                 'identifier' => $objStyleArchives->identifier,
+                'desc'       => $objStyleArchives->desc,
                 'group'      => $objStyleArchives->groupAlias,
                 'model'      => $objStyleArchives->current()
             );
@@ -192,6 +193,7 @@ class ComponentStyleSelect extends Widget
             {
                 $arrCollection[ $collectionAlias ] = array(
                     'label'  => $arrArchives[ $objStyleGroups->pid ]['title'],
+                    'desc'   => $arrArchives[ $objStyleGroups->pid ]['desc'],
                     'group'  => $groupAlias,
                     'fields' => array()
                 );
@@ -264,8 +266,9 @@ class ComponentStyleSelect extends Widget
                     $group['label']
                 );
 
-                $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s</div>',
+                $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s%s</div>',
                     $identifier,
+                    (trim($group['desc']) ? '<div class="long desc">' . $this->replaceInsertTags(nl2br($group['desc'])) . '</div>' : ''),
                     implode("", $group['fields'])
                 );
 
