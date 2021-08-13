@@ -90,6 +90,14 @@
         <source>Title or category name.</source>
         <target>Titel oder Kategoriename.</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.desc.0">
+        <source>Description</source>
+        <target>Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.desc.1">
+        <source>Here you can enter a description for your CSS groups contained in this category. The description is displayed above the fields.</source>
+        <target>Hier kannst du eine Beschreibung für deine in dieser Kategorie enthaltenen CSS-Gruppen hinterlegen. Die Beschreibung wird oberhalb der Felder angezeigt.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.identifier.0">
         <source>Identifier</source>
         <target>Kennung</target>
@@ -112,7 +120,7 @@
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.sorting.1">
         <source>Enter a freely definable number here to define the sort index. This is used to determine the order of the categories in the backend.</source>
-        <target>Geben Sie hier frei definierbare Zahl ein, um den Sortierindex zu definieren. Dieser dient dazu, die Reihenfolge der Kategorien im Backend zu bestimmen.</target>
+        <target>Geben Sie hier eine frei definierbare Zahl ein, um den Sortierindex zu definieren. Dieser dient dazu, die Reihenfolge der Kategorien im Backend zu bestimmen.</target>
       </trans-unit>
     </body>
   </file>

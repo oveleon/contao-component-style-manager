@@ -13,6 +13,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @property integer $id
  * @property integer $tstamp
  * @property string  $title
+ * @property string  $desc
  * @property string  $identifier
  * @property string  $groupAlias
  * @property string  $description
