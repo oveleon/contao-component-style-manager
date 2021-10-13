@@ -247,7 +247,8 @@ class ComponentStyleSelect extends Widget
             foreach ($groups as $key => $group)
             {
                 $identifier = sprintf('%s-%s-%s', $i, $key, $this->id);
-                $isSelected = !isset($arrSession[ $groupAlias ]) && $i===0 ? 'checked' : ($arrSession[ $groupAlias ] === $identifier ? 'checked' : '');
+                $sessionAlias = $arrSession[ $groupAlias ] ?? null;
+                $isSelected = !isset($sessionAlias) && $i===0 ? 'checked' : ($sessionAlias === $identifier ? 'checked' : '');
                 $index      = $isSelected ?: $i;
 
                 $onClick = sprintf('onclick="Backend.getScrollOffset(); new Request.Contao().post({\'action\':\'selectStyleManagerSection\', \'id\':\'%s\', \'groupAlias\':\'%s\', \'identifier\':\'%s\', \'REQUEST_TOKEN\':\'%s\'});"',
