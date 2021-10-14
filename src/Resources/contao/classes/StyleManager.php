@@ -7,8 +7,10 @@
 
 namespace Oveleon\ContaoComponentStyleManager;
 
+use Contao\Backend;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
+use Contao\Widget;
 
 class StyleManager
 {
@@ -86,7 +88,7 @@ class StyleManager
         if(self::isMultipleField($dc->field))
         {
             $cssID = StringUtil::deserialize($varValue, true);
-            $varValue = $cssID[1];
+            $varValue = $cssID[1] ?? '';
         }
 
         $arrValues = StringUtil::deserialize($dc->activeRecord->styleManager, true);
@@ -109,7 +111,7 @@ class StyleManager
 
         if(self::isMultipleField($dc->field))
         {
-            $varValue = serialize(array($cssID[0], $varValue));
+            $varValue = serialize(array($cssID[0] ?? '', $varValue));
         }
 
         return $varValue;
@@ -128,7 +130,7 @@ class StyleManager
         if(self::isMultipleField($dc->field))
         {
             $cssID = StringUtil::deserialize($varValue, true);
-            $varValue = $cssID[1];
+            $varValue = $cssID[1] ?? '';
         }
 
         $varValues = StringUtil::deserialize($dc->activeRecord->styleManager, true);
@@ -145,7 +147,7 @@ class StyleManager
 
         if(self::isMultipleField($dc->field))
         {
-            $varValue = serialize(array($cssID[0], $varValue));
+            $varValue = serialize(array($cssID[0] ?? '', $varValue));
         }
 
         return $varValue;
@@ -165,7 +167,7 @@ class StyleManager
         if(self::isMultipleField($dc->field))
         {
             $cssID = StringUtil::deserialize($varValue, true);
-            $varValue = $cssID[1];
+            $varValue = $cssID[1] ?? '';
         }
 
         $objStyles = StyleManagerModel::findByTable($strTable);
@@ -196,7 +198,7 @@ class StyleManager
 
         if(self::isMultipleField($dc->field))
         {
-            $varValue = serialize(array($cssID[0], $varValue));
+            $varValue = serialize(array($cssID[0] ?? '', $varValue));
         }
 
         return $varValue;
@@ -264,7 +266,7 @@ class StyleManager
      */
     public static function getClassFieldNameByTable($strTable)
     {
-        \Backend::loadDataContainer($strTable);
+        Backend::loadDataContainer($strTable);
 
         foreach (self::$validCssClassFields as $field => $size)
         {
@@ -427,11 +429,11 @@ class StyleManager
      *
      * @param $strRegexp
      * @param $varValue
-     * @param \Widget $objWidget
+     * @param Widget $objWidget
      *
      * @return bool
      */
-    public function addVariableRegexp($strRegexp, $varValue, \Widget $objWidget)
+    public function addVariableRegexp($strRegexp, $varValue, Widget $objWidget)
     {
         if ($strRegexp == 'variable')
         {
