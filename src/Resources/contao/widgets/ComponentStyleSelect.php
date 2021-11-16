@@ -138,10 +138,24 @@ class ComponentStyleSelect extends Widget
             $opts = StringUtil::deserialize($objStyleGroups->cssClasses);
 
             foreach ($opts as $opt) {
-                $arrFieldOptions[] = array(
+                $option = array(
                     'label' => $opt['value'] ?: $opt['key'],
                     'value' => $opt['key']
                 );
+
+                // skip third-party fields
+                if (isset($GLOBALS['TL_HOOKS']['styleManagerGetDynamicFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGetDynamicFieldOptions']))
+                {
+                    foreach ($GLOBALS['TL_HOOKS']['styleManagerGetDynamicFieldOptions'] as $callback)
+                    {
+                        if($optionCallback = System::importStatic($callback[0])->{$callback[1]}($option, $objStyleGroups->current(), $this))
+                        {
+                            $option = $optionCallback;
+                        }
+                    }
+                }
+
+                $arrFieldOptions[] = $option;
             }
 
             // set options
