@@ -1,0 +1,38 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/explain.php" source-language="en" target-language="fr">
+    <body>
+      <trans-unit id="XPL.styleManagerFieldClass.0.0">
+        <source>colspan</source>
+        <target>colspan</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.0.1">
+        <source>To further customize the display of the backend fields, you can enter a selection of predefined CSS classes here:</source>
+        <target>Pour personnaliser l'affichage des champs back-office, vous pouvez sélectionner des classes CSS pré-définies ici :</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.1.0">
+        <source>long</source>
+        <target>long</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.1.1">
+        <source>Displays the field with 100% width.</source>
+        <target>Affiche le champ en largeur 100%.</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.2.0">
+        <source>clr</source>
+        <target>clr</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.2.1">
+        <source>Cancels all floats and breaks the element into the next line.</source>
+        <target>Annule toutes les classes float et pousse l'élément à la ligne suivante.</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.3.0">
+        <source>separator</source>
+        <target>separator</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.3.1">
+        <source>Cancels all floats and breaks the element into the next line. Additionally a line is added to create meaningful sections.</source>
+        <target>Annule toutes les classes float et pousse l'élément à la ligne suivante. Ajoute également une ligne pour créer des sections explicitement.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
