@@ -123,7 +123,7 @@ class ComponentStyleSelect extends Widget
                 }
             }
 
-            // skip third-party fields
+            // dynamically change or expand group options
             if (isset($GLOBALS['TL_HOOKS']['styleManagerSkipField']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerSkipField']))
             {
                 foreach ($GLOBALS['TL_HOOKS']['styleManagerSkipField'] as $callback)
