@@ -144,9 +144,9 @@ class ComponentStyleSelect extends Widget
                 );
 
                 // skip third-party fields
-                if (isset($GLOBALS['TL_HOOKS']['styleManagerGetDynamicFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGetDynamicFieldOptions']))
+                if (isset($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
                 {
-                    foreach ($GLOBALS['TL_HOOKS']['styleManagerGetDynamicFieldOptions'] as $callback)
+                    foreach ($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions'] as $callback)
                     {
                         if($optionCallback = System::importStatic($callback[0])->{$callback[1]}($option, $objStyleGroups->current(), $this))
                         {
