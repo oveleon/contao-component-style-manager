@@ -123,7 +123,7 @@ class ComponentStyleSelect extends Widget
                 }
             }
 
-            // dynamically change or expand group options
+            // skip third-party fields
             if (isset($GLOBALS['TL_HOOKS']['styleManagerSkipField']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerSkipField']))
             {
                 foreach ($GLOBALS['TL_HOOKS']['styleManagerSkipField'] as $callback)
@@ -143,19 +143,19 @@ class ComponentStyleSelect extends Widget
                     'value' => $opt['key']
                 );
 
-                // skip third-party fields
-                if (isset($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
+                $arrFieldOptions[] = $option;
+            }
+
+            // dynamically change or expand group options
+            if (isset($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
+            {
+                foreach ($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions'] as $callback)
                 {
-                    foreach ($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions'] as $callback)
+                    if($optionCallback = System::importStatic($callback[0])->{$callback[1]}($arrFieldOptions, $objStyleGroups->current(), $this))
                     {
-                        if($optionCallback = System::importStatic($callback[0])->{$callback[1]}($option, $objStyleGroups->current(), $this))
-                        {
-                            $option = $optionCallback;
-                        }
+                        $arrFieldOptions = $optionCallback;
                     }
                 }
-
-                $arrFieldOptions[] = $option;
             }
 
             // set options
