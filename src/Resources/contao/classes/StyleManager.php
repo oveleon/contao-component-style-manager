@@ -111,7 +111,7 @@ class StyleManager
 
         if(self::isMultipleField($dc->field))
         {
-            $varValue = serialize(array($cssID[0] ?? '', $varValue));
+            $varValue = serialize(array(($cssID[0] ?? ''), $varValue));
         }
 
         return $varValue;
@@ -147,7 +147,7 @@ class StyleManager
 
         if(self::isMultipleField($dc->field))
         {
-            $varValue = serialize(array($cssID[0] ?? '', $varValue));
+            $varValue = serialize(array(($cssID[0] ?? ''), $varValue));
         }
 
         return $varValue;
@@ -198,7 +198,7 @@ class StyleManager
 
         if(self::isMultipleField($dc->field))
         {
-            $varValue = serialize(array($cssID[0] ?? '', $varValue));
+            $varValue = serialize(array(($cssID[0] ?? ''), $varValue));
         }
 
         return $varValue;
@@ -374,6 +374,23 @@ class StyleManager
         }
 
         return $arrValue;
+    }
+
+    /**
+     * Adding template variables defined in pages and layouts
+     *
+     * @param $objPage
+     * @param $objLayout
+     * @param $page
+     */
+    public function onGeneratePage($objPage, $objLayout, &$page)
+    {
+        $arrStyles = array_filter(array_merge_recursive(
+            StringUtil::deserialize($objPage->styleManager, true),
+            StringUtil::deserialize($objLayout->styleManager, true)
+        ));
+
+        $page->Template->styleManager = serialize($arrStyles);
     }
 
     /**

@@ -45,7 +45,7 @@ Search for `oveleon/contao-component-style-manager` in the Contao Manager and ad
 
 #### Manual installation
 ```
-$ composer require oveleon/contao-component-style-manager
+composer require oveleon/contao-component-style-manager
 ```
 
 ## Documentation
