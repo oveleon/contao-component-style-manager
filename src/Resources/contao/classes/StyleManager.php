@@ -377,29 +377,26 @@ class StyleManager
     }
 
     /**
-     * Adding template variables defined in pages and layouts
-     *
-     * @param $objPage
-     * @param $objLayout
-     * @param $page
-     */
-    public function onGeneratePage($objPage, $objLayout, &$page)
-    {
-        $arrStyles = array_filter(array_merge_recursive(
-            StringUtil::deserialize($objPage->styleManager, true),
-            StringUtil::deserialize($objLayout->styleManager, true)
-        ));
-
-        $page->Template->styleManager = serialize($arrStyles);
-    }
-
-    /**
      * Parse Template and set Variables
      *
      * @param $template
      */
     public function onParseTemplate($template)
     {
+        // Check page and template variables to pass them to the template
+        if(strpos($template->getName(), 'fe_page') === 0)
+        {
+            global $objPage;
+
+            $arrStyles = array_filter(array_merge_recursive(
+                StringUtil::deserialize($objPage->styleManager, true),
+                StringUtil::deserialize($template->layout->styleManager, true)
+            ));
+
+            $template->styleManager = serialize($arrStyles);
+        }
+
+        // Build Styles object and assign it to the template
         if(!($template->styleManager instanceof Styles))
         {
             $arrStyles = StringUtil::deserialize($template->styleManager);

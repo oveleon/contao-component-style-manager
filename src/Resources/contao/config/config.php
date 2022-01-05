@@ -31,7 +31,6 @@ $GLOBALS['TL_MODELS']['tl_style_manager_archive'] = '\\Oveleon\\ContaoComponentS
 
 // Hooks
 $GLOBALS['TL_HOOKS']['parseTemplate'][]      = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onParseTemplate');
-$GLOBALS['TL_HOOKS']['generatePage'][]       = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onGeneratePage');
 $GLOBALS['TL_HOOKS']['loadFormField'][]      = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoadFormField');
 $GLOBALS['TL_HOOKS']['addCustomRegexp'][]    = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addVariableRegexp');
 $GLOBALS['TL_HOOKS']['executePostActions'][] = array('\\Oveleon\\ContaoComponentStyleManager\\Ajax', 'executePostActions');

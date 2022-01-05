@@ -47,7 +47,7 @@ class Styles
      */
     public function get($identifier, $arrGroups=null)
     {
-        if($this->styles === null || !is_array($this->styles[ $identifier ]))
+        if($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
         {
             return '';
         }
