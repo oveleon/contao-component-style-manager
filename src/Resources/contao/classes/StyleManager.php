@@ -8,8 +8,11 @@
 namespace Oveleon\ContaoComponentStyleManager;
 
 use Contao\Backend;
+use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
+use Contao\System;
+use Contao\TemplateLoader;
 use Contao\Widget;
 
 class StyleManager
@@ -377,6 +380,64 @@ class StyleManager
     }
 
     /**
+     * Load configuration files from third-party bundles and return them as array
+     */
+    public static function loadBundleConfiguration(): ?array
+    {
+        if($arrFiles = self::getBundleConfigurationFiles())
+        {
+            $sync = new Sync();
+            return $sync->importStyleManagerFile($arrFiles, false);
+        }
+
+        return null;
+    }
+
+    /**
+     * Return all configuration files from third-party bundles
+     */
+    public static function getBundleConfigurationFiles(): ?array
+    {
+        $arrFiles = Controller::getContainer()->get('contao.resource_finder')->findIn('templates')->files()->name('style-manager-*.xml');
+
+        if($arrFiles->hasResults())
+        {
+            $projectDir = System::getContainer()->getParameter('kernel.project_dir');
+            $arrBundleConfigs = null;
+
+            foreach ($arrFiles as $file)
+            {
+                $strRelpath = $file->getRealPath();
+                $arrBundleConfigs[basename($strRelpath)] = str_replace($projectDir, '', $strRelpath);
+            }
+
+            return $arrBundleConfigs;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check whether an element is visible in style manager widget
+     */
+    public static function isVisibleGroup(StyleManagerModel $objGroup, string $strTable): bool
+    {
+        if(
+            'tl_layout' === $strTable && !!$objGroup->extendLayout ||
+            'tl_page' === $strTable && !!$objGroup->extendPage ||
+            'tl_module' === $strTable && !!$objGroup->extendModule ||
+            'tl_article' === $strTable && !!$objGroup->extendArticle ||
+            'tl_form' === $strTable && !!$objGroup->extendForm ||
+            'tl_form_field' === $strTable && !!$objGroup->extendFormFields ||
+            'tl_content' === $strTable && !!$objGroup->extendContentElement ||
+            'tl_news' === $strTable && !!$objGroup->extendNews ||
+            'tl_calendar_events' === $strTable && !!$objGroup->extendEvents
+        ){ return true; }
+
+        return false;
+    }
+
+    /**
      * Parse Template and set Variables
      *
      * @param $template
@@ -447,7 +508,7 @@ class StyleManager
      *
      * @return bool
      */
-    public function addVariableRegexp($strRegexp, $varValue, Widget $objWidget)
+    public function addVariableRegexp($strRegexp, $varValue, Widget $objWidget): bool
     {
         if ($strRegexp == 'variable')
         {

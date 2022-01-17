@@ -7,7 +7,20 @@
 
 namespace Oveleon\ContaoComponentStyleManager;
 
-class Sync extends \Backend
+use ContainerFDoeHNy\get_ServiceLocator_ZcNHns_Contao_Fragment_Contao_ContentElement_MarkdownService;
+use Contao\Backend;
+use Contao\Config;
+use Contao\DataContainer;
+use Contao\Environment;
+use Contao\File;
+use Contao\FileUpload;
+use Contao\Input;
+use Contao\Message;
+use Contao\Model\Collection;
+use Contao\StringUtil;
+use Contao\System;
+
+class Sync extends Backend
 {
     /**
      * @var string
@@ -20,7 +33,7 @@ class Sync extends \Backend
     public function __construct()
     {
         parent::__construct();
-        $this->strRootDir = \System::getContainer()->getParameter('kernel.project_dir');
+        $this->strRootDir = System::getContainer()->getParameter('kernel.project_dir');
     }
 
     /**
@@ -32,20 +45,20 @@ class Sync extends \Backend
      */
     public function importStyleManager()
     {
-        \Config::set('uploadTypes', \Config::get('uploadTypes') . ',xml');
+        Config::set('uploadTypes', Config::get('uploadTypes') . ',xml');
 
-        /** @var \FileUpload $objUploader */
-        $objUploader = new \FileUpload();
+        /** @var FileUpload $objUploader */
+        $objUploader = new FileUpload();
 
-        if (\Input::post('FORM_SUBMIT') == 'tl_style_manager_import')
+        if (Input::post('FORM_SUBMIT') == 'tl_style_manager_import')
         {
-            if (!\Input::post('confirm'))
+            if (!Input::post('confirm'))
             {
                 $arrUploaded = $objUploader->uploadTo('system/tmp');
 
                 if (empty($arrUploaded))
                 {
-                    \Message::addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
+                    Message::addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
                     $this->reload();
                 }
 
@@ -56,16 +69,16 @@ class Sync extends \Backend
                     // Skip folders
                     if (is_dir($this->strRootDir . '/' . $strFile))
                     {
-                        \Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['importFolder'], basename($strFile)));
+                        Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['importFolder'], basename($strFile)));
                         continue;
                     }
 
-                    $objFile = new \File($strFile);
+                    $objFile = new File($strFile);
 
                     // Skip anything but .xml files
                     if ($objFile->extension != 'xml')
                     {
-                        \Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $objFile->extension));
+                        Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $objFile->extension));
                         continue;
                     }
 
@@ -76,7 +89,7 @@ class Sync extends \Backend
             // Check whether there are any files
             if (empty($arrFiles))
             {
-                \Message::addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
+                Message::addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
                 $this->reload();
             }
 
@@ -84,15 +97,15 @@ class Sync extends \Backend
         }
 
         // Return the form
-        return \Message::generate() . '
+        return Message::generate() . '
 <div id="tl_buttons">
-<a href="' . ampersand(str_replace('&key=import', '', \Environment::get('request'))) . '" class="header_back" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) . '" accesskey="b">' . $GLOBALS['TL_LANG']['MSC']['backBT'] . '</a>
+<a href="' . ampersand(str_replace('&key=import', '', Environment::get('request'))) . '" class="header_back" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) . '" accesskey="b">' . $GLOBALS['TL_LANG']['MSC']['backBT'] . '</a>
 </div>
-<form action="' . ampersand(\Environment::get('request')) . '" id="tl_style_manager_import" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+<form action="' . ampersand(Environment::get('request')) . '" id="tl_style_manager_import" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_style_manager_import">
 <input type="hidden" name="REQUEST_TOKEN" value="' . REQUEST_TOKEN . '">
-<input type="hidden" name="MAX_FILE_SIZE" value="' . \Config::get('maxFileSize') . '">
+<input type="hidden" name="MAX_FILE_SIZE" value="' . Config::get('maxFileSize') . '">
 
 <div class="tl_tbox">
   <div class="widget">
@@ -116,15 +129,19 @@ class Sync extends \Backend
     /**
      * Import StyleManager data from file
      *
-     * @param $arrFiles
+     * @param array $arrFiles
+     * @param bool $blnSave
      *
      * @throws \Exception
      */
-    public function importStyleManagerFile(array $arrFiles)
+    public function importStyleManagerFile(array $arrFiles, bool $blnSave = true): ?array
     {
+        $arrStyleArchives = [];
+        $arrStyleGroups = [];
+
         foreach ($arrFiles as $strFilePath)
         {
-            $objFile = new \File($strFilePath);
+            $objFile = new File($strFilePath);
 
             // Load the XML file
             if ($objFile->exists())
@@ -136,7 +153,7 @@ class Sync extends \Backend
                 // Continue if there is no XML file
                 if (!$xml instanceof \DOMDocument)
                 {
-                    \Message::addError(sprintf($GLOBALS['TL_LANG']['tl_theme']['missing_xml'], basename($strFilePath)));
+                    Message::addError(sprintf($GLOBALS['TL_LANG']['tl_theme']['missing_xml'], basename($strFilePath)));
                     continue;
                 }
 
@@ -148,7 +165,7 @@ class Sync extends \Backend
                 }
                 else
                 {
-                    return;
+                    return null;
                 }
 
                 // Lock the tables
@@ -164,7 +181,10 @@ class Sync extends \Backend
                     $this->loadDataContainer($table);
                 }
 
-                $this->Database->lockTables($arrLocks);
+                if($blnSave)
+                {
+                    $this->Database->lockTables($arrLocks);
+                }
 
                 // Get the current auto_increment values
                 $intArchiveId  = $this->Database->getNextId('tl_style_manager_archive');
@@ -252,9 +272,9 @@ class Sync extends \Backend
                                         case 'cssClasses':
                                             if($objChildren->{$strName})
                                             {
-                                                $arrClasses = \StringUtil::deserialize($objChildren->{$strName}, true);
+                                                $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
                                                 $arrExists  = $this->flattenKeyValueArray($arrClasses);
-                                                $arrValues  = \StringUtil::deserialize($strValue, true);
+                                                $arrValues  = StringUtil::deserialize($strValue, true);
 
                                                 foreach($arrValues as $cssClass)
                                                 {
@@ -278,8 +298,8 @@ class Sync extends \Backend
 
                                             if(isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
                                             {
-                                                $arrElements = \StringUtil::deserialize($objChildren->{$strName}, true);
-                                                $arrValues   = \StringUtil::deserialize($strValue, true);
+                                                $arrElements = StringUtil::deserialize($objChildren->{$strName}, true);
+                                                $arrValues   = StringUtil::deserialize($strValue, true);
 
                                                 foreach($arrValues as $element)
                                                 {
@@ -299,29 +319,53 @@ class Sync extends \Backend
                                 }
 
                                 // Save children data
-                                $objChildren->save();
+                                if($blnSave)
+                                {
+                                    $objChildren->save();
+                                }
+                                else
+                                {
+                                    $arrStyleGroups[] = $objChildren->current();
+                                }
                             }
                         }
                     }
 
                     // Save archive data
-                    $objArchive->save();
+                    if($blnSave)
+                    {
+                        $objArchive->save();
+                    }
+                    else
+                    {
+                        $arrStyleArchives[] = $objArchive->current();
+                    }
                 }
 
                 // Unlock the tables
-                $this->Database->unlockTables();
+                if($blnSave)
+                {
+                    $this->Database->unlockTables();
+                }
             }
         }
+
+        if($blnSave)
+        {
+            return null;
+        }
+
+        return [$arrStyleArchives, $arrStyleGroups];
     }
 
     /**
      * Export StyleManager data
      *
-     * @param \DataContainer $dc
+     * @param DataContainer $dc
      *
      * @throws \Exception
      */
-    public function exportStyleManager(\DataContainer $dc)
+    public function exportStyleManager(DataContainer $dc)
     {
         // Create a new XML document
         $xml = new \DOMDocument('1.0', 'UTF-8');
@@ -332,7 +376,7 @@ class Sync extends \Backend
 
         if (null === $objArchive)
         {
-            \Message::addError($GLOBALS['TL_LANG']['ERR']['noStyleManagerConfigFound']);
+            Message::addError($GLOBALS['TL_LANG']['ERR']['noStyleManagerConfigFound']);
             self::redirect(self::getReferer());
         }
 
@@ -350,7 +394,7 @@ class Sync extends \Backend
         $strTmp = md5(uniqid(mt_rand(), true));
 
         // Create file and open the "save as …" dialogue
-        $objFile = new \File('system/tmp/' . $strTmp);
+        $objFile = new File('system/tmp/' . $strTmp);
         $objFile->write($xml->saveXML());
         $objFile->close();
 
@@ -362,9 +406,9 @@ class Sync extends \Backend
      *
      * @param \DOMDocument $xml
      * @param \DOMNode $archives
-     * @param \Model\Collection $objArchive
+     * @param Collection $objArchive
      */
-    protected function addArchiveData(\DOMDocument $xml, \DOMNode $archives, \Model\Collection $objArchive)
+    protected function addArchiveData(\DOMDocument $xml, \DOMNode $archives, Collection $objArchive)
     {
         $this->loadDataContainer('tl_style_manager_archive');
 

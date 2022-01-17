@@ -18,6 +18,7 @@
     }
   ],
   "require":{
+    "ext-dom": "*",
     "contao/core-bundle":"^4.4"
   },
   "require-dev": {
