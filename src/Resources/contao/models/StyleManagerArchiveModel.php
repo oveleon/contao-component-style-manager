@@ -7,6 +7,9 @@
 
 namespace Oveleon\ContaoComponentStyleManager;
 
+use Contao\Controller;
+use Contao\System;
+
 /**
  * Reads and writes fields from style manager categories
  *
@@ -48,4 +51,35 @@ class StyleManagerArchiveModel extends \Model
      * @var string
      */
     protected static $strTable = 'tl_style_manager_archive';
+
+    /**
+     * Find configuration archives and published archives
+     *
+     * @return \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null An array of models or null if there are no archive
+     */
+    public static function findAllWithConfiguration(array $arrOptions=array())
+    {
+        $objArchives = static::findAll($arrOptions);
+
+        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        {
+            $bundleConfig = Config::getInstance();
+            $arrArchives = $bundleConfig::getArchives();
+
+            if(null !== $arrArchives)
+            {
+                if(null !== $objArchives)
+                {
+                    return array_merge(
+                        $objArchives->getModels(),
+                        $arrArchives
+                    );
+                }
+
+                return $arrArchives;
+            }
+        }
+
+        return $objArchives;
+    }
 }

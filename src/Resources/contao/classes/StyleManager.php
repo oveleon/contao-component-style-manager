@@ -173,14 +173,14 @@ class StyleManager
             $varValue = $cssID[1] ?? '';
         }
 
-        $objStyles = StyleManagerModel::findByTable($strTable);
+        $objStyles = StyleManagerModel::findByTableAndConfiguration($strTable);
         $arrStyles = array();
 
         if($objStyles !== null)
         {
-            while($objStyles->next())
+            foreach($objStyles as $objStyle)
             {
-                $arrGroup = StringUtil::deserialize($objStyles->cssClasses, true);
+                $arrGroup = StringUtil::deserialize($objStyle->cssClasses, true);
 
                 foreach ($arrGroup as $opts)
                 {
@@ -217,21 +217,21 @@ class StyleManager
     {
         if(is_array($arrValues))
         {
-            $objStyles = StyleManagerModel::findByTable($strTable);
+            $objStyles = StyleManagerModel::findByTableAndConfiguration($strTable);
 
             if($objStyles !== null)
             {
                 $arrExistingKeys = array();
                 $arrExistingValues = array();
 
-                while($objStyles->next())
+                foreach($objStyles as $objStyle)
                 {
-                    $arrExistingKeys[] = $objStyles->id;
+                    $arrExistingKeys[] = $objStyle->id;
 
                     // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                    $arrExistingKeys[] = $objStyles->alias;
+                    $arrExistingKeys[] = $objStyle->alias;
 
-                    $arrGroup = StringUtil::deserialize($objStyles->cssClasses, true);
+                    $arrGroup = StringUtil::deserialize($objStyle->cssClasses, true);
 
                     foreach ($arrGroup as $opts)
                     {
@@ -303,7 +303,7 @@ class StyleManager
      * @return array|bool
      */
     public static function serializeValues($varValue, $strTable){
-        $objStyleGroups = StyleManagerModel::findByTable($strTable);
+        $objStyleGroups = StyleManagerModel::findByTableAndConfiguration($strTable);
 
         if($objStyleGroups === null)
         {
@@ -311,12 +311,12 @@ class StyleManager
         }
 
         $arrArchives = array();
-        $objStyleArchives = StyleManagerArchiveModel::findAll();
+        $objStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration();
 
         // Prepare archives identifier
-        while($objStyleArchives->next())
+        foreach($objStyleArchives as $objStyleArchive)
         {
-            $arrArchives[ $objStyleArchives->id ] =  $objStyleArchives->identifier;
+            $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
         }
 
         // Remove unused classes
@@ -325,20 +325,20 @@ class StyleManager
         });
 
         // Rebuild array for template variables
-        while($objStyleGroups->next())
+        foreach($objStyleGroups as $objStyleGroup)
         {
-            if(array_key_exists($objStyleGroups->id, $arrValue))
+            if(array_key_exists($objStyleGroup->id, $arrValue))
             {
-                if(!!$objStyleGroups->passToTemplate)
+                if(!!$objStyleGroup->passToTemplate)
                 {
-                    $identifier = $arrArchives[ $objStyleGroups->pid ];
+                    $identifier = $arrArchives[ $objStyleGroup->pid ];
 
-                    $arrValue['__vars__'][ $identifier ][ $objStyleGroups->alias ] = array(
-                        'id'    => $objStyleGroups->id,
-                        'value' => $arrValue[ $objStyleGroups->id ]
+                    $arrValue['__vars__'][ $identifier ][ $objStyleGroup->alias ] = array(
+                        'id'    => $objStyleGroup->id,
+                        'value' => $arrValue[ $objStyleGroup->id ]
                     );
 
-                    unset($arrValue[ $objStyleGroups->id ]);
+                    unset($arrValue[ $objStyleGroup->id ]);
                 }
             }
         }
@@ -380,44 +380,6 @@ class StyleManager
     }
 
     /**
-     * Load configuration files from third-party bundles and return them as array
-     */
-    public static function loadBundleConfiguration(): ?array
-    {
-        if($arrFiles = self::getBundleConfigurationFiles())
-        {
-            $sync = new Sync();
-            return $sync->importStyleManagerFile($arrFiles, false);
-        }
-
-        return null;
-    }
-
-    /**
-     * Return all configuration files from third-party bundles
-     */
-    public static function getBundleConfigurationFiles(): ?array
-    {
-        $arrFiles = Controller::getContainer()->get('contao.resource_finder')->findIn('templates')->files()->name('style-manager-*.xml');
-
-        if($arrFiles->hasResults())
-        {
-            $projectDir = System::getContainer()->getParameter('kernel.project_dir');
-            $arrBundleConfigs = null;
-
-            foreach ($arrFiles as $file)
-            {
-                $strRelpath = $file->getRealPath();
-                $arrBundleConfigs[basename($strRelpath)] = str_replace($projectDir, '', $strRelpath);
-            }
-
-            return $arrBundleConfigs;
-        }
-
-        return null;
-    }
-
-    /**
      * Check whether an element is visible in style manager widget
      */
     public static function isVisibleGroup(StyleManagerModel $objGroup, string $strTable): bool
@@ -433,6 +395,8 @@ class StyleManager
             'tl_news' === $strTable && !!$objGroup->extendNews ||
             'tl_calendar_events' === $strTable && !!$objGroup->extendEvents
         ){ return true; }
+
+        // ToDo: Hook
 
         return false;
     }

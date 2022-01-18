@@ -188,6 +188,7 @@ class Sync extends Backend
 
                 // Get the current auto_increment values
                 $intArchiveId  = $this->Database->getNextId('tl_style_manager_archive');
+                $intGroupId  = $this->Database->getNextId('tl_style_manager');
 
                 // Check if archive exists
                 $archiveExists = function (string $identifier) : bool
@@ -247,6 +248,7 @@ class Sync extends Backend
                                 if(!$childrenExists($alias, $objArchive->id))
                                 {
                                     $objChildren = new StyleManagerModel();
+                                    $objChildren->id = $intGroupId++;
                                 }
                                 else
                                 {

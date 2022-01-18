@@ -7,6 +7,10 @@
 
 namespace Oveleon\ContaoComponentStyleManager;
 
+use Contao\Controller;
+use Contao\Model;
+use Contao\System;
+
 /**
  * Reads and writes fields from style manager
  *
@@ -87,7 +91,7 @@ namespace Oveleon\ContaoComponentStyleManager;
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 
-class StyleManagerModel extends \Model
+class StyleManagerModel extends Model
 {
 
     /**
@@ -132,7 +136,7 @@ class StyleManagerModel extends \Model
                 {
                     foreach ($GLOBALS['TL_HOOKS']['styleManagerFindByTable'] as $callback)
                     {
-                        if (null !== ($result = \Contao\System::importStatic($callback[0])->{$callback[1]}($strTable, $arrOptions)))
+                        if (null !== ($result = System::importStatic($callback[0])->{$callback[1]}($strTable, $arrOptions)))
                         {
                             return $result;
                         }
@@ -141,6 +145,55 @@ class StyleManagerModel extends \Model
 
                 return null;
         }
+    }
+
+    /**
+     * Find configuration and published css groups using their table
+     *
+     * @param $strTable
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model\Collection|StyleManagerModel[]|StyleManagerModel|null An array of models or null if there are no css groups
+     */
+    public static function findByTableAndConfiguration($strTable, array $arrOptions=array())
+    {
+        $objGroups = static::findByTable($strTable, $arrOptions);
+
+        // Load and merge bundle configurations
+        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        {
+            $arrObjStyleGroups = null;
+
+            $bundleConfig = Config::getInstance();
+            $arrGroups = $bundleConfig::getGroups($strTable);
+
+            if(null !== $arrGroups)
+            {
+                $arrExistingGroupAliases = [];
+
+                if(null !== $objGroups)
+                {
+                    $arrExistingGroupAliases = $objGroups->fetchEach('alias');
+
+                    // Make Collection mutable
+                    $arrObjStyleGroups = $objGroups->getModels();
+                }
+
+                // Append bundle config groups
+                foreach ($arrGroups as $arrGroup)
+                {
+                    // Skip if the alias already exists in the backend configuration
+                    if(!\in_array($arrGroup->alias, $arrExistingGroupAliases))
+                    {
+                        $arrObjStyleGroups[] = $arrGroup;
+                    }
+                }
+            }
+
+            return $arrObjStyleGroups;
+        }
+
+        return $objGroups;
     }
 
     /**

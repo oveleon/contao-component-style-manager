@@ -47,51 +47,8 @@ class ComponentStyleSelect extends Widget
 	 */
 	public function generate()
 	{
-        $arrObjStyleArchives = StyleManagerArchiveModel::findAll(array('order'=>'sorting'));
-		$arrObjStyleGroups   = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid,sorting'));
-
-        /* * * * * *
-         *
-         * ToDo: As far as the values are loaded from the configuration, they cannot be restored in the StyleManager.
-         *
-         * * * * * */
-
-		// Load and merge bundle configurations
-		if($this->getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
-        {
-            // Load bundle config
-            [$arrStyleArchives, $arrStyleGroups] = StyleManager::loadBundleConfiguration();
-
-            if($arrStyleArchives !== null && $arrStyleGroups !== null)
-            {
-                if(null !== $arrObjStyleArchives)
-                {
-                    $arrObjStyleArchives = array_merge(
-                        $arrObjStyleArchives->getModels(),
-                        $arrStyleArchives
-                    );
-                }else $arrObjStyleArchives = $arrStyleArchives;
-
-                // Make Collection mutable
-                $arrExistingGroupAliases = [];
-
-                if(null !== $arrObjStyleGroups)
-                {
-                    $arrExistingGroupAliases = $arrObjStyleGroups->fetchEach('alias');
-                    $arrObjStyleGroups = $arrObjStyleGroups->getModels();
-                }
-
-                // Append bundle config groups
-                foreach ($arrStyleGroups as $arrStyleGroup)
-                {
-                    // Skip if the group is not allowed for the current table or the alias already exists in the backend configuration
-                    if(StyleManager::isVisibleGroup($arrStyleGroup, $this->strTable) && !\in_array($arrStyleGroup->alias, $arrExistingGroupAliases))
-                    {
-                        $arrObjStyleGroups[] = $arrStyleGroup;
-                    }
-                }
-            }
-        }
+        $arrObjStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration(array('order'=>'sorting'));
+		$arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
 
 		if($arrObjStyleGroups === null || $arrObjStyleArchives === null)
         {
