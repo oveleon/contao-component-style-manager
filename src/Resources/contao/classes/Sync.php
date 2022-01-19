@@ -139,13 +139,19 @@ class Sync extends Backend
         $arrStyleArchives = [];
         $arrStyleGroups = [];
 
+        // Get the next id
+        $intArchiveId  = $this->Database->getNextId('tl_style_manager_archive');
+        $intGroupId  = $this->Database->getNextId('tl_style_manager');
+
         foreach ($arrFiles as $strFilePath)
         {
+            // Open file
             $objFile = new File($strFilePath);
 
-            // Load the XML file
+            // Check if file exists
             if ($objFile->exists())
             {
+                // Load xml file
                 $xml = new \DOMDocument();
                 $xml->preserveWhiteSpace = false;
                 $xml->loadXML($objFile->getContent());
@@ -157,38 +163,31 @@ class Sync extends Backend
                     continue;
                 }
 
+                // Get archives node
                 $archives = $xml->getElementsByTagName('archives');
 
                 if($archives->count()){
                     // Skip archives node
                     $archives = $archives->item(0)->childNodes;
-                }
-                else
-                {
-                    return null;
-                }
-
-                // Lock the tables
-                $arrLocks = array
-                (
-                    'tl_style_manager_archive' => 'WRITE',
-                    'tl_style_manager'         => 'WRITE'
-                );
-
-                // Load the DCAs of the locked tables
-                foreach (array_keys($arrLocks) as $table)
-                {
-                    $this->loadDataContainer($table);
-                }
+                }else return null;
 
                 if($blnSave)
                 {
+                    // Lock the tables
+                    $arrLocks = array
+                    (
+                        'tl_style_manager_archive' => 'WRITE',
+                        'tl_style_manager'         => 'WRITE'
+                    );
+
+                    // Load the DCAs of the locked tables
+                    foreach (array_keys($arrLocks) as $table)
+                    {
+                        $this->loadDataContainer($table);
+                    }
+
                     $this->Database->lockTables($arrLocks);
                 }
-
-                // Get the current auto_increment values
-                $intArchiveId  = $this->Database->getNextId('tl_style_manager_archive');
-                $intGroupId  = $this->Database->getNextId('tl_style_manager');
 
                 // Check if archive exists
                 $archiveExists = function (string $identifier) : bool
@@ -208,7 +207,7 @@ class Sync extends Backend
                     $archive = $archives->item($i)->childNodes;
                     $identifier = $archives->item($i)->getAttribute('identifier');
 
-                    if(!$archiveExists($identifier))
+                    if(!$blnSave || !$archiveExists($identifier))
                     {
                         $objArchive = new StyleManagerArchiveModel();
                         $objArchive->id = ++$intArchiveId;
@@ -245,10 +244,10 @@ class Sync extends Backend
                                 $alias = $children->item($c)->getAttribute('alias');
                                 $fields = $children->item($c)->childNodes;
 
-                                if(!$childrenExists($alias, $objArchive->id))
+                                if(!$blnSave || !$childrenExists($alias, $objArchive->id))
                                 {
                                     $objChildren = new StyleManagerModel();
-                                    $objChildren->id = $intGroupId++;
+                                    $objChildren->id = ++$intGroupId;
                                 }
                                 else
                                 {

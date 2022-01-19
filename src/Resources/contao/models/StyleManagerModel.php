@@ -190,6 +190,14 @@ class StyleManagerModel extends Model
                 }
             }
 
+            if($arrObjStyleGroups)
+            {
+                // Sort by sorting
+                usort($arrObjStyleGroups, function($a, $b) {
+                    return ($a->sorting <=> $b->sorting);
+                });
+            }
+
             return $arrObjStyleGroups;
         }
 

@@ -70,11 +70,16 @@ class StyleManagerArchiveModel extends \Model
             {
                 if(null !== $objArchives)
                 {
-                    return array_merge(
+                    $arrArchives = array_merge(
                         $objArchives->getModels(),
                         $arrArchives
                     );
                 }
+
+                // Sort by sorting
+                usort($arrArchives, function($a, $b) {
+                    return $a->sorting <=> $b->sorting;
+                });
 
                 return $arrArchives;
             }

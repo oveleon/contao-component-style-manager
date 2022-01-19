@@ -145,8 +145,10 @@ class ComponentStyleSelect extends Widget
             }
 
             // set options
-            $strFieldId   = $this->strId . '_' . $objStyleGroup->id;
-            $strFieldName = $this->strName . '[' . $objStyleGroup->id . ']';
+
+            $strId        = StyleManager::generateAlias($arrArchives[ $objStyleGroup->pid ]['identifier'], $objStyleGroup->alias);
+            $strFieldId   = $this->strId . '_' . $strId;
+            $strFieldName = $this->strName . '[' . $strId . ']';
 
             foreach ($arrFieldOptions as $strKey=>$arrOption)
             {
@@ -156,7 +158,8 @@ class ComponentStyleSelect extends Widget
                         StringUtil::specialchars($arrOption['value']),
 
                         // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->alias ] ?? ''),
+                        //static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->alias ] ?? ''),
+                        static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
 
                         $arrOption['label']);
                 }
@@ -170,7 +173,8 @@ class ComponentStyleSelect extends Widget
                             StringUtil::specialchars($arrOptgroup['value']),
 
                             // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                            static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->alias ] ?? ''),
+                            //static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->alias ] ?? ''),
+                            static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
 
                             $arrOptgroup['label']);
                     }

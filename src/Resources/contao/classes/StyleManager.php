@@ -223,13 +223,19 @@ class StyleManager
             {
                 $arrExistingKeys = array();
                 $arrExistingValues = array();
+                $arrArchives = array();
+
+                $objStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration();
+
+                // Prepare archives identifier
+                foreach($objStyleArchives as $objStyleArchive)
+                {
+                    $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
+                }
 
                 foreach($objStyles as $objStyle)
                 {
-                    $arrExistingKeys[] = $objStyle->id;
-
-                    // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                    $arrExistingKeys[] = $objStyle->alias;
+                    $arrExistingKeys[] = self::generateAlias($arrArchives[ $objStyle->pid ], $objStyle->alias);
 
                     $arrGroup = StringUtil::deserialize($objStyle->cssClasses, true);
 
@@ -327,7 +333,9 @@ class StyleManager
         // Rebuild array for template variables
         foreach($objStyleGroups as $objStyleGroup)
         {
-            if(array_key_exists($objStyleGroup->id, $arrValue))
+            $strId = self::generateAlias($arrArchives[ $objStyleGroup->pid ], $objStyleGroup->alias);
+
+            if(array_key_exists($strId, $arrValue))
             {
                 if(!!$objStyleGroup->passToTemplate)
                 {
@@ -335,10 +343,10 @@ class StyleManager
 
                     $arrValue['__vars__'][ $identifier ][ $objStyleGroup->alias ] = array(
                         'id'    => $objStyleGroup->id,
-                        'value' => $arrValue[ $objStyleGroup->id ]
+                        'value' => $arrValue[ $strId ]
                     );
 
-                    unset($arrValue[ $objStyleGroup->id ]);
+                    unset($arrValue[ $strId ]);
                 }
             }
         }
@@ -357,19 +365,12 @@ class StyleManager
 
         if(isset($arrValue['__vars__']))
         {
-            foreach ($arrValue['__vars__'] as $key => $values)
+            foreach ($arrValue['__vars__'] as $archiveAlias => $values)
             {
                 foreach ($values as $alias => $arrItem)
                 {
-                    if(!is_array($arrItem))
-                    {
-                        // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias)
-                        $arrValue[ $alias ] = $arrItem;
-                    }
-                    else
-                    {
-                        $arrValue[ $arrItem['id'] ] = html_entity_decode($arrItem['value']);
-                    }
+                    $strId = self::generateAlias($archiveAlias, $alias);
+                    $arrValue[ $strId ] = html_entity_decode($arrItem['value']);
                 }
             }
 
@@ -377,6 +378,14 @@ class StyleManager
         }
 
         return $arrValue;
+    }
+
+    /**
+     * Generate a unique alias based on the archive identifier and the group alias
+     */
+    public static function generateAlias($identifier, $alias): string
+    {
+        return $identifier . '_' . $alias;
     }
 
     /**
