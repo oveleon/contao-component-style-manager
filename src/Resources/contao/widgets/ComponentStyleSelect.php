@@ -144,8 +144,6 @@ class ComponentStyleSelect extends Widget
                 );
             }
 
-            // set options
-
             $strId        = StyleManager::generateAlias($arrArchives[ $objStyleGroup->pid ]['identifier'], $objStyleGroup->alias);
             $strFieldId   = $this->strId . '_' . $strId;
             $strFieldName = $this->strName . '[' . $strId . ']';
@@ -156,11 +154,7 @@ class ComponentStyleSelect extends Widget
                 {
                     $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
                         StringUtil::specialchars($arrOption['value']),
-
-                        // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                        //static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->alias ] ?? ''),
                         static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
-
                         $arrOption['label']);
                 }
                 else
@@ -171,11 +165,7 @@ class ComponentStyleSelect extends Widget
                     {
                         $arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
                             StringUtil::specialchars($arrOptgroup['value']),
-
-                            // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                            //static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroup->alias ] ?? ''),
                             static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
-
                             $arrOptgroup['label']);
                     }
 

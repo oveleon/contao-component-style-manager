@@ -68,23 +68,9 @@ class Config
     }
 
     /**
-     * Load configuration files from third-party bundles and return them as array
-     */
-    protected function loadBundleConfiguration(): ?array
-    {
-        if($arrFiles = $this->getBundleConfigurationFiles())
-        {
-            $sync = new Sync();
-            return $sync->importStyleManagerFile($arrFiles, false);
-        }
-
-        return null;
-    }
-
-    /**
      * Return all configuration files from third-party bundles
      */
-    protected function getBundleConfigurationFiles(): ?array
+    public static function getBundleConfigurationFiles(): ?array
     {
         $arrFiles = System::getContainer()->get('contao.resource_finder')->findIn('templates')->files()->name('style-manager-*.xml');
 
@@ -100,6 +86,20 @@ class Config
             }
 
             return $arrBundleConfigs;
+        }
+
+        return null;
+    }
+
+    /**
+     * Load configuration files from third-party bundles and return them as array
+     */
+    protected function loadBundleConfiguration(): ?array
+    {
+        if($arrFiles = $this->getBundleConfigurationFiles())
+        {
+            $sync = new Sync();
+            return $sync->importStyleManagerFile($arrFiles, false);
         }
 
         return null;

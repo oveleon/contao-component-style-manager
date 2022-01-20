@@ -10,6 +10,18 @@
         <source>Config</source>
         <target>Konfiguration</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.headingBundleConfig">
+        <source>Available configurations via external bundles</source>
+        <target>Vorhandene Konfigurationen über externe Bundles</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
+        <source>No configurations available</source>
+        <target>Keine Konfigurationen vorhanden</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.descBundleConfig">
+        <source>Please note, as soon as the files displayed here are imported, they overwrite the configurations of the external bundles. So this function is only useful if you really want to overwrite or adjust the configurations. If they are deleted again, the configurations from the external bundles are automatically used again.</source>
+        <target>Bitte beachten Sie, sobald die hier angezeigten Dateien importiert werden, überschreiben sie die Konfigurationen der externen Bundles. Diese Funktion ist also nur sinnvoll, wenn Sie die Konfigurationen wirklich überschreiben oder anpassen wollen. Wenn diese wieder gelöscht werden, werden automatisch wieder die Konfigurationen aus den externen Bundles verwendet.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
         <target>Neue Kategorie</target>
@@ -35,8 +47,8 @@
         <target>Konfiguration exportieren</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.source.0">
-        <source>Source files</source>
-        <target>Quelldateien</target>
+        <source>Manual import</source>
+        <target>Manueller Import</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.source.1">
         <source>Here you can upload one .xml file to be imported.</source>

@@ -20,7 +20,7 @@
   "require":{
     "php":">=7.4",
     "ext-dom": "*",
-    "contao/core-bundle":"^4.4"
+    "contao/core-bundle":"^4.10"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.0"
@@ -46,7 +46,7 @@
   },
   "extra":{
     "branch-alias": {
-      "dev-master": "2.5.x-dev"
+      "dev-master": "2.7.x-dev"
     },
     "contao-manager-plugin": "Oveleon\\ContaoComponentStyleManager\\ContaoManager\\Plugin"
   }

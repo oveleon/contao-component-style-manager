@@ -7,8 +7,8 @@
 
 namespace Oveleon\ContaoComponentStyleManager;
 
-use ContainerFDoeHNy\get_ServiceLocator_ZcNHns_Contao_Fragment_Contao_ContentElement_MarkdownService;
 use Contao\Backend;
+use Contao\BackendTemplate;
 use Contao\Config;
 use Contao\DataContainer;
 use Contao\Environment;
@@ -96,34 +96,35 @@ class Sync extends Backend
             $this->importStyleManagerFile($arrFiles);
         }
 
-        // Return the form
-        return Message::generate() . '
-<div id="tl_buttons">
-<a href="' . ampersand(str_replace('&key=import', '', Environment::get('request'))) . '" class="header_back" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) . '" accesskey="b">' . $GLOBALS['TL_LANG']['MSC']['backBT'] . '</a>
-</div>
-<form action="' . ampersand(Environment::get('request')) . '" id="tl_style_manager_import" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
-<div class="tl_formbody_edit">
-<input type="hidden" name="FORM_SUBMIT" value="tl_style_manager_import">
-<input type="hidden" name="REQUEST_TOKEN" value="' . REQUEST_TOKEN . '">
-<input type="hidden" name="MAX_FILE_SIZE" value="' . Config::get('maxFileSize') . '">
+        if (Input::post('FORM_SUBMIT') == 'tl_style_manager_import_bundle')
+        {
+            if($bundleFiles = Input::post('bundleFiles'))
+            {
+                $this->importStyleManagerFile(array_map(fn($n) => html_entity_decode($n), $bundleFiles));
+            }
+        }
 
-<div class="tl_tbox">
-  <div class="widget">
-    <h3>' . $GLOBALS['TL_LANG']['tl_style_manager_archive']['source'][0] . '</h3>' . $objUploader->generateMarkup() . (isset($GLOBALS['TL_LANG']['tl_style_manager_archive']['source'][1]) ? '
-    <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_style_manager_archive']['source'][1] . '</p>' : '') . '
-  </div>
-</div>
+        $template = new BackendTemplate('be_style_manager_import');
 
-</div>
+        $template->backUrl = StringUtil::ampersand(str_replace('&key=import', '', Environment::get('request')));
+        $template->backBT = $GLOBALS['TL_LANG']['MSC']['backBT'];
+        $template->backBTTitle = $GLOBALS['TL_LANG']['MSC']['backBTTitle'];
 
-<div class="tl_formbody_submit">
+        $template->formId = 'tl_style_manager_import';
+        $template->fileMaxSize = Config::get('maxFileSize');
 
-<div class="tl_submit_container">
-  <button type="submit" name="save" id="save" class="tl_submit" accesskey="s">' . $GLOBALS['TL_LANG']['tl_style_manager_archive']['import'][0] . '</button>
-</div>
+        $template->labelSource = $GLOBALS['TL_LANG']['tl_style_manager_archive']['source'][0];
+        $template->descSource = $GLOBALS['TL_LANG']['tl_style_manager_archive']['source'][1];
+        $template->fieldUpload = $objUploader->generateMarkup();
 
-</div>
-</form>';
+        $template->labelImport = $GLOBALS['TL_LANG']['tl_style_manager_archive']['import'][0];
+        $template->labelBundleConfig = $GLOBALS['TL_LANG']['tl_style_manager_archive']['headingBundleConfig'];
+        $template->emptyBundleFiles = $GLOBALS['TL_LANG']['tl_style_manager_archive']['emptyBundleConfig'];
+        $template->descBundleFiles = $GLOBALS['TL_LANG']['tl_style_manager_archive']['descBundleConfig'];
+
+        $template->bundleFiles = \Oveleon\ContaoComponentStyleManager\Config::getBundleConfigurationFiles() ?? [];
+
+        return $template->parse();
     }
 
     /**
@@ -347,6 +348,7 @@ class Sync extends Backend
                 if($blnSave)
                 {
                     $this->Database->unlockTables();
+                    Message::addConfirmation(sprintf($GLOBALS['TL_LANG']['MSC']['styleManagerConfigImported'], basename($strFilePath)));
                 }
             }
         }

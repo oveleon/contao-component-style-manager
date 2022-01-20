@@ -10,6 +10,9 @@
       <trans-unit id="ERR.noStyleManagerConfigFound">
         <source>No style manager config found!</source>
       </trans-unit>
+      <trans-unit id="MSC.styleManagerConfigImported">
+        <source>The file %s was imported successfully.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

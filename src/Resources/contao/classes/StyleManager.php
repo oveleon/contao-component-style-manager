@@ -8,11 +8,8 @@
 namespace Oveleon\ContaoComponentStyleManager;
 
 use Contao\Backend;
-use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
-use Contao\System;
-use Contao\TemplateLoader;
 use Contao\Widget;
 
 class StyleManager

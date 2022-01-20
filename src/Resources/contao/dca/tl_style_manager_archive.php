@@ -52,7 +52,8 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
                 'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['import'],
                 'href'                => 'key=import',
                 'class'               => 'header_style_manager_import',
-                'icon'                => 'theme_import.svg'
+                'icon'                => 'theme_import.svg',
+                'button_callback'     => array('tl_style_manager_archive', 'importConfig')
             ),
             'export' => array
             (
@@ -180,6 +181,8 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 
+use Contao\System;
+use Oveleon\ContaoComponentStyleManager\Config;
 use Oveleon\ContaoComponentStyleManager\StyleManagerArchiveModel;
 
 class tl_style_manager_archive extends \Backend
@@ -261,5 +264,23 @@ class tl_style_manager_archive extends \Backend
         }
 
         return $varValue;
+    }
+
+    /**
+     * Return the import header button
+     */
+    public function importConfig(string $href, string $label, string $title, string $class, string $attributes): string
+    {
+        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        {
+            $bundleConfig = Config::getInstance();
+
+            if($arrFiles = $bundleConfig::getBundleConfigurationFiles())
+            {
+                $label .= ' <sup>(' . count($arrFiles) . ')</sup>';
+            }
+        }
+
+        return '<a href="' . $this->addToUrl($href) . '" class="' . $class . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . $label . '</a> ';
     }
 }

@@ -8,6 +8,15 @@
       <trans-unit id="tl_style_manager_archive.config_legend">
         <source>Config</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.headingBundleConfig">
+        <source>Available configurations via external bundles</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
+        <source>No configurations available</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.descBundleConfig">
+        <source>Please note, as soon as the files displayed here are imported, they overwrite the configurations of the external bundles. So this function is only useful if you really want to overwrite or adjust the configurations. If they are deleted again, the configurations from the external bundles are automatically used again.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
       </trans-unit>

@@ -10,6 +10,18 @@
         <source>Config</source>
         <target>Configuration</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.headingBundleConfig">
+        <source>Available configurations via external bundles</source>
+        <target>Configurations disponibles via des faisceaux externes</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
+        <source>No configurations available</source>
+        <target>Aucune configuration disponible</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.descBundleConfig">
+        <source>Please note, as soon as the files displayed here are imported, they overwrite the configurations of the external bundles. So this function is only useful if you really want to overwrite or adjust the configurations. If they are deleted again, the configurations from the external bundles are automatically used again.</source>
+        <target>Veuillez noter que dès que les fichiers affichés ici sont importés, ils écrasent les configurations des paquets externes. Cette fonction n'est donc utile que si vous souhaitez réellement écraser ou ajuster les configurations. Si vous les supprimez à nouveau, les configurations des paquets externes sont automatiquement réutilisées.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
         <target>Ajouter une catégorie</target>
