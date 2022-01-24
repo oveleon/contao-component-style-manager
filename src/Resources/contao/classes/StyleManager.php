@@ -10,6 +10,7 @@ namespace Oveleon\ContaoComponentStyleManager;
 use Contao\Backend;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
+use Contao\System;
 use Contao\Widget;
 
 class StyleManager
@@ -402,7 +403,14 @@ class StyleManager
             'tl_calendar_events' === $strTable && !!$objGroup->extendEvents
         ){ return true; }
 
-        // ToDo: Hook
+        // Check is visible group for custom configurations
+        if (isset($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
+        {
+            foreach ($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup'] as $callback)
+            {
+                return System::importStatic($callback[0])->{$callback[1]}($objGroup, $strTable);
+            }
+        }
 
         return false;
     }

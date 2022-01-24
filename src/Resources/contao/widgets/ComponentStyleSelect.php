@@ -144,6 +144,18 @@ class ComponentStyleSelect extends Widget
                 );
             }
 
+            // dynamically change or expand group options
+            if (isset($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
+            {
+                foreach ($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions'] as $callback)
+                {
+                    if($optionCallback = System::importStatic($callback[0])->{$callback[1]}($arrFieldOptions, $objStyleGroup, $this))
+                    {
+                        $arrFieldOptions = $optionCallback;
+                    }
+                }
+            }
+
             $strId        = StyleManager::generateAlias($arrArchives[ $objStyleGroup->pid ]['identifier'], $objStyleGroup->alias);
             $strFieldId   = $this->strId . '_' . $strId;
             $strFieldName = $this->strName . '[' . $strId . ']';
