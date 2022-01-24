@@ -55,12 +55,15 @@ class Config
 
         $arrObjStyleGroups = null;
 
-        foreach (static::$arrGroups as $objStyleGroup)
+        if(static::$arrGroups)
         {
-            // Skip if the group is not allowed for the current table
-            if(StyleManager::isVisibleGroup($objStyleGroup, $table))
+            foreach (static::$arrGroups as $objStyleGroup)
             {
-                $arrObjStyleGroups[] = $objStyleGroup;
+                // Skip if the group is not allowed for the current table
+                if(StyleManager::isVisibleGroup($objStyleGroup, $table))
+                {
+                    $arrObjStyleGroups[] = $objStyleGroup;
+                }
             }
         }
 
@@ -72,19 +75,38 @@ class Config
      */
     public static function getBundleConfigurationFiles(): ?array
     {
+        $projectDir = System::getContainer()->getParameter('kernel.project_dir');
         $arrFiles = System::getContainer()->get('contao.resource_finder')->findIn('templates')->files()->name('style-manager-*.xml');
+        $arrBundleConfigs = null;
+
+        if($projectTemplates = glob($projectDir . '/templates/style-manager-*.xml'))
+        {
+            foreach ($projectTemplates as $template)
+            {
+                $arrBundleConfigs[basename($template) . ' <b>(/templates)</b>'] = str_replace($projectDir, '', $template);
+            }
+        }
 
         if($arrFiles->hasResults())
         {
-            $projectDir = System::getContainer()->getParameter('kernel.project_dir');
-            $arrBundleConfigs = null;
-
             foreach ($arrFiles as $file)
             {
                 $strRelpath = $file->getRealPath();
-                $arrBundleConfigs[basename($strRelpath)] = str_replace($projectDir, '', $strRelpath);
-            }
 
+                try{
+                    $filePath = str_replace('\\', "/",$strRelpath);
+                    $bundleName = str_replace("/vendor/", "", substr($filePath, strpos($filePath, '/vendor/')));
+                    $bundleName = substr($bundleName, 0, strpos($bundleName, '/src'));
+                }catch (\Exception $e){
+                    $bundleName = 'vendor';
+                }
+
+                $arrBundleConfigs[basename($strRelpath) . ' <b>(' . $bundleName . ')</b>'] = str_replace($projectDir, '', $strRelpath);
+            }
+        }
+
+        if($arrBundleConfigs)
+        {
             return $arrBundleConfigs;
         }
 
