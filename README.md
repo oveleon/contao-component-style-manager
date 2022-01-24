@@ -17,6 +17,7 @@ This plugin is designed to simplify theme customizations without the need of man
 - Passing variables to the template
     - Formatting output using predefined methods or your own
 - Import / Export
+    - Automatic import of configurations from third-party bundles
 - Available for
     - Layouts
     - Pages
@@ -53,3 +54,4 @@ composer require oveleon/contao-component-style-manager
 - [Use template variables](docs/TEMPLATE_VARIABLES.md)
 - [Extend and support other extensions](docs/SUPPORT.md)
 - [Import / Export](docs/IMPORT_EXPORT.md)
+- [Bundle-Configurations](docs/BUNDLE_CONFIG.md)
