@@ -277,7 +277,7 @@ class tl_style_manager_archive extends \Backend
 
             if($arrFiles = $bundleConfig::getBundleConfigurationFiles())
             {
-                $label .= ' <sup>(' . count($arrFiles) . ')</sup>';
+                $label .= ' <sup><small>(' . count($arrFiles) . ')</small></sup>';
             }
         }
 

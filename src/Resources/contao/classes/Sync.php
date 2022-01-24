@@ -37,7 +37,99 @@ class Sync extends Backend
     }
 
     /**
-     * Import
+     * Check if the object conversion should be performed
+     */
+    public function shouldRunObjectConversion($table = null): bool
+    {
+        $arrTables = $this->Database->listTables();
+
+        if(null === $table || !in_array($table, $arrTables))
+        {
+            return false;
+        }
+
+        $objConfig = $this->Database->query("SELECT styleManager FROM " . $table . " WHERE styleManager IS NOT NULL LIMIT 0,1");
+
+        if($objConfig && $arrConfig = StringUtil::deserialize($objConfig->styleManager))
+        {
+            return is_numeric(array_key_first($arrConfig));
+        }
+
+        return false;
+    }
+
+    /**
+     * Perform the object conversion
+     */
+    public function performObjectConversion($table = null): void
+    {
+        $arrTables = $this->Database->listTables();
+
+        if(null === $table || !in_array($table, $arrTables))
+        {
+            return;
+        }
+
+        if($objRows = $this->Database->query("SELECT id, styleManager FROM " . $table . " WHERE styleManager IS NOT NULL"))
+        {
+            $objArchives = StyleManagerArchiveModel::findAll();
+            $arrArchives = [];
+
+            foreach ($objArchives as $objArchive)
+            {
+                $arrArchives[ $objArchive->id ] = $objArchive->identifier;
+            }
+
+            $arrConfigs = $objRows->fetchEach('styleManager');
+            $arrIds = [];
+
+            foreach ($arrConfigs as $sttConfig)
+            {
+                if($arrConfig = StringUtil::deserialize($sttConfig))
+                {
+                    $arrIds = array_merge($arrIds, array_keys($arrConfig));
+                }
+            }
+
+            $objGroups = StyleManagerModel::findMultipleByIds($arrIds);
+            $arrGroups = [];
+
+            if(null !== $objGroups)
+            {
+                foreach ($objGroups as $objGroup)
+                {
+                    $arrGroups[ $objGroup->id ] = $objGroup;
+                }
+
+                foreach ($objRows->fetchAllAssoc() as $arrRow)
+                {
+                    $config = StringUtil::deserialize($arrRow['styleManager']);
+
+                    // Skip is config already converted
+                    if(!is_numeric(array_key_first($config)))
+                    {
+                        continue;
+                    }
+
+                    $arrAliasPairKeys = array_map(function($intGroupKey) use ($arrArchives, $arrGroups) {
+                        return StyleManager::generateAlias($arrArchives[ $arrGroups[$intGroupKey]->pid ], $arrGroups[$intGroupKey]->alias);
+                    }, array_keys($config));
+
+                    $newConfig = array_combine($arrAliasPairKeys, $config);
+
+                    $this->Database
+                        ->prepare("UPDATE " . $table . " SET styleManager=? WHERE id=?")
+                        ->execute(
+                            serialize($newConfig),
+                            $arrRow['id']
+                        );
+                }
+            }
+        }
+    }
+
+    /**
+     * Display import form in back end
      *
      * @return string
      *

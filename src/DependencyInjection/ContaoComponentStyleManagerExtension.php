@@ -2,7 +2,6 @@
 
 namespace Oveleon\ContaoComponentStyleManager\DependencyInjection;
 
-use Contao\Controller;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -18,6 +17,9 @@ class ContaoComponentStyleManagerExtension extends Extension
             $container,
             new FileLocator(__DIR__ . '/../Resources/config')
         );
+
+        $loader->load('migrations.yml');
+        $loader->load('commands.yml');
 
         $container->setParameter('contao_component_style_manager.use_bundle_config', $config['use_bundle_config']);
     }

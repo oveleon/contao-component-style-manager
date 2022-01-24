@@ -7,7 +7,7 @@
 
 namespace Oveleon\ContaoComponentStyleManager;
 
-use Contao\Controller;
+use Contao\Model;
 use Contao\System;
 
 /**
@@ -43,7 +43,7 @@ use Contao\System;
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 
-class StyleManagerArchiveModel extends \Model
+class StyleManagerArchiveModel extends Model
 {
 
     /**
