@@ -20,7 +20,7 @@
   "require":{
     "php":">=7.4",
     "ext-dom": "*",
-    "contao/core-bundle":"^4.10"
+    "contao/core-bundle":">=4.9.22"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.0"
