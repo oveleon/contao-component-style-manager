@@ -208,19 +208,17 @@ class tl_style_manager_archive extends \Backend
      *
      * @param array         $row
      * @param string        $label
-     * @param DataContainer $dc
-     * @param array         $args
      *
-     * @return array
+     * @return string
      */
-    public function addIdentifierInfo($row, $label, DataContainer $dc, $args)
+    public function addIdentifierInfo($row, $label)
     {
         if($row['identifier'])
         {
-            $args[0] .= '<span style="color:#999;padding-left:3px">[' . $row['identifier'] . ']</span>';
+            $label .= '<span style="color:#999;padding-left:3px">[' . $row['identifier'] . ']</span>';
         }
 
-        return $args;
+        return $label;
     }
 
     /**
