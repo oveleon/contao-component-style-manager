@@ -124,7 +124,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = array
             'inputType'               => 'text',
             'search'                  => true,
             'eval'                    => array('rgxp'=>'alias', 'maxlength'=>128, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''",
+            'sql'                     => "varchar(255) BINARY NOT NULL default ''",
             'save_callback' => array
             (
                 array('tl_style_manager', 'generateAlias')
