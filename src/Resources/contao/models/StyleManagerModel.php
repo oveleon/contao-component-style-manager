@@ -196,9 +196,9 @@ class StyleManagerModel extends Model
                 usort($arrObjStyleGroups, function($a, $b) {
                     return ($a->sorting <=> $b->sorting);
                 });
-            }
 
-            return $arrObjStyleGroups;
+                return $arrObjStyleGroups;
+            }
         }
 
         return $objGroups;
