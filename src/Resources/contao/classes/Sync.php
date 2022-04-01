@@ -461,20 +461,21 @@ class Sync extends Backend
     /**
      * Export StyleManager data
      *
-     * @param DataContainer $dc
-     *
      * @throws \Exception
      */
-    public function exportStyleManager(DataContainer $dc)
+    public function exportStyleManager(?DataContainer $dc, $objArchives = null, bool $blnSendToBrowser = true)
     {
         // Create a new XML document
         $xml = new \DOMDocument('1.0', 'UTF-8');
         $xml->formatOutput = true;
 
         // Archives
-        $objArchive = StyleManagerArchiveModel::findAll(['order' => 'groupAlias,sorting']);
+        if(null === $objArchives)
+        {
+            $objArchives = StyleManagerArchiveModel::findAll(['order' => 'groupAlias,sorting']);
+        }
 
-        if (null === $objArchive)
+        if (null === $objArchives)
         {
             Message::addError($GLOBALS['TL_LANG']['ERR']['noStyleManagerConfigFound']);
             self::redirect(self::getReferer());
@@ -485,9 +486,9 @@ class Sync extends Backend
         $archives = $xml->appendChild($archives);
 
         // Add the archives
-        while($objArchive->next())
+        while($objArchives->next())
         {
-            $this->addArchiveData($xml, $archives, $objArchive);
+            $this->addArchiveData($xml, $archives, $objArchives);
         }
 
         // Generate temp name
@@ -497,6 +498,11 @@ class Sync extends Backend
         $objFile = new File('system/tmp/' . $strTmp);
         $objFile->write($xml->saveXML());
         $objFile->close();
+
+        if(!$blnSendToBrowser)
+        {
+            return $objFile;
+        }
 
         $objFile->sendToBrowser('style-manager-export.xml');
     }
