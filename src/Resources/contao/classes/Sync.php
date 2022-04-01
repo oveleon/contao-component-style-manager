@@ -75,6 +75,11 @@ class Sync extends Backend
             $objArchives = StyleManagerArchiveModel::findAll();
             $arrArchives = [];
 
+            if(null === $objArchives)
+            {
+                return;
+            }
+
             foreach ($objArchives as $objArchive)
             {
                 $arrArchives[ $objArchive->id ] = $objArchive->identifier;
