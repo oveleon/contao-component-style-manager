@@ -214,10 +214,12 @@ class Sync extends Backend
         $template->descSource = $GLOBALS['TL_LANG']['tl_style_manager_archive']['source'][1];
         $template->fieldUpload = $objUploader->generateMarkup();
 
+        $template->useBundleConfig = System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config');
         $template->labelImport = $GLOBALS['TL_LANG']['tl_style_manager_archive']['import'][0];
         $template->labelBundleConfig = $GLOBALS['TL_LANG']['tl_style_manager_archive']['headingBundleConfig'];
         $template->emptyBundleFiles = $GLOBALS['TL_LANG']['tl_style_manager_archive']['emptyBundleConfig'];
         $template->descBundleFiles = $GLOBALS['TL_LANG']['tl_style_manager_archive']['descBundleConfig'];
+        $template->activeDescBundleFiles = $GLOBALS['TL_LANG']['tl_style_manager_archive']['activateBundleConfig'];
 
         $template->bundleFiles = \Oveleon\ContaoComponentStyleManager\Config::getBundleConfigurationFiles() ?? [];
 

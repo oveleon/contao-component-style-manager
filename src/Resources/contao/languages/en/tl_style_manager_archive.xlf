@@ -15,7 +15,10 @@
         <source>No configurations available</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.descBundleConfig">
-        <source>Please note, as soon as the files displayed here are imported, they overwrite the configurations of the external bundles. So this function is only useful if you really want to overwrite or adjust the configurations. If they are deleted again, the configurations from the external bundles are automatically used again.</source>
+        <source>Please note that the configurations displayed here are automatically available in all areas and do not have to be imported. With the import of these files, the bundle configurations are provided for the backend and overwrite from this moment on all properties that come from the bundle. If these are deleted again, the original from the bundle is used.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.activateBundleConfig">
+        <source>The bundle configuration has been disabled for this project. To have configurations of other bundles imported, you have to activate them first.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
