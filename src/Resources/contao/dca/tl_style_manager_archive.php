@@ -273,9 +273,7 @@ class tl_style_manager_archive extends \Backend
     {
         if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
         {
-            $bundleConfig = Config::getInstance();
-
-            if($arrFiles = $bundleConfig::getBundleConfigurationFiles())
+            if($arrFiles = Config::getBundleConfigurationFiles())
             {
                 $label .= ' <sup><small>(' . count($arrFiles) . ')</small></sup>';
             }

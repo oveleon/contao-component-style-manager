@@ -290,14 +290,24 @@ class Sync extends Backend
                 }
 
                 // Check if archive exists
-                $archiveExists = function (string $identifier) : bool
+                $archiveExists = function (string $identifier) use ($blnSave, $arrStyleArchives) : bool
                 {
+                    if(!$blnSave)
+                    {
+                        return array_key_exists($identifier, $arrStyleArchives);
+                    }
+
                     return $this->Database->prepare("SELECT identifier FROM tl_style_manager_archive WHERE identifier=?")->execute($identifier)->numRows > 0;
                 };
 
                 // Check if children exists
-                $childrenExists = function (string $alias, string $pid) : bool
+                $childrenExists = function (string $alias, string $pid) use($blnSave, $arrStyleGroups) : bool
                 {
+                    if(!$blnSave)
+                    {
+                        return array_key_exists($alias, $arrStyleGroups);
+                    }
+
                     return $this->Database->prepare("SELECT alias FROM tl_style_manager WHERE alias=? AND pid=?")->execute($alias, $pid)->numRows > 0;
                 };
 
@@ -309,8 +319,15 @@ class Sync extends Backend
 
                     if(!$blnSave || !$archiveExists($identifier))
                     {
-                        $objArchive = new StyleManagerArchiveModel();
-                        $objArchive->id = ++$intArchiveId;
+                        if(!$blnSave && $archiveExists($identifier))
+                        {
+                            $objArchive = $arrStyleArchives[$identifier];
+                        }
+                        else
+                        {
+                            $objArchive = new StyleManagerArchiveModel();
+                            $objArchive->id = ++$intArchiveId;
+                        }
                     }
                     else
                     {
@@ -346,8 +363,15 @@ class Sync extends Backend
 
                                 if(!$blnSave || !$childrenExists($alias, $objArchive->id))
                                 {
-                                    $objChildren = new StyleManagerModel();
-                                    $objChildren->id = ++$intGroupId;
+                                    if(!$blnSave && $childrenExists($alias, $objArchive->id))
+                                    {
+                                        $objChildren = $arrStyleGroups[$alias];
+                                    }
+                                    else
+                                    {
+                                        $objChildren = new StyleManagerModel();
+                                        $objChildren->id = ++$intGroupId;
+                                    }
                                 }
                                 else
                                 {
@@ -426,7 +450,7 @@ class Sync extends Backend
                                 }
                                 else
                                 {
-                                    $arrStyleGroups[] = $objChildren->current();
+                                    $arrStyleGroups[ $objChildren->alias ] = $objChildren->current();
                                 }
                             }
                         }
@@ -439,7 +463,7 @@ class Sync extends Backend
                     }
                     else
                     {
-                        $arrStyleArchives[] = $objArchive->current();
+                        $arrStyleArchives[ $objArchive->identifier ] = $objArchive->current();
                     }
                 }
 
