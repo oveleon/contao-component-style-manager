@@ -68,6 +68,13 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
                 'href'                => 'act=select',
                 'class'               => 'header_edit_all',
                 'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
+            ),
+            'config' => array
+            (
+                'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['headingActiveBundles'],
+                'href'                => 'key=import',
+                'class'               => 'header_style_manager_config',
+                'button_callback'     => array('tl_style_manager_archive', 'activeConfig')
             )
         ),
         'operations' => array
@@ -280,5 +287,25 @@ class tl_style_manager_archive extends \Backend
         }
 
         return '<a href="' . $this->addToUrl($href) . '" class="' . $class . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . $label . '</a> ';
+    }
+
+    /**
+     * Return the configurations label
+     */
+    public function activeConfig(string $href, string $label, string $title, string $class, string $attributes): string
+    {
+        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        {
+            $count = 0;
+
+            if($arrFiles = Config::getBundleConfigurationFiles())
+            {
+                $count = count($arrFiles);
+            }
+
+            return '<a href="' . $this->addToUrl($href) . '" class="' . $class . '" ' . $attributes . '>'. $label .': ' . $count . '</a>';
+        }
+
+        return '';
     }
 }

@@ -9,7 +9,10 @@
         <source>Config</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.headingBundleConfig">
-        <source>Available configurations via external bundles</source>
+        <source>Bundle configurations</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.headingActiveBundles">
+        <source>Active configurations</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
         <source>No configurations available</source>

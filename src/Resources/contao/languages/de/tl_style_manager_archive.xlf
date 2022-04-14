@@ -11,8 +11,12 @@
         <target>Konfiguration</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.headingBundleConfig">
-        <source>Available configurations via external bundles</source>
-        <target>Vorhandene Konfigurationen über externe Bundles</target>
+        <source>Bundle configurations</source>
+        <target>Bundle-Konfigurationen</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.headingActiveBundles">
+        <source>Active configurations</source>
+        <target>Aktive Konfigurationen</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
         <source>No configurations available</source>
@@ -24,7 +28,7 @@
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.activateBundleConfig">
         <source>The bundle configuration has been disabled for this project. To have configurations of other bundles imported, you have to activate them first.</source>
-        <target>Die Bundle-Konfiguration wurde für diese Projekt ausgeschaltet. Um Konfigurationen anderer Bundles importieren zu lassen, müssen Sie diese vorerst aktivieren.</target>
+        <target>Die Bundle-Konfiguration wurde für dieses Projekt ausgeschaltet. Um Konfigurationen anderer Bundles importieren zu lassen, müssen Sie diese vorerst aktivieren.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>

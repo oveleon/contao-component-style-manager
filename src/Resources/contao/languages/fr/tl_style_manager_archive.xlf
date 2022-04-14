@@ -11,8 +11,12 @@
         <target>Configuration</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.headingBundleConfig">
-        <source>Available configurations via external bundles</source>
-        <target>Configurations disponibles via des faisceaux externes</target>
+        <source>Bundle configurations</source>
+        <target>Configuration des paquets</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.headingActiveBundles">
+        <source>Active configurations</source>
+        <target>Configurations actives</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
         <source>No configurations available</source>
