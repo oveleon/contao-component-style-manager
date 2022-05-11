@@ -271,21 +271,21 @@ class Sync extends Backend
                     $archives = $archives->item(0)->childNodes;
                 }else return null;
 
+                // Lock the tables
+                $arrLocks = array
+                (
+                    'tl_style_manager_archive' => 'WRITE',
+                    'tl_style_manager'         => 'WRITE'
+                );
+
+                // Load the DCAs of the locked tables
+                foreach (array_keys($arrLocks) as $table)
+                {
+                    $this->loadDataContainer($table);
+                }
+
                 if($blnSave)
                 {
-                    // Lock the tables
-                    $arrLocks = array
-                    (
-                        'tl_style_manager_archive' => 'WRITE',
-                        'tl_style_manager'         => 'WRITE'
-                    );
-
-                    // Load the DCAs of the locked tables
-                    foreach (array_keys($arrLocks) as $table)
-                    {
-                        $this->loadDataContainer($table);
-                    }
-
                     $this->Database->lockTables($arrLocks);
                 }
 
@@ -305,7 +305,7 @@ class Sync extends Backend
                 {
                     if(!$blnSave)
                     {
-                        return array_key_exists($alias, $arrStyleGroups);
+                        return array_key_exists($pid . '_' . $alias, $arrStyleGroups);
                     }
 
                     return $this->Database->prepare("SELECT alias FROM tl_style_manager WHERE alias=? AND pid=?")->execute($alias, $pid)->numRows > 0;
@@ -365,7 +365,7 @@ class Sync extends Backend
                                 {
                                     if(!$blnSave && $childrenExists($alias, $objArchive->id))
                                     {
-                                        $objChildren = $arrStyleGroups[$alias];
+                                        $objChildren = $arrStyleGroups[$objArchive->id . '_' . $alias];
                                     }
                                     else
                                     {
@@ -450,7 +450,8 @@ class Sync extends Backend
                                 }
                                 else
                                 {
-                                    $arrStyleGroups[ $objChildren->alias ] = $objChildren->current();
+                                    $strKey = $objChildren->pid . '_' .  $objChildren->alias;
+                                    $arrStyleGroups[ $strKey ] = $objChildren->current();
                                 }
                             }
                         }
