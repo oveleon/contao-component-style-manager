@@ -20,6 +20,7 @@ if (isset($bundles['ContaoNewsBundle']))
     );
 
     $GLOBALS['TL_DCA']['tl_news']['fields']['cssClass']['sql'] = "text NULL";
+    $GLOBALS['TL_DCA']['tl_news']['fields']['cssClass']['eval']['alwaysSave'] = true;
 
     $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
     $GLOBALS['TL_DCA']['tl_news']['fields']['cssClass']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');

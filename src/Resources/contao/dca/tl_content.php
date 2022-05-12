@@ -16,6 +16,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['styleManager'] = array
 );
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['cssID']['sql'] = "text NULL";
+$GLOBALS['TL_DCA']['tl_content']['fields']['cssID']['eval']['alwaysSave'] = true;
 
 $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
 $GLOBALS['TL_DCA']['tl_content']['fields']['cssID']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');

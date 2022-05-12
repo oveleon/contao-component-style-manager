@@ -20,6 +20,7 @@ if (isset($bundles['ContaoCalendarBundle']))
     );
 
     $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['cssClass']['sql'] = "text NULL";
+    $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['cssClass']['eval']['alwaysSave'] = true;
 
     $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onload_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addPalette');
     $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['cssClass']['load_callback'][] = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoad');
