@@ -19,6 +19,7 @@
   ],
   "require":{
     "php":">=7.4",
+    "ext-json": "*",
     "ext-dom": "*",
     "contao/core-bundle":">=4.9.22"
   },

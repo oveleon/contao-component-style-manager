@@ -57,12 +57,12 @@ class Config
 
         if(static::$arrGroups)
         {
-            foreach (static::$arrGroups as $objStyleGroup)
+            foreach (static::$arrGroups as $combinedAlias => $objStyleGroup)
             {
                 // Skip if the group is not allowed for the current table
                 if(StyleManager::isVisibleGroup($objStyleGroup, $table))
                 {
-                    $arrObjStyleGroups[] = $objStyleGroup;
+                    $arrObjStyleGroups[ $combinedAlias ] = $objStyleGroup;
                 }
             }
         }

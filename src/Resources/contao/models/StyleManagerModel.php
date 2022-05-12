@@ -157,10 +157,11 @@ class StyleManagerModel extends Model
      */
     public static function findByTableAndConfiguration($strTable, array $arrOptions=array())
     {
+        $objContainer = System::getContainer();
         $objGroups = static::findByTable($strTable, $arrOptions);
 
         // Load and merge bundle configurations
-        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        if($objContainer->getParameter('contao_component_style_manager.use_bundle_config'))
         {
             $arrObjStyleGroups = null;
 
@@ -169,23 +170,51 @@ class StyleManagerModel extends Model
 
             if(null !== $arrGroups)
             {
-                $arrExistingGroupAliases = [];
+                $arrArchiveIdentifier = [];
+
+                if(null !== ($objArchives = StyleManagerArchiveModel::findAll()))
+                {
+                    $arrArchiveIdentifier = array_combine(
+                        $objArchives->fetchEach('id'),
+                        $objArchives->fetchEach('identifier')
+                    );
+                }
 
                 if(null !== $objGroups)
                 {
-                    $arrExistingGroupAliases = $objGroups->fetchEach('alias');
+                    foreach ($objGroups as $objGroup)
+                    {
+                        $alias = Sync::combineAliases(
+                            $arrArchiveIdentifier[$objGroup->pid],
+                            $objGroup->alias
+                        );
 
-                    // Make Collection mutable
-                    $arrObjStyleGroups = $objGroups->getModels();
+                        $arrObjStyleGroups[ $alias ] = $objGroup->current();
+                    }
                 }
 
                 // Append bundle config groups
-                foreach ($arrGroups as $arrGroup)
+                foreach ($arrGroups as $combinedAlias => $objGroup)
                 {
+                    $blnStrict = $objContainer->getParameter('contao_component_style_manager.strict');
+
                     // Skip if the alias already exists in the backend configuration
-                    if(!\in_array($arrGroup->alias, $arrExistingGroupAliases))
+                    if($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
                     {
-                        $arrObjStyleGroups[] = $arrGroup;
+                        $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
+                    }
+                    elseif(!$blnStrict)
+                    {
+                        // Merge if the alias already exists in the backend configuration
+                        if($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
+                        {
+                            // Overwrite with merged object
+                            $arrObjStyleGroups[ $combinedAlias ] = Sync::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
+                        }
+                        else
+                        {
+                            $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
+                        }
                     }
                 }
             }

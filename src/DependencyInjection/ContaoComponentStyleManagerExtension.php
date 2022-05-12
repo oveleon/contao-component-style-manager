@@ -22,5 +22,6 @@ class ContaoComponentStyleManagerExtension extends Extension
         $loader->load('commands.yml');
 
         $container->setParameter('contao_component_style_manager.use_bundle_config', $config['use_bundle_config']);
+        $container->setParameter('contao_component_style_manager.strict', $config['strict']);
     }
 }

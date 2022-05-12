@@ -23,6 +23,9 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('use_bundle_config')
                     ->defaultTrue()
                 ->end()
+                ->booleanNode('strict')
+                    ->defaultFalse()
+                ->end()
             ->end()
         ;
 

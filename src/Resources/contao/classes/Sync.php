@@ -10,6 +10,7 @@ namespace Oveleon\ContaoComponentStyleManager;
 use Contao\Backend;
 use Contao\BackendTemplate;
 use Contao\Config;
+use Contao\Controller;
 use Contao\DataContainer;
 use Contao\Environment;
 use Contao\File;
@@ -305,7 +306,7 @@ class Sync extends Backend
                 {
                     if(!$blnSave)
                     {
-                        return array_key_exists($pid . '_' . $alias, $arrStyleGroups);
+                        return array_key_exists($alias, $arrStyleGroups);
                     }
 
                     return $this->Database->prepare("SELECT alias FROM tl_style_manager WHERE alias=? AND pid=?")->execute($alias, $pid)->numRows > 0;
@@ -361,11 +362,13 @@ class Sync extends Backend
                                 $alias = $children->item($c)->getAttribute('alias');
                                 $fields = $children->item($c)->childNodes;
 
-                                if(!$blnSave || !$childrenExists($alias, $objArchive->id))
+                                $strChildAlias = self::combineAliases($objArchive->identifier, $alias);
+
+                                if(!$blnSave || !$childrenExists($strChildAlias, $objArchive->id))
                                 {
-                                    if(!$blnSave && $childrenExists($alias, $objArchive->id))
+                                    if(!$blnSave && $childrenExists($strChildAlias, $objArchive->id))
                                     {
-                                        $objChildren = $arrStyleGroups[$objArchive->id . '_' . $alias];
+                                        $objChildren = $arrStyleGroups[$strChildAlias];
                                     }
                                     else
                                     {
@@ -398,7 +401,7 @@ class Sync extends Backend
                                             if($objChildren->{$strName})
                                             {
                                                 $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
-                                                $arrExists  = $this->flattenKeyValueArray($arrClasses);
+                                                $arrExists  = self::flattenKeyValueArray($arrClasses);
                                                 $arrValues  = StringUtil::deserialize($strValue, true);
 
                                                 foreach($arrValues as $cssClass)
@@ -450,7 +453,7 @@ class Sync extends Backend
                                 }
                                 else
                                 {
-                                    $strKey = $objChildren->pid . '_' .  $objChildren->alias;
+                                    $strKey = self::combineAliases($objArchive->identifier, $objChildren->alias);
                                     $arrStyleGroups[ $strKey ] = $objChildren->current();
                                 }
                             }
@@ -483,6 +486,106 @@ class Sync extends Backend
         }
 
         return [$arrStyleArchives, $arrStyleGroups];
+    }
+
+    /**
+     * Merge group objects
+     */
+    public static function mergeGroupObjects(?StyleManagerModel $objOriginal, ?StyleManagerModel $objMerge, ?array $skipFields = null, bool $skipEmpty = true, $forceOverwrite = true): ?StyleManagerModel
+    {
+        if(null === $objOriginal || null === $objMerge)
+        {
+            return $objOriginal;
+        }
+
+        Controller::loadDataContainer('tl_style_manager');
+
+        foreach ($objMerge->row() as $field => $value)
+        {
+            if(
+                ($skipEmpty && (!$value || strtolower($value) === 'null')) ||
+                (null !== $skipFields && in_array($field, $skipFields))
+            )
+            {
+                continue;
+            }
+
+            switch($field)
+            {
+                // Merge and manipulation of existing classes
+                case 'cssClasses':
+                    if($objOriginal->{$field})
+                    {
+                        $arrClasses = StringUtil::deserialize($objOriginal->{$field}, true);
+                        $arrExists  = self::flattenKeyValueArray($arrClasses);
+                        $arrValues  = StringUtil::deserialize($value, true);
+
+                        foreach($arrValues as $cssClass)
+                        {
+                            if(array_key_exists($cssClass['key'], $arrExists))
+                            {
+                                if(!$forceOverwrite)
+                                {
+                                    continue;
+                                }
+
+                                // Overwrite existing value
+                                $key = array_search($field, array_column($arrClasses, 'key'));
+
+                                $arrClasses[ $key ] = [
+                                    'key' => $cssClass['key'],
+                                    'value' => $cssClass['value']
+                                ];
+
+                                continue;
+                            }
+
+                            $arrClasses[] = [
+                                'key' => $cssClass['key'],
+                                'value' => $cssClass['value']
+                            ];
+                        }
+
+                        $value  = serialize($arrClasses);
+                    }
+
+                    break;
+                // Check for multiple fields like contentElement
+                default:
+                    $fieldOptions = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$field];
+
+                    if(isset($fieldOptions['eval']['multiple']) && !!$fieldOptions['eval']['multiple'] && $fieldOptions['inputType'] === 'checkbox')
+                    {
+                        $arrElements = StringUtil::deserialize($objOriginal->{$field}, true);
+                        $arrValues   = StringUtil::deserialize($value, true);
+
+                        foreach($arrValues as $element)
+                        {
+                            if(in_array($element, $arrElements))
+                            {
+                                if(!$forceOverwrite)
+                                {
+                                    continue;
+                                }
+
+                                $key = array_search($element, $arrElements);
+                                $arrElements[ $key ] = $element;
+
+                                continue;
+                            }
+
+                            $arrElements[] = $element;
+                        }
+
+                        $value  = serialize($arrElements);
+                    }
+            }
+
+            // Overwrite field values
+            $objOriginal->{$field} = $value;
+        }
+
+        return $objOriginal;
     }
 
     /**
@@ -622,7 +725,7 @@ class Sync extends Backend
      *
      * @return array
      */
-    public function flattenKeyValueArray($arr)
+    public static function flattenKeyValueArray($arr)
     {
         if(empty($arr))
         {
@@ -636,5 +739,10 @@ class Sync extends Backend
         }
 
         return $arrTmp;
+    }
+
+    public static function combineAliases(...$aliases): string
+    {
+        return implode('_', $aliases);
     }
 }

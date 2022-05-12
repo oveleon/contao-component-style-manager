@@ -65,7 +65,7 @@ class Styles
 
             foreach ($arrGroups as $groupAlias)
             {
-                if($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ]))
+                if($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ] ?? null))
                 {
                     $collection[] = $value;
                 }
@@ -103,7 +103,7 @@ class Styles
      */
     public function format($format, $method='')
     {
-        if(!$format || $this->styles === null || !is_array($this->styles[ $this->currIdentifier ]))
+        if(!$format || $this->styles === null || !is_array(($this->styles[ $this->currIdentifier ] ?? null)))
         {
             return '';
         }
@@ -129,7 +129,7 @@ class Styles
                 {
                     foreach ($this->currGroups as $alias)
                     {
-                        if(($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ])) !== '')
+                        if(($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ] ?? null)) !== '')
                         {
                             $arrValues[ $alias ] = $this->parseValueType($value);
                         }
@@ -190,7 +190,7 @@ class Styles
      */
     private function getGroupValue($arrVariable)
     {
-        return $arrVariable['value'];
+        return $arrVariable['value'] ?? null;
     }
 
     /**
