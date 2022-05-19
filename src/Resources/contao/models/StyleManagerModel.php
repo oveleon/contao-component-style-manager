@@ -69,6 +69,7 @@ use Contao\System;
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByContentElements($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendNews($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendEvents($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findBy($col, $val, array $opt=array())
  * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())

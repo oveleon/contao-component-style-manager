@@ -32,6 +32,7 @@ use Contao\System;
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByTitle($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByIdentifier($val, array $opt=array())
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByGroupAlias($val, array $opt=array())
+ * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findBy($col, $val, array $opt=array())
  * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())
