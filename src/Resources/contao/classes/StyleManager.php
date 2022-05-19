@@ -404,7 +404,7 @@ class StyleManager
         ){ return true; }
 
         // Check is visible group for custom configurations
-        if (isset($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
+        if (isset($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']))
         {
             foreach ($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup'] as $callback)
             {

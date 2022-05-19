@@ -81,7 +81,38 @@ public function onFindByTable($strTable, $arrOptions)
 }
 ```
 
-### 4. **Skip fields** that should not be displayed in the Backend Select-Widget
+### 4. Provide the StyleManager your new groups
+
+To load the new CSS groups within your elements, it is necessary to provide the StyleManager the new groups. In order to make this possible the **styleManagerIsVisibleGroup**-Hook is prepared.
+
+
+```php
+// HOOK
+$GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup'][] = array('\\Namespace\\Class', 'isVisibleGroup');
+```
+
+```php
+use Oveleon\ContaoComponentStyleManager\StyleManagerModel;
+
+/**
+ * Check whether an element is visible in style manager widget
+ *
+ * @param $objGroup
+ * @param $strTable
+ *
+ * @return bool
+ */
+public function isVisibleGroup($objGroup, $strTable)
+{
+        if(
+            'tl_mydca1' === $strTable && !!$objGroup->extendMyDca1
+        ){ return true; }
+
+        return false;
+}
+```
+
+### 5. **Skip fields** that should not be displayed in the Backend Select-Widget
 
 📌 _This step is only necessary for tables with different types like tl_content, tl_module or tl_form_fields_
 
