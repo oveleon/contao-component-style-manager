@@ -102,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = array
                 'label'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['delete'],
                 'href'                => 'act=delete',
                 'icon'                => 'delete.svg',
-                'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
+                'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
             ),
             'show' => array
             (
@@ -218,19 +218,17 @@ class tl_style_manager_archive extends \Backend
      *
      * @param array         $row
      * @param string        $label
-     * @param DataContainer $dc
-     * @param array         $args
      *
-     * @return array
+     * @return string
      */
-    public function addIdentifierInfo($row, $label, DataContainer $dc, $args)
+    public function addIdentifierInfo($row, $label)
     {
         if($row['identifier'])
         {
-            $args[0] .= '<span style="color:#999;padding-left:3px">[' . $row['identifier'] . ']</span>';
+            $label .= '<span style="color:#999;padding-left:3px">[' . $row['identifier'] . ']</span>';
         }
 
-        return $args;
+        return $label;
     }
 
     /**
