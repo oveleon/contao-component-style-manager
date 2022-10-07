@@ -66,5 +66,3 @@ If the StyleManager was used for other / own database tables, these tables must 
 ```shell
 $ php contao-console contao:stylemanager:object-conversion tl_mytable
 ```
-
-
