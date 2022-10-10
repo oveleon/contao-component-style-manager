@@ -5,7 +5,7 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\Widget;
 
 use Contao\BackendUser;
 use Contao\Database;
@@ -13,6 +13,9 @@ use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 
 /**
  * Provide methods to handle select menus for style manager.

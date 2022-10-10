@@ -18,8 +18,9 @@ class ContaoComponentStyleManagerExtension extends Extension
             new FileLocator(__DIR__ . '/../Resources/config')
         );
 
-        $loader->load('migrations.yml');
-        $loader->load('commands.yml');
+        $loader->load('migrations.yaml');
+        $loader->load('commands.yaml');
+        $loader->load('services.yaml');
 
         $container->setParameter('contao_component_style_manager.use_bundle_config', $config['use_bundle_config']);
         $container->setParameter('contao_component_style_manager.strict', $config['strict']);

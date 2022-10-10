@@ -5,29 +5,26 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\Backend;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
 use Contao\System;
-use Contao\Widget;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
 class StyleManager
 {
     /**
-     * Valid CSS-Class fields
-     *
-     * field => size
-     *
-     * @var array
+     * Valid CSS-Class fields [field => size]
      */
-    public static $validCssClassFields = array(
+    public static array $validCssClassFields = [
         'cssID'      => 2,
         'cssClass'   => 1,
         'class'      => 1,
         'attributes' => 2
-    );
+    ];
 
     /**
      * Load callback for the CSS-Classes DCA-Field
@@ -306,7 +303,8 @@ class StyleManager
      *
      * @return array|bool
      */
-    public static function serializeValues($varValue, $strTable){
+    public static function serializeValues($varValue, $strTable)
+    {
         $objStyleGroups = StyleManagerModel::findByTableAndConfiguration($strTable);
 
         if($objStyleGroups === null)
@@ -359,8 +357,8 @@ class StyleManager
      *
      * @return mixed
      */
-    public static function deserializeValues($arrValue){
-
+    public static function deserializeValues($arrValue)
+    {
         if(isset($arrValue['__vars__']))
         {
             foreach ($arrValue['__vars__'] as $archiveAlias => $values)
@@ -416,52 +414,6 @@ class StyleManager
     }
 
     /**
-     * Parse Template and set Variables
-     *
-     * @param $template
-     */
-    public function onParseTemplate($template)
-    {
-        // Check page and template variables to pass them to the template
-        if(strpos($template->getName(), 'fe_page') === 0)
-        {
-            global $objPage;
-
-            $arrStyles = array_filter(array_merge_recursive(
-                StringUtil::deserialize($objPage->styleManager, true),
-                StringUtil::deserialize($template->layout->styleManager, true)
-            ));
-
-            $template->styleManager = serialize($arrStyles);
-        }
-
-        // Build Styles object and assign it to the template
-        if(!($template->styleManager instanceof Styles))
-        {
-            $arrStyles = StringUtil::deserialize($template->styleManager);
-            $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
-        }
-    }
-
-    /**
-     * Parse Template and set Variables
-     *
-     * @param $objWidget
-     *
-     * @return \Widget
-     */
-    public function onLoadFormField($objWidget)
-    {
-        if(!($objWidget->styleManager instanceof Styles))
-        {
-            $arrStyles = StringUtil::deserialize($objWidget->styleManager);
-            $objWidget->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
-        }
-
-        return $objWidget;
-    }
-
-    /**
      * Add the type of input field
      *
      * @param array $arrRow
@@ -475,29 +427,5 @@ class StyleManager
 
         $formField = new \tl_form_field();
         return $formField->listFormFields($arrRow);
-    }
-
-    /**
-     * Add a new regexp "variable"
-     *
-     * @param $strRegexp
-     * @param $varValue
-     * @param Widget $objWidget
-     *
-     * @return bool
-     */
-    public function addVariableRegexp($strRegexp, $varValue, Widget $objWidget): bool
-    {
-        if ($strRegexp == 'variable')
-        {
-            if (!preg_match('/^[a-zA-Z](?:_?[a-zA-Z0-9]+)$/', $varValue))
-            {
-                $objWidget->addError('Field ' . $objWidget->label . ' must begin with a letter and may not contain any spaces or special characters (e.g. myVariable).');
-            }
-
-            return true;
-        }
-
-        return false;
     }
 }

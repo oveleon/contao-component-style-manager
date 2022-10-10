@@ -6,7 +6,7 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\System;
 

@@ -5,11 +5,12 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\Model;
 
-use Contao\Controller;
 use Contao\Model;
 use Contao\System;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 
 /**
  * Reads and writes fields from style manager
@@ -94,7 +95,6 @@ use Contao\System;
 
 class StyleManagerModel extends Model
 {
-
     /**
      * Table name
      * @var string

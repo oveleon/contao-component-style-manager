@@ -5,10 +5,11 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\Model;
 
 use Contao\Model;
 use Contao\System;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
 
 /**
  * Reads and writes fields from style manager categories

@@ -1,42 +1,24 @@
 <?php
-/*
- * This file is part of ContaoComponentStyleManager.
- *
- * (c) https://www.oveleon.de/
- */
+use Contao\ArrayUtil;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
+use Oveleon\ContaoComponentStyleManager\Widget\ComponentStyleSelect;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 
 // Back end modules
-array_insert($GLOBALS['BE_MOD'], count($GLOBALS['BE_MOD']['design']), array
-(
-    'design' => array
-    (
-        'style_manager' => array
-        (
-            'tables'  => array('tl_style_manager_archive', 'tl_style_manager'),
-            'export'  => array('\\Oveleon\\ContaoComponentStyleManager\\Sync', 'exportStyleManager'),
-            'import'  => array('\\Oveleon\\ContaoComponentStyleManager\\Sync', 'importStyleManager'),
-        )
-    )
-));
+ArrayUtil::arrayInsert($GLOBALS['BE_MOD'], count($GLOBALS['BE_MOD']['design']), [
+    'design' => [
+        'style_manager' => [
+            'tables'  => ['tl_style_manager_archive', 'tl_style_manager'],
+            'export'  => [Sync::class, 'exportStyleManager'],
+            'import'  => [Sync::class, 'importStyleManager']
+        ]
+    ]
+]);
 
 // Back end form fields
-array_insert($GLOBALS['BE_FFL'], 1, array
-(
-    'stylemanager' => '\\Oveleon\\ContaoComponentStyleManager\\ComponentStyleSelect'
-));
+$GLOBALS['BE_FFL']['stylemanager'] = ComponentStyleSelect::class;
 
 // Models
-$GLOBALS['TL_MODELS']['tl_style_manager']         = '\\Oveleon\\ContaoComponentStyleManager\\StyleManagerModel';
-$GLOBALS['TL_MODELS']['tl_style_manager_archive'] = '\\Oveleon\\ContaoComponentStyleManager\\StyleManagerArchiveModel';
-
-// Hooks
-$GLOBALS['TL_HOOKS']['parseTemplate'][]      = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onParseTemplate');
-$GLOBALS['TL_HOOKS']['loadFormField'][]      = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'onLoadFormField');
-$GLOBALS['TL_HOOKS']['addCustomRegexp'][]    = array('\\Oveleon\\ContaoComponentStyleManager\\StyleManager', 'addVariableRegexp');
-$GLOBALS['TL_HOOKS']['executePostActions'][] = array('\\Oveleon\\ContaoComponentStyleManager\\Ajax', 'executePostActions');
-
-// Style sheet
-if (TL_MODE == 'BE')
-{
-    $GLOBALS['TL_CSS'][] = 'bundles/contaocomponentstylemanager/stylemanager.css|static';
-}
+$GLOBALS['TL_MODELS']['tl_style_manager']         = StyleManagerModel::class;
+$GLOBALS['TL_MODELS']['tl_style_manager_archive'] = StyleManagerArchiveModel::class;

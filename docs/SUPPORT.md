@@ -149,16 +149,3 @@ public function onSkipField($objStyleGroups, $objWidget)
     return false;
 }
 ```
-
-
-# Support Rocksolid Custom Elements
-see: [Rocksolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)
-
-Use the callback function `onloadCallback` in your custom element configuration and reference the following function:
-```
- 'onloadCallback' => array(
-      array('Oveleon\ContaoComponentStyleManager\Support', 'extendRockSolidCustomElementsPalettes')
-  )
-```
-
-ℹ **From version `2.4` this callback is no longer needed**

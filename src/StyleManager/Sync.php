@@ -5,7 +5,7 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\Backend;
 use Contao\BackendTemplate;
@@ -20,6 +20,9 @@ use Contao\Message;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Config as BundleConfig;
 
 class Sync extends Backend
 {
@@ -222,7 +225,7 @@ class Sync extends Backend
         $template->descBundleFiles = $GLOBALS['TL_LANG']['tl_style_manager_archive']['descBundleConfig'];
         $template->activeDescBundleFiles = $GLOBALS['TL_LANG']['tl_style_manager_archive']['activateBundleConfig'];
 
-        $template->bundleFiles = \Oveleon\ContaoComponentStyleManager\Config::getBundleConfigurationFiles() ?? [];
+        $template->bundleFiles = BundleConfig::getBundleConfigurationFiles() ?? [];
 
         return $template->parse();
     }
