@@ -17,7 +17,8 @@ This plugin is designed to simplify theme customizations without the need of man
 - Passing variables to the template
     - Formatting output using predefined methods or your own
 - Import / Export
-    - Automatic import of configurations from third-party bundles [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
+    - Automatic import of configurations from third-party bundles (Bundle configurations) [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
+    - Partial import [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
 - Available for
     - Layouts
     - Pages
@@ -55,14 +56,4 @@ composer require oveleon/contao-component-style-manager
 - [Extend and support other extensions](docs/SUPPORT.md)
 - [Import / Export](docs/IMPORT_EXPORT.md)
 - [Bundle-Configurations](docs/BUNDLE_CONFIG.md)
-
-## Migration
-
-#### Migrate from version 2 to 3
-Bundle configurations were added with version 3. This makes it necessary to migrate the StyleManager dataset. If only standard Contao tables were used and the StyleManager was not added to other / own database tables, calling the install tool is sufficient.
-
-If the StyleManager was used for other / own database tables, these tables must be migrated manually using the following command:
-
-```shell
-$ php contao-console contao:stylemanager:object-conversion tl_mytable
-```
+- [Migration](docs/MIGRATE.md)
