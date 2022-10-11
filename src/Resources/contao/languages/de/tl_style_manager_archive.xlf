@@ -10,26 +10,7 @@
         <source>Config</source>
         <target>Konfiguration</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.headingBundleConfig">
-        <source>Bundle configurations</source>
-        <target>Bundle-Konfigurationen</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.headingActiveBundles">
-        <source>Active configurations</source>
-        <target>Aktive Konfigurationen</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
-        <source>No configurations available</source>
-        <target>Keine Konfigurationen vorhanden</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.descBundleConfig">
-        <source>Please note that the configurations displayed here are automatically available in all areas and do not have to be imported. With the import of these files, the bundle configurations are provided for the backend and overwrite from this moment on all properties that come from the bundle. If these are deleted again, the original from the bundle is used.</source>
-        <target>Bitte beachten Sie, dass die hier angezeigten Konfigurationen automatisch in allen Bereichen zur Verfügung stehen und nicht zwingend importiert werden müssen. Mit dem Import dieser Dateien werden die Bundle-Konfigurationen für das Backend bereitgestellt und überschreiben ab diesen Moment alle Eigenschaften, welche aus dem Bundle kommen. Sollten diese wieder gelöscht werden, wird das Original aus dem Bundle herangezogen.</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.activateBundleConfig">
-        <source>The bundle configuration has been disabled for this project. To have configurations of other bundles imported, you have to activate them first.</source>
-        <target>Die Bundle-Konfiguration wurde für dieses Projekt ausgeschaltet. Um Konfigurationen anderer Bundles importieren zu lassen, müssen Sie diese vorerst aktivieren.</target>
-      </trans-unit>
+
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
         <target>Neue Kategorie</target>
@@ -46,6 +27,14 @@
         <source>Import a config</source>
         <target>Konfiguration importieren</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.config.0">
+        <source>Configurations</source>
+        <target>Konfigurationen</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.config.1">
+        <source>Import a config</source>
+        <target>Konfiguration importieren</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.export.0">
         <source>Export</source>
         <target>Exportieren</target>
@@ -53,14 +42,6 @@
       <trans-unit id="tl_style_manager_archive.export.1">
         <source>Export a config</source>
         <target>Konfiguration exportieren</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.source.0">
-        <source>Manual import</source>
-        <target>Manueller Import</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.source.1">
-        <source>Here you can upload one .xml file to be imported.</source>
-        <target>Hier können Sie eine .xml-Datei für den Import hochladen.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.editheader.0">
         <source>Edit category</source>
@@ -124,7 +105,7 @@
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.identifier.1">
         <source>The identifier is used to receive the group classes if they is passed to the template. (e.g. $this->styleManager->get('myCategoryIdentifier')</source>
-        <target>Die Kennung dient zum entgegennehmen der Gruppenklassen, sofern diese an das Template übergeben werden. (Bspw. $this->styleManager->get('meineKategorieKennung')</target>
+        <target>Die Kennung dient zum Entgegennehmen der Gruppenklassen, sofern diese an das Template übergeben werden. (Bspw. $this->styleManager->get('meineKategorieKennung')</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.groupAlias.0">
         <source>Group-Identifier</source>
@@ -141,6 +122,43 @@
       <trans-unit id="tl_style_manager_archive.sorting.1">
         <source>Enter a freely definable number here to define the sort index. This is used to determine the order of the categories in the backend.</source>
         <target>Geben Sie hier eine frei definierbare Zahl ein, um den Sortierindex zu definieren. Dieser dient dazu, die Reihenfolge der Kategorien im Backend zu bestimmen.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_style_manager_archive.bundleConfig.0.0">
+        <source>About the bundle configuration</source>
+        <target>Über die Bundle-Konfiguration</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.0.1">
+        <source>Bundle configurations are used to automatically consume and use StyleManager properties from other bundles.</source>
+        <target>Bundle-Konfigurationen dienen dazu, automatisiert StyleManager-Eigentschaften aus anderen Bundles zu konsumieren und verwenden zu können.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.1.0">
+        <source>Overwrite configuration</source>
+        <target>Konfiguration überschreiben</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.1.1">
+        <source>If you import the configurations into the system using the Import button, properties with the same identifiers (category) and aliases (CSS group) will be added / overwritten. If you delete these properties later, the original configuration will be used again.</source>
+        <target>Sofern Sie die Bundle-Konfigurationen über den Import-Button in das System importieren, werden Eigenschaften mit denselben Kennungen (Kategorie) und Aliasse (CSS-Gruppe) ergänzt / überschrieben. Beim nachträglichen Löschen dieser Eigenschaften wird die Original-Konfiguration wieder verwendet.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.2.0">
+        <source>Switch on / off</source>
+        <target>Ein- / Ausschalten</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.2.1">
+        <source>Automatic reading of bundle configurations can be switched off via config.yaml:
+          &lt;br/&gt;&lt;br/&gt;
+&lt;pre&gt;
+contao_component_style_manager:
+    use_bundle_config: false
+&lt;/pre&gt;
+        </source>
+        <target>Das automatische Einlesen von Bundle-Konfigurationen kann über die config.yaml ausgeschaltet werden:
+          &lt;br/&gt;&lt;br/&gt;
+&lt;pre&gt;
+  contao_component_style_manager:
+      use_bundle_config: false
+&lt;/pre&gt;
+        </target>
       </trans-unit>
     </body>
   </file>

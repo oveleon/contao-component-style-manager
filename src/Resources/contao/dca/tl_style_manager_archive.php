@@ -33,7 +33,6 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
         ],
         'global_operations' => [
             'import' => [
-                'href'                => 'key=import',
                 'class'               => 'header_style_manager_import',
                 'icon'                => 'theme_import.svg'
             ],
@@ -48,7 +47,6 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
                 'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
             ],
             'config' => [
-                'href'                => 'key=import',
                 'class'               => 'header_style_manager_config'
             ]
         ],
@@ -123,6 +121,10 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
             'inputType'               => 'text',
             'eval'                    => ['rgxp'=>'natural', 'nospace'=>true, 'maxlength'=>255, 'tl_class'=>'w50'],
             'sql'                     => "int(10) NOT NULL default '0'"
+        ],
+        'bundleConfig' => [
+            'reference'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['bundleConfig'],
+            'eval'                    => array('helpwizard'=>true),
         ]
     ]
 ];

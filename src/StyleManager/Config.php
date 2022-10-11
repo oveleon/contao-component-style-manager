@@ -9,6 +9,7 @@
 namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\System;
+use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 
 /**
  * A static class to store config data
@@ -120,8 +121,7 @@ class Config
     {
         if($arrFiles = $this->getBundleConfigurationFiles())
         {
-            $sync = new Sync();
-            return $sync->importStyleManagerFile($arrFiles, false);
+            return ImportController::importFiles($arrFiles, false);
         }
 
         return null;

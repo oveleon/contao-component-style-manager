@@ -10,26 +10,7 @@
         <source>Config</source>
         <target>Configuration</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.headingBundleConfig">
-        <source>Bundle configurations</source>
-        <target>Configuration des paquets</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.headingActiveBundles">
-        <source>Active configurations</source>
-        <target>Configurations actives</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.emptyBundleConfig">
-        <source>No configurations available</source>
-        <target>Aucune configuration disponible</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.descBundleConfig">
-        <source>Please note that the configurations displayed here are automatically available in all areas and do not have to be imported. With the import of these files, the bundle configurations are provided for the backend and overwrite from this moment on all properties that come from the bundle. If these are deleted again, the original from the bundle is used.</source>
-        <target>Veuillez noter que les configurations affichées ici sont automatiquement disponibles dans tous les domaines et ne doivent pas obligatoirement être importées. Avec l'importation de ces fichiers, les configurations du bundle sont mises à disposition pour le backend et remplacent dès ce moment toutes les propriétés provenant du bundle. Si celles-ci devaient être supprimées, l'original du bundle serait utilisé.</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.activateBundleConfig">
-        <source>The bundle configuration has been disabled for this project. To have configurations of other bundles imported, you have to activate them first.</source>
-        <target>La configuration des bundles a été désactivée pour ce projet. Pour pouvoir importer les configurations d'autres bundles, vous devez d'abord les activer.</target>
-      </trans-unit>
+
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
         <target>Ajouter une catégorie</target>
@@ -46,6 +27,14 @@
         <source>Import a config</source>
         <target>Importer une configuration</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_archive.config.0">
+        <source>Configurations</source>
+        <target>Configurations</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.config.1">
+        <source>Import a config</source>
+        <target>Importer la configuration</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_archive.export.0">
         <source>Export</source>
         <target>Exporter</target>
@@ -53,14 +42,6 @@
       <trans-unit id="tl_style_manager_archive.export.1">
         <source>Export a config</source>
         <target>Exporter une configuration</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.source.0">
-        <source>Source files</source>
-        <target>Fichiers source</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.source.1">
-        <source>Here you can upload one .xml file to be imported.</source>
-        <target>Vous pouvez uploader un fichier .xml à importer.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.editheader.0">
         <source>Edit category</source>
@@ -141,6 +122,43 @@
       <trans-unit id="tl_style_manager_archive.sorting.1">
         <source>Enter a freely definable number here to define the sort index. This is used to determine the order of the categories in the backend.</source>
         <target>Indiquez un nombre libre pour définir l'ordre de tri. Il est utilisé pour déterminer l'ordre des catégories dans le back-office.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_style_manager_archive.bundleConfig.0.0">
+        <source>About the bundle configuration</source>
+        <target>À propos de la configuration du bundle</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.0.1">
+        <source>Bundle configurations are used to automatically consume and use StyleManager properties from other bundles.</source>
+        <target>Les configurations de bundle servent à consommer et à pouvoir utiliser de manière automatisée les propriétés StyleManager d'autres bundles.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.1.0">
+        <source>Overwrite configuration</source>
+        <target>Remplacer la configuration</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.1.1">
+        <source>If you import the configurations into the system using the Import button, properties with the same identifiers (category) and aliases (CSS group) will be added / overwritten. If you delete these properties later, the original configuration will be used again.</source>
+        <target>Dans la mesure où vous importez les configurations de bundle dans le système via le bouton d'importation, les propriétés sont complétées / écrasées par les mêmes identifiants (catégorie) et alias (groupe CSS). En cas de suppression ultérieure de ces propriétés, la configuration d'origine sera à nouveau utilisée.</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.2.0">
+        <source>Switch on / off</source>
+        <target>Mise en marche / arrêt</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.bundleConfig.2.1">
+        <source>Automatic reading of bundle configurations can be switched off via config.yaml:
+          &lt;br/&gt;&lt;br/&gt;
+&lt;pre&gt;
+contao_component_style_manager:
+    use_bundle_config: false
+&lt;/pre&gt;
+        </source>
+        <target>La lecture automatique des configurations de bundle peut être désactivée via le fichier config.yaml:
+          &lt;br/&gt;&lt;br/&gt;
+&lt;pre&gt;
+contao_component_style_manager:
+    use_bundle_config: false
+&lt;/pre&gt;
+        </target>
       </trans-unit>
     </body>
   </file>

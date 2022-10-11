@@ -1,0 +1,126 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    {{ headline }}
+{% endblock %}
+
+{% block error %}{% endblock %}
+
+{% block main %}
+    {% if messages %}
+        {{ messages|raw }}
+    {% endif %}
+
+    <div id="tl_buttons">
+        <a href="{{ action.back }}" class="header_back" title="{{ label.backTitle }}" accesskey="b">{{ label.back }}</a>
+    </div>
+
+    <div class="tl_formbody_edit">
+        {% if partial %}
+            <form id="{{ form.id }}" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="FORM_SUBMIT" value="{{ form.id }}_partial">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ form.rt }}">
+
+                <div class="tl_tbox" style="border-top: 1px solid #e6e6e8;">
+                    <div class="widget">
+                        <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e6e6e8">
+                            <h3 style="margin-bottom: 10px">{{ label.files }}</h3>
+                            {% for fileName in configs.files %}
+                                <div style="margin-bottom: 5px">
+                                    <input type="hidden" name="files[]" value="{{ fileName }}"/>
+                                    📄 {{ fileName }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <p class="tl_info" style="margin-top: 15px; margin-bottom: 15px">Wählen Sie hier die Datensätze aus, welche importiert werden sollen.</p>
+                        <div>
+                            {% for archiveAlias, archive in configs.collection %}
+                                <div id="group_{{ archiveAlias }}" class="tl_checkbox_container" style="margin-top: 5px">
+                                    <input type="checkbox" name="archives[]" id="{{ archiveAlias }}" class="tl_checkbox" value="{{ archiveAlias }}" onclick="Backend.toggleCheckboxGroup(this,'group_{{ archiveAlias }}')"/>
+                                    <label for="{{ archiveAlias }}" style="font-weight: 600">{{ archive.archive.title|raw }}</label>
+                                    <div class="children" style="margin-top: 5px">
+                                        {% for groupAlias, child in archive.children %}
+                                            <div class="child" style="margin-left: 15px">
+                                                <input type="checkbox" name="groups[]" id="{{ groupAlias }}" class="tl_checkbox" value="{{ groupAlias }}" onclick="javascript:document.getElementById('{{ archiveAlias }}').checked = true;"/>
+                                                <label for="{{ groupAlias }}">{{ child.title|raw }}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div style="margin-top: 12px">
+                            <button type="submit" name="save" id="save" class="tl_submit" accesskey="s">{{ label.import }}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% else %}
+            <form id="{{ form.id }}" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="FORM_SUBMIT" value="{{ form.id }}">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ form.rt }}">
+                <input type="hidden" name="MAX_FILE_SIZE" value="{{ form.maxFileSize }}">
+
+                <div class="tl_tbox" style="border-top: 1px solid #e6e6e8;">
+                    <div class="widget">
+                        <h3>{{ label.importManual }}</h3>
+                        <div style="margin-top: 10px">{{ form.uploadWidget|raw }}</div>
+                        <p class="tl_help tl_tip">{{ label.widgetDescription }}</p>
+                        <div style="margin-top: 20px; display: flex; align-items: center">
+                            <button type="submit" name="import" id="import_full" class="tl_submit" accesskey="s">{{ label.import }}</button>
+                            <span class="widget" style="display: inline-block">
+                                <span class="tl_checkbox_single_container">
+                                    <input type="checkbox" name="import_partial" id="import_partial" value="1" />
+                                    <label for="import_partial">{{ label.importPartial }}</label>
+                                </span>
+                                <p class="tl_help tl_tip" title="">{{ label.importPartialDesc }}</p>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form id="{{ form.id }}_bundle" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="FORM_SUBMIT" value="{{ form.id }}_bundle">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ form.rt }}">
+                <div class="tl_tbox" style="border-top: 1px solid #e6e6e8;">
+                    <div class="widget">
+                        <h3>
+                            {{ label.bundleUpload }}
+                            <a href="/contao/help?table=tl_style_manager_archive&amp;field=bundleConfig" title="" onclick="Backend.openModalIframe({'title':'{{ label.bundleUpload }}','url':this.href});return false">
+                                <img src="system/themes/flexible/icons/about.svg" width="16" height="16">
+                            </a>
+                        </h3>
+                        {% if useBundleConfig %}
+                            {% if bundleFiles|length > 0 %}
+                                <table style="margin-top: 10px">
+                                    {% for fileName, filePath in bundleFiles %}
+                                        <tr>
+                                            <td><input type="checkbox" name="bundleFiles[]" id="file{{ loop.index }}" value="{{ filePath }}"/></td>
+                                            <td><label for="file{{ loop.index }}">{{ fileName|raw }}</label></td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+
+                                <div style="margin-top: 20px; display: flex; align-items: center">
+                                    <button type="submit" name="import" id="import_full" class="tl_submit" accesskey="s">{{ label.import }}</button>
+                                    <span class="widget" style="display: inline-block">
+                                        <span class="tl_checkbox_single_container">
+                                            <input type="checkbox" name="import_partial" id="import_partial_bundle" value="1" />
+                                            <label for="import_partial_bundle">{{ label.importPartial }}</label>
+                                        </span>
+                                        <p class="tl_help tl_tip" title="">{{ label.importPartialDesc }}</p>
+                                    </span>
+                                </div>
+                            {% else %}
+                                <p>{{ label.bundleConfigEmpty }}</p>
+                            {% endif %}
+                        {% else %}
+                            <p class="tl_info" style="margin-top: 15px">{{ label.bundleConfigInactive }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

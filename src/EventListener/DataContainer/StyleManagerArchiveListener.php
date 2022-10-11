@@ -2,12 +2,12 @@
 
 namespace Oveleon\ContaoComponentStyleManager\EventListener\DataContainer;
 
-use Contao\Backend;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\StringUtil;
 use Contao\System;
+use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
 
@@ -54,7 +54,7 @@ class StyleManagerArchiveListener
         }
 
         return vsprintf('<a href="%s" class="%s" title="%s" %s>%s</a> ', [
-            Backend::addToUrl($href),
+            TL_SCRIPT. '/' . ImportController::ROUTE,
             $class,
             StringUtil::specialchars($title),
             $attributes,
@@ -77,7 +77,7 @@ class StyleManagerArchiveListener
             }
 
             return vsprintf('<a href="%s" class="%s" %s>%s: %s</a>', [
-                Backend::addToUrl($href),
+                TL_SCRIPT. '/' . ImportController::ROUTE,
                 $class,
                 $attributes,
                 $label,
