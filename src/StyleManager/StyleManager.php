@@ -16,6 +16,8 @@ use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
 class StyleManager
 {
+    const VARS_KEY = '__vars__';
+
     /**
      * Valid CSS-Class fields [field => size]
      */
@@ -134,9 +136,9 @@ class StyleManager
         $varValues = StringUtil::deserialize($dc->activeRecord->styleManager, true);
 
         // remove vars node
-        if(isset($varValues['__vars__']))
+        if(isset($varValues[StyleManager::VARS_KEY]))
         {
-            unset($varValues['__vars__']);
+            unset($varValues[StyleManager::VARS_KEY]);
         }
 
         // append classes
@@ -337,7 +339,7 @@ class StyleManager
                 {
                     $identifier = $arrArchives[ $objStyleGroup->pid ];
 
-                    $arrValue['__vars__'][ $identifier ][ $objStyleGroup->alias ] = array(
+                    $arrValue[ StyleManager::VARS_KEY ][ $identifier ][ $objStyleGroup->alias ] = array(
                         'id'    => $objStyleGroup->id,
                         'value' => $arrValue[ $strId ]
                     );
@@ -359,9 +361,9 @@ class StyleManager
      */
     public static function deserializeValues($arrValue)
     {
-        if(isset($arrValue['__vars__']))
+        if(isset($arrValue[ StyleManager::VARS_KEY ]))
         {
-            foreach ($arrValue['__vars__'] as $archiveAlias => $values)
+            foreach ($arrValue[ StyleManager::VARS_KEY ] as $archiveAlias => $values)
             {
                 foreach ($values as $alias => $arrItem)
                 {
@@ -370,7 +372,7 @@ class StyleManager
                 }
             }
 
-            unset($arrValue['__vars__']);
+            unset($arrValue[ StyleManager::VARS_KEY ]);
         }
 
         return $arrValue;
@@ -423,7 +425,7 @@ class StyleManager
     public function listFormFields($arrRow)
     {
         $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
-        $arrRow['styleManager'] = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+        $arrRow['styleManager'] = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
 
         $formField = new \tl_form_field();
         return $formField->listFormFields($arrRow);

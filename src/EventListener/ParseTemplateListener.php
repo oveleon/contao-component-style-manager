@@ -10,6 +10,7 @@ namespace Oveleon\ContaoComponentStyleManager\EventListener;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\StringUtil;
 use Contao\Template;
+use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
 
 /**
@@ -39,7 +40,7 @@ class ParseTemplateListener
         if(!($template->styleManager instanceof Styles))
         {
             $arrStyles = StringUtil::deserialize($template->styleManager);
-            $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+            $template->styleManager = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
         }
     }
 }

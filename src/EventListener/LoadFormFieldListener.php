@@ -10,6 +10,7 @@ namespace Oveleon\ContaoComponentStyleManager\EventListener;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\StringUtil;
 use Contao\Widget;
+use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
 
 /**
@@ -25,7 +26,7 @@ class LoadFormFieldListener
         if(!($objWidget->styleManager instanceof Styles))
         {
             $arrStyles = StringUtil::deserialize($objWidget->styleManager);
-            $objWidget->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+            $objWidget->styleManager = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
         }
 
         return $objWidget;

@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\Command;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Oveleon\ContaoComponentStyleManager\Sync;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;

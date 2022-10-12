@@ -6,7 +6,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
-use Oveleon\ContaoComponentStyleManager\Sync;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 
 class ObjectConversionMigration extends AbstractMigration
 {
@@ -37,7 +37,7 @@ class ObjectConversionMigration extends AbstractMigration
 
     public function shouldRun(): bool
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         // If the database table itself does not exist we should do nothing
         if (!$schemaManager->tablesExist(['tl_style_manager']))

@@ -43,7 +43,14 @@ class Sync extends Backend
 
         if($objConfig && $arrConfig = StringUtil::deserialize($objConfig->styleManager))
         {
-            return is_numeric(array_key_first($arrConfig));
+            $key = array_key_first($arrConfig);
+
+            if($key === StyleManager::VARS_KEY && count($arrConfig) > 1)
+            {
+                $key = array_keys($arrConfig)[1];
+            }
+
+            return is_numeric($key);
         }
 
         return false;
@@ -101,14 +108,21 @@ class Sync extends Backend
                 {
                     $config = StringUtil::deserialize($arrRow['styleManager']);
 
+                    $key = array_key_first($config);
+
+                    if($key === StyleManager::VARS_KEY && count($config) > 1)
+                    {
+                        $key = array_keys($config)[1];
+                    }
+
                     // Skip is config already converted
-                    if(!is_numeric(array_key_first($config)))
+                    if(!is_numeric($key))
                     {
                         continue;
                     }
 
                     $arrAliasPairKeys = array_map(function($intGroupKey) use ($arrArchives, $arrGroups) {
-                        return StyleManager::generateAlias($arrArchives[ $arrGroups[$intGroupKey]->pid ], $arrGroups[$intGroupKey]->alias);
+                        return $intGroupKey === StyleManager::VARS_KEY ? StyleManager::VARS_KEY : StyleManager::generateAlias($arrArchives[ $arrGroups[$intGroupKey]->pid ], $arrGroups[$intGroupKey]->alias);
                     }, array_keys($config));
 
                     $newConfig = array_combine($arrAliasPairKeys, $config);
