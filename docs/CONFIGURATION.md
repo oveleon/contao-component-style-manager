@@ -8,7 +8,11 @@
 
 ---
 
-# Manage Categories:
+After the installation, a new navigation item "StyleManager" is displayed in the backend to create and edit the dataset of categories and CSS groups.
+
+# Categories:
+
+Categories can be considered as archives and form a logical separation of CSS groups. A special feature for the display in the backend, is the merging of these categories via the field `Group-Identifier`. This field can be filled freely to display categories with the same group identifier bundled as tab navigation in the widget.
 
 | Field              | Description                                                                                                                  |
 |--------------------|------------------------------------------------------------------------------------------------------------------------------|
@@ -22,7 +26,11 @@
 
 <br/>
 
-# Manage CSS-Groups:
+# CSS-Groups:
+
+If a category has been created, any CSS groups can be created within it. A CSS group represents the actual selection of selectable options that are made available to the editor for the various areas (articles, content elements, ...).
+
+A special feature is that CSS groups can also be used as template variables via the `Use as template variable` field. In this case, the selected options are not automatically made available as a CSS class, but must be accepted manually in the template. Learn more about template variables.
 
 | Field                      | Description                                                                                                                                                                                            |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
