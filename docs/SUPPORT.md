@@ -11,7 +11,7 @@
 # Support own extensions
 To use the StyleManager in your own DCA's as well, four to five steps are required.
 
-__First things first__\
+### First things first
 As in Contao itself, the DCA must contain a field where the CSS classes can be stored. One of the following fields should exist:
 
 | Field        | Size           |
