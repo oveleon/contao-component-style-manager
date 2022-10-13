@@ -21,7 +21,7 @@ class Config
     /**
      * Object instance (Singleton)
      */
-    protected static Config $objInstance;
+    protected static ?Config $objInstance = null;
 
     /**
      * Group data
