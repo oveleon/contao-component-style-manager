@@ -15,7 +15,7 @@ To access the variables, we can access the corresponding class collection via th
 ![Passing Variables: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/template-vars-list.png)
 
 ## API:
-### `get`
+### 🔹 `get`
 Return selected CSS classes of a category or a specific group
 
 __Method arguments:__
@@ -34,7 +34,7 @@ $this->styleManager->get('myCategoryIdentifier');
 $this->styleManager->get('myCategoryIdentifier', ['alias1', 'alias2']);
 ```
 
-### `prepare` + `format`
+### 🔹 `prepare` + `format`
 Different from the `get` method, you can specify your own output format and a predefined or custom method to validate the output.
 
 __Arguments of the `prepare` method:__
@@ -64,7 +64,7 @@ $this->styleManager->prepare('myCategoryIdentifier', ['alias1'])->format("data-s
 ```
 
 ## Format methods
-### `json`
+### 🔸 `json`
 Returns a JSON object using the alias and value (e.g. `{"alias1":"my-class-1","alias2":"my-class-2"}`)
 
 ### Create your own methods
