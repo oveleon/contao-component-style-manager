@@ -30,7 +30,7 @@ Categories can be considered as archives and form a logical separation of CSS gr
 
 If a category has been created, any CSS groups can be created within it. A CSS group represents the actual selection of selectable options that are made available to the editor for the various areas (articles, content elements, ...).
 
-A special feature is that CSS groups can also be used as template variables via the `Use as template variable` field. In this case, the selected options are not automatically made available as a CSS class, but must be accepted manually in the template. Learn more about template variables.
+A special feature is that CSS groups can also be used as template variables via the `Use as template variable` field. In this case, the selected options are not automatically made available as a CSS class, but must be accepted manually in the template. [Learn more about template variables](TEMPLATE_VARIABLES.md).
 
 | Field                      | Description                                                                                                                                                                                            |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

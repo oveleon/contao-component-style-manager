@@ -1,3 +1,13 @@
+## Documentation
+- [Configuration](CONFIGURATION.md)
+- [Use template variables](TEMPLATE_VARIABLES.md)
+- __[Extend and support other extensions](SUPPORT.md)__
+- [Import / Export](IMPORT_EXPORT.md)
+- [Bundle-Configurations](BUNDLE_CONFIG.md)
+- [Migration](docs/MIGRATE.md)
+
+---
+
 # Support your own or vendor DCA's 
 If you have your own DCA that you want to make available for the StyleManager, you can do this in **three to four steps**.
 As in Contao itself, the DCA must contain a field where the CSS classes can be stored. The following fields are already included:

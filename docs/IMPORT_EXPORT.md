@@ -1,4 +1,14 @@
-## Import / Export
+## Documentation
+- [Configuration](CONFIGURATION.md)
+- [Use template variables](TEMPLATE_VARIABLES.md)
+- [Extend and support other extensions](SUPPORT.md)
+- __[Import / Export](IMPORT_EXPORT.md)__
+- [Bundle-Configurations](BUNDLE_CONFIG.md)
+- [Migration](docs/MIGRATE.md)
+
+---
+
+# Import / Export
 To fill projects with a default setting, the Import and Export functions are available. 
 
 When importing, the categories as well as the CSS groups are only added additively. This allows CSS classes to be added to the actual project without being deleted after an import. 
