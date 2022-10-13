@@ -13,41 +13,31 @@ class Styles
 {
     /**
      * Style Collection
-     * @var array|null
      */
-    private $styles = null;
+    private ?array $styles;
 
     /**
      * Current identifier
-     * @var string
      */
-    private $currIdentifier = '';
+    private string $currIdentifier = '';
 
     /**
      * Current groups
-     * @var array|null
      */
-    private $currGroups = null;
+    private ?array $currGroups = null;
 
     /**
      * Initialize the object
-     *
-     * @param array $arrStyles
      */
-    public function __construct($arrStyles=null)
+    public function __construct(?array $arrStyles = null)
     {
         $this->styles = $arrStyles;
     }
 
     /**
      * Return the css class collection of an identifier
-     *
-     * @param $identifier
-     * @param null $arrGroups
-     *
-     * @return string
      */
-    public function get($identifier, $arrGroups=null)
+    public function get($identifier, $arrGroups=null): string
     {
         if($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
         {
@@ -81,13 +71,8 @@ class Styles
 
     /**
      * Prepare css classes
-     *
-     * @param $identifier
-     * @param null $arrGroups
-     *
-     * @return Styles
      */
-    public function prepare($identifier, $arrGroups=null)
+    public function prepare($identifier, $arrGroups=null): Styles
     {
         $this->currIdentifier = $identifier;
         $this->currGroups = $arrGroups;
@@ -97,13 +82,8 @@ class Styles
 
     /**
      * Return formatted css classes
-     *
-     * @param $format
-     * @param string $method
-     *
-     * @return string
      */
-    public function format($format, $method='')
+    public function format(string $format, string $method=''): string
     {
         if(!$format || $this->styles === null || !is_array(($this->styles[ $this->currIdentifier ] ?? null)))
         {
@@ -166,14 +146,10 @@ class Styles
 
     /**
      * Return all values of a category
-     *
-     * @param $arrVariables
-     *
-     * @return array
      */
-    private function getCategoryValues($arrVariables)
+    private function getCategoryValues($arrVariables): array
     {
-        $arrValues = array();
+        $arrValues = [];
 
         foreach ($arrVariables as $alias => $arrVariable)
         {
@@ -185,10 +161,6 @@ class Styles
 
     /**
      * Return the value of a group
-     *
-     * @param $arrVariable
-     *
-     * @return mixed
      */
     private function getGroupValue($arrVariable)
     {
@@ -197,10 +169,6 @@ class Styles
 
     /**
      * Return the value as correct type
-     *
-     * @param $strValue
-     *
-     * @return mixed
      */
     private function parseValueType($strValue)
     {

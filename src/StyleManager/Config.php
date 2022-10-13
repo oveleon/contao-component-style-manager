@@ -20,21 +20,18 @@ class Config
 {
     /**
      * Object instance (Singleton)
-     * @var Config
      */
-    protected static $objInstance;
+    protected static Config $objInstance;
 
     /**
      * Group data
-     * @var array
      */
-    protected static $arrGroups = [];
+    protected static array $arrGroups = [];
 
     /**
      * Archive data
-     * @var array
      */
-    protected static $arrArchive = [];
+    protected static array $arrArchive = [];
 
     /**
      * Return all archives as array

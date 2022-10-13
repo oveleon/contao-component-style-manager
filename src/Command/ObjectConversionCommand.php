@@ -29,15 +29,8 @@ class ObjectConversionCommand extends Command
 {
     protected static $defaultName = 'contao:stylemanager:object-conversion';
 
-    /**
-     * @var ContaoFramework
-     */
-    protected $framework;
-
-    /**
-     * @var Sync
-     */
-    private $sync;
+    protected ContaoFramework $framework;
+    private Sync $sync;
 
     public function __construct(ContaoFramework $contaoFramework)
     {

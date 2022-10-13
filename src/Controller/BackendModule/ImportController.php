@@ -120,7 +120,7 @@ class ImportController extends AbstractController
     /**
      * Create a tree from archives and groups
      */
-    public function createImportTree($archives, $groups, $files)
+    public function createImportTree($archives, $groups, $files): array
     {
         $collection = [
             'files' => $files,
