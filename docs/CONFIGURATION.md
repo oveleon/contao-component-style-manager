@@ -7,7 +7,7 @@
 | `Group-Idenfifier` | In this field you can specify an alias that combines categories with the same alias and displays them as tabs in the widget. |
 | `Sort-Index`       | This field is used to determine the order of the categories in the widget.                                                   |
 
-#### Example backend view of combined categories using `Group-Idenfifier`:
+### Example backend view of combined categories using `Group-Idenfifier`:
 ![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/combined-groups.png)
 
 <br/>
@@ -22,5 +22,5 @@
 | `CSS class`                | To further customize the display of the backend fields, you can specify a selection of predefined CSS classes. (long, clr, separator)                                                               |
 | `...`                      | All other fields should be self-explanatory                                                                                                                                                         |
 
-#### Example css group:
+### Example css group:
 ![Manage Groups: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)
