@@ -1,7 +1,7 @@
 ## Documentation
 - [Configuration](CONFIGURATION.md)
 - __[Use template variables](TEMPLATE_VARIABLES.md)__
-- [Extend and support other extensions](SUPPORT.md)
+- [Support own extensions](SUPPORT.md)
 - [Import / Export](IMPORT_EXPORT.md)
 - [Bundle-Configurations](BUNDLE_CONFIG.md)
 - [Migration](docs/MIGRATE.md)

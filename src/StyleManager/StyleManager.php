@@ -63,7 +63,7 @@ class StyleManager
     {
         $palette = PaletteManipulator::create()
             ->addLegend('style_manager_legend', 'expert_legend', PaletteManipulator::POSITION_BEFORE)
-            ->addField(array('styleManager'), 'style_manager_legend', PaletteManipulator::POSITION_APPEND);
+            ->addField(['styleManager'], 'style_manager_legend', PaletteManipulator::POSITION_APPEND);
 
         foreach ($GLOBALS['TL_DCA'][ $dc->table ]['palettes'] as $key=>$value){
             if($key === '__selector__')

@@ -53,7 +53,7 @@ composer require oveleon/contao-component-style-manager
 ## Documentation
 - [Configuration](docs/CONFIGURATION.md)
 - [Use template variables](docs/TEMPLATE_VARIABLES.md)
-- [Extend and support other extensions](docs/SUPPORT.md)
+- [Support own extensions](docs/SUPPORT.md)
 - [Import / Export](docs/IMPORT_EXPORT.md)
 - [Bundle-Configurations](docs/BUNDLE_CONFIG.md)
 - [Migration](docs/MIGRATE.md)
