@@ -118,6 +118,7 @@ public function isVisibleGroup(StyleManagerModel $group, string $table): bool
 If the DCA provides several types, which can be selected individually under the CSS groups, a further check has to take place to display them only for certain types.
 
 ```php
+use Contao\Widget;
 use Contao\StringUtil;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 
@@ -139,5 +140,81 @@ public function onSkipField(StyleManagerModel $styleGroups, Widget $widget)
     }
 
     return false;
+}
+```
+
+# Boilerplate
+
+```php
+<?php
+
+namespace App/Support;
+
+use Contao\StringUtil;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\Widget;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+
+class StyleManagerSupport
+{
+    /**
+     * Name of the DCA to be supported
+     */
+    const DCA_NAME = 'tl_mydca';
+
+    /**
+     * Field name, which was added in tl_style_manager
+     */
+    const SM_FIELD_NAME = 'extendMyDca';
+
+    /**
+     * Find css groups using their table (Step 3)
+     *
+     * @Hook("styleManagerFindByTable")
+     */
+    public function onFindByTable(string $table, array $options = [])
+    {
+        if(self::DCA_NAME === $table)
+        {
+            return StyleManagerModel::findBy([self::SM_FIELD_NAME . '=1'], null, $options);
+        }
+
+        return null;
+    }
+
+    /**
+     * Check whether an element is visible for my dca in style manager widget (Step 4)
+     *
+     * @Hook("styleManagerIsVisibleGroup")
+     */
+    public function isVisibleGroup(StyleManagerModel $group, string $table): bool
+    {
+        if(self::DCA_NAME === $table && !!$group->{self::SM_FIELD_NAME})
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Skip non-valid fields (Step 5)
+     *
+     * @Hook("styleManagerSkipField")
+     */
+    public function onSkipField(StyleManagerModel $styleGroups, Widget $widget)
+    {
+        if(!!$styleGroups->{self::SM_FIELD_NAME} && self::DCA_NAME === $widget->strTable)
+        {
+            $arrDcaTypes = StringUtil::deserialize($styleGroups->dcaTypes);
+
+            if($arrDcaTypes !== null && !in_array($widget->activeRecord->type, $arrDcaTypes))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 ```
