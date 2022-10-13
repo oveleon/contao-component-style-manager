@@ -45,7 +45,7 @@ $GLOBALS['TL_DCA']['tl_mydca']['fields']['attributes']['save_callback'][] = [Sty
 ```
 
 ## Step 2: Expand the StyleManager DCA
-To be able to select the new DCA within the StyleManager configuration (CSS Groups), we need to make it known in the next step. To use the same naming scheme as in StyleManager, we name our new field "extendMyDca".
+To be able to select the new DCA within the StyleManager configuration (CSS Groups), we need to make it known in the next step. To use the same naming scheme as in StyleManager, we name our new field "extend`table-name`" (`extendMyDca`).
 
 ```php
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
