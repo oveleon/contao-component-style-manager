@@ -40,8 +40,9 @@ class Sync extends Backend
         }
 
         $objConfig = $this->Database->query("SELECT styleManager FROM " . $table . " WHERE styleManager IS NOT NULL LIMIT 0,1");
+        $archives = StyleManagerArchiveModel::countAll();
 
-        if($objConfig && $arrConfig = StringUtil::deserialize($objConfig->styleManager))
+        if($objConfig && $archives > 0 && $arrConfig = StringUtil::deserialize($objConfig->styleManager))
         {
             $key = array_key_first($arrConfig);
 
