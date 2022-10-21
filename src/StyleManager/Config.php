@@ -94,7 +94,11 @@ class Config
                 try{
                     $filePath = str_replace('\\', "/",$strRelpath);
                     $bundleName = str_replace("/vendor/", "", substr($filePath, strpos($filePath, '/vendor/')));
-                    $bundleName = substr($bundleName, 0, strpos($bundleName, '/src'));
+
+                    if (str_contains($bundleName, '/src'))
+                    {
+                        $bundleName = substr($bundleName, 0, strpos($bundleName, '/src'));
+                    }
                 }catch (\Exception $e){
                     $bundleName = 'vendor';
                 }
