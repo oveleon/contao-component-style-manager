@@ -5,28 +5,28 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\Backend;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
-use Contao\Widget;
+use Contao\System;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
 class StyleManager
 {
+    const VARS_KEY = '__vars__';
+
     /**
-     * Valid CSS-Class fields
-     *
-     * field => size
-     *
-     * @var array
+     * Valid CSS-Class fields [field => size]
      */
-    public static $validCssClassFields = array(
+    public static array $validCssClassFields = [
         'cssID'      => 2,
         'cssClass'   => 1,
         'class'      => 1,
         'attributes' => 2
-    );
+    ];
 
     /**
      * Load callback for the CSS-Classes DCA-Field
@@ -63,7 +63,7 @@ class StyleManager
     {
         $palette = PaletteManipulator::create()
             ->addLegend('style_manager_legend', 'expert_legend', PaletteManipulator::POSITION_BEFORE)
-            ->addField(array('styleManager'), 'style_manager_legend', PaletteManipulator::POSITION_APPEND);
+            ->addField(['styleManager'], 'style_manager_legend', PaletteManipulator::POSITION_APPEND);
 
         foreach ($GLOBALS['TL_DCA'][ $dc->table ]['palettes'] as $key=>$value){
             if($key === '__selector__')
@@ -136,9 +136,9 @@ class StyleManager
         $varValues = StringUtil::deserialize($dc->activeRecord->styleManager, true);
 
         // remove vars node
-        if(isset($varValues['__vars__']))
+        if(isset($varValues[StyleManager::VARS_KEY]))
         {
-            unset($varValues['__vars__']);
+            unset($varValues[StyleManager::VARS_KEY]);
         }
 
         // append classes
@@ -170,14 +170,14 @@ class StyleManager
             $varValue = $cssID[1] ?? '';
         }
 
-        $objStyles = StyleManagerModel::findByTable($strTable);
+        $objStyles = StyleManagerModel::findByTableAndConfiguration($strTable);
         $arrStyles = array();
 
         if($objStyles !== null)
         {
-            while($objStyles->next())
+            foreach($objStyles as $objStyle)
             {
-                $arrGroup = StringUtil::deserialize($objStyles->cssClasses, true);
+                $arrGroup = StringUtil::deserialize($objStyle->cssClasses, true);
 
                 foreach ($arrGroup as $opts)
                 {
@@ -214,21 +214,27 @@ class StyleManager
     {
         if(is_array($arrValues))
         {
-            $objStyles = StyleManagerModel::findByTable($strTable);
+            $objStyles = StyleManagerModel::findByTableAndConfiguration($strTable);
 
             if($objStyles !== null)
             {
                 $arrExistingKeys = array();
                 $arrExistingValues = array();
+                $arrArchives = array();
 
-                while($objStyles->next())
+                $objStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration();
+
+                // Prepare archives identifier
+                foreach($objStyleArchives as $objStyleArchive)
                 {
-                    $arrExistingKeys[] = $objStyles->id;
+                    $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
+                }
 
-                    // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                    $arrExistingKeys[] = $objStyles->alias;
+                foreach($objStyles as $objStyle)
+                {
+                    $arrExistingKeys[] = self::generateAlias($arrArchives[ $objStyle->pid ], $objStyle->alias);
 
-                    $arrGroup = StringUtil::deserialize($objStyles->cssClasses, true);
+                    $arrGroup = StringUtil::deserialize($objStyle->cssClasses, true);
 
                     foreach ($arrGroup as $opts)
                     {
@@ -299,8 +305,9 @@ class StyleManager
      *
      * @return array|bool
      */
-    public static function serializeValues($varValue, $strTable){
-        $objStyleGroups = StyleManagerModel::findByTable($strTable);
+    public static function serializeValues($varValue, $strTable)
+    {
+        $objStyleGroups = StyleManagerModel::findByTableAndConfiguration($strTable);
 
         if($objStyleGroups === null)
         {
@@ -308,12 +315,12 @@ class StyleManager
         }
 
         $arrArchives = array();
-        $objStyleArchives = StyleManagerArchiveModel::findAll();
+        $objStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration();
 
         // Prepare archives identifier
-        while($objStyleArchives->next())
+        foreach($objStyleArchives as $objStyleArchive)
         {
-            $arrArchives[ $objStyleArchives->id ] =  $objStyleArchives->identifier;
+            $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
         }
 
         // Remove unused classes
@@ -322,20 +329,22 @@ class StyleManager
         });
 
         // Rebuild array for template variables
-        while($objStyleGroups->next())
+        foreach($objStyleGroups as $objStyleGroup)
         {
-            if(array_key_exists($objStyleGroups->id, $arrValue))
-            {
-                if(!!$objStyleGroups->passToTemplate)
-                {
-                    $identifier = $arrArchives[ $objStyleGroups->pid ];
+            $strId = self::generateAlias($arrArchives[ $objStyleGroup->pid ], $objStyleGroup->alias);
 
-                    $arrValue['__vars__'][ $identifier ][ $objStyleGroups->alias ] = array(
-                        'id'    => $objStyleGroups->id,
-                        'value' => $arrValue[ $objStyleGroups->id ]
+            if(array_key_exists($strId, $arrValue))
+            {
+                if(!!$objStyleGroup->passToTemplate)
+                {
+                    $identifier = $arrArchives[ $objStyleGroup->pid ];
+
+                    $arrValue[ StyleManager::VARS_KEY ][ $identifier ][ $objStyleGroup->alias ] = array(
+                        'id'    => $objStyleGroup->id,
+                        'value' => $arrValue[ $strId ]
                     );
 
-                    unset($arrValue[ $objStyleGroups->id ]);
+                    unset($arrValue[ $strId ]);
                 }
             }
         }
@@ -350,76 +359,60 @@ class StyleManager
      *
      * @return mixed
      */
-    public static function deserializeValues($arrValue){
-
-        if(isset($arrValue['__vars__']))
+    public static function deserializeValues($arrValue)
+    {
+        if(isset($arrValue[ StyleManager::VARS_KEY ]))
         {
-            foreach ($arrValue['__vars__'] as $key => $values)
+            foreach ($arrValue[ StyleManager::VARS_KEY ] as $archiveAlias => $values)
             {
                 foreach ($values as $alias => $arrItem)
                 {
-                    if(!is_array($arrItem))
-                    {
-                        // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias)
-                        $arrValue[ $alias ] = $arrItem;
-                    }
-                    else
-                    {
-                        $arrValue[ $arrItem['id'] ] = html_entity_decode($arrItem['value']);
-                    }
+                    $strId = self::generateAlias($archiveAlias, $alias);
+                    $arrValue[ $strId ] = html_entity_decode($arrItem['value']);
                 }
             }
 
-            unset($arrValue['__vars__']);
+            unset($arrValue[ StyleManager::VARS_KEY ]);
         }
 
         return $arrValue;
     }
 
     /**
-     * Parse Template and set Variables
-     *
-     * @param $template
+     * Generate a unique alias based on the archive identifier and the group alias
      */
-    public function onParseTemplate($template)
+    public static function generateAlias($identifier, $alias): string
     {
-        // Check page and template variables to pass them to the template
-        if(strpos($template->getName(), 'fe_page') === 0)
-        {
-            global $objPage;
-
-            $arrStyles = array_filter(array_merge_recursive(
-                StringUtil::deserialize($objPage->styleManager, true),
-                StringUtil::deserialize($template->layout->styleManager, true)
-            ));
-
-            $template->styleManager = serialize($arrStyles);
-        }
-
-        // Build Styles object and assign it to the template
-        if(!($template->styleManager instanceof Styles))
-        {
-            $arrStyles = StringUtil::deserialize($template->styleManager);
-            $template->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
-        }
+        return $identifier . '_' . $alias;
     }
 
     /**
-     * Parse Template and set Variables
-     *
-     * @param $objWidget
-     *
-     * @return \Widget
+     * Check whether an element is visible in style manager widget
      */
-    public function onLoadFormField($objWidget)
+    public static function isVisibleGroup(StyleManagerModel $objGroup, string $strTable): bool
     {
-        if(!($objWidget->styleManager instanceof Styles))
+        if(
+            'tl_layout' === $strTable && !!$objGroup->extendLayout ||
+            'tl_page' === $strTable && !!$objGroup->extendPage ||
+            'tl_module' === $strTable && !!$objGroup->extendModule ||
+            'tl_article' === $strTable && !!$objGroup->extendArticle ||
+            'tl_form' === $strTable && !!$objGroup->extendForm ||
+            'tl_form_field' === $strTable && !!$objGroup->extendFormFields ||
+            'tl_content' === $strTable && !!$objGroup->extendContentElement ||
+            'tl_news' === $strTable && !!$objGroup->extendNews ||
+            'tl_calendar_events' === $strTable && !!$objGroup->extendEvents
+        ){ return true; }
+
+        // Check is visible group for custom configurations
+        if (isset($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']))
         {
-            $arrStyles = StringUtil::deserialize($objWidget->styleManager);
-            $objWidget->styleManager = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+            foreach ($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup'] as $callback)
+            {
+                return System::importStatic($callback[0])->{$callback[1]}($objGroup, $strTable);
+            }
         }
 
-        return $objWidget;
+        return false;
     }
 
     /**
@@ -432,33 +425,9 @@ class StyleManager
     public function listFormFields($arrRow)
     {
         $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
-        $arrRow['styleManager'] = new Styles(isset($arrStyles['__vars__']) ? $arrStyles['__vars__'] : null);
+        $arrRow['styleManager'] = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
 
         $formField = new \tl_form_field();
         return $formField->listFormFields($arrRow);
-    }
-
-    /**
-     * Add a new regexp "variable"
-     *
-     * @param $strRegexp
-     * @param $varValue
-     * @param Widget $objWidget
-     *
-     * @return bool
-     */
-    public function addVariableRegexp($strRegexp, $varValue, Widget $objWidget)
-    {
-        if ($strRegexp == 'variable')
-        {
-            if (!preg_match('/^[a-zA-Z](?:_?[a-zA-Z0-9]+)$/', $varValue))
-            {
-                $objWidget->addError('Field ' . $objWidget->label . ' must begin with a letter and may not contain any spaces or special characters (e.g. myVariable).');
-            }
-
-            return true;
-        }
-
-        return false;
     }
 }

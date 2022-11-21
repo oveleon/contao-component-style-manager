@@ -1,0 +1,3 @@
+stylemanager:
+    resource: '@ContaoComponentStyleManager/Controller'
+    type: annotation

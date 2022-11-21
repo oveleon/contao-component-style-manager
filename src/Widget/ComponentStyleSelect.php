@@ -5,7 +5,7 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\Widget;
 
 use Contao\BackendUser;
 use Contao\Database;
@@ -13,6 +13,9 @@ use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
+use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 
 /**
  * Provide methods to handle select menus for style manager.
@@ -47,10 +50,10 @@ class ComponentStyleSelect extends Widget
 	 */
 	public function generate()
 	{
-        $objStyleArchives = StyleManagerArchiveModel::findAll(array('order'=>'sorting'));
-		$objStyleGroups   = StyleManagerModel::findByTable($this->strTable, array('order'=>'pid,sorting'));
+        $arrObjStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration(array('order'=>'sorting'));
+		$arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
 
-		if($objStyleGroups === null || $objStyleArchives === null)
+		if($arrObjStyleGroups === null || $arrObjStyleArchives === null)
         {
             return $this->renderEmptyMessage();
         }
@@ -61,39 +64,39 @@ class ComponentStyleSelect extends Widget
         $arrOrder      = array();
 
         // Prepare archives
-		while($objStyleArchives->next())
+		foreach($arrObjStyleArchives as $objStyleArchive)
         {
-            $arrArchives[ $objStyleArchives->id ] = array(
-                'title'      => $objStyleArchives->title,
-                'identifier' => $objStyleArchives->identifier,
-                'desc'       => $objStyleArchives->desc,
-                'group'      => $objStyleArchives->groupAlias,
-                'model'      => $objStyleArchives->current()
+            $arrArchives[ $objStyleArchive->id ] = array(
+                'title'      => $objStyleArchive->title,
+                'identifier' => $objStyleArchive->identifier,
+                'desc'       => $objStyleArchive->desc,
+                'group'      => $objStyleArchive->groupAlias,
+                'model'      => $objStyleArchive
             );
 
-            $arrOrder[] = $objStyleArchives->identifier;
+            $arrOrder[] = $objStyleArchive->identifier;
         }
 
         // Restore default values
         $this->varValue = StyleManager::deserializeValues($this->varValue);
 
         // Prepare group fields
-        while($objStyleGroups->next())
+        foreach($arrObjStyleGroups as $objStyleGroup)
         {
             $arrOptions      = array();
             $strClass        = 'tl_select';
             $arrFieldOptions = array();
 
             // set blank option
-            if(!!$objStyleGroups->blankOption)
+            if(!!$objStyleGroup->blankOption)
             {
                 $arrFieldOptions[] = array('value'=>'', 'label'=>'-');
             }
 
             // skip specific content elements
-            if(!!$objStyleGroups->extendContentElement && $this->strTable === 'tl_content')
+            if(!!$objStyleGroup->extendContentElement && $this->strTable === 'tl_content')
             {
-                $arrContentElements = StringUtil::deserialize($objStyleGroups->contentElements);
+                $arrContentElements = StringUtil::deserialize($objStyleGroup->contentElements);
 
                 if($arrContentElements !== null && !in_array($this->activeRecord->type, $arrContentElements))
                 {
@@ -102,9 +105,9 @@ class ComponentStyleSelect extends Widget
             }
 
             // skip specific form fields
-            if(!!$objStyleGroups->extendFormFields && $this->strTable === 'tl_form_field')
+            if(!!$objStyleGroup->extendFormFields && $this->strTable === 'tl_form_field')
             {
-                $arrFormFields = StringUtil::deserialize($objStyleGroups->formFields);
+                $arrFormFields = StringUtil::deserialize($objStyleGroup->formFields);
 
                 if($arrFormFields !== null && !in_array($this->activeRecord->type, $arrFormFields))
                 {
@@ -113,9 +116,9 @@ class ComponentStyleSelect extends Widget
             }
 
             // skip specific modules
-            if(!!$objStyleGroups->extendModule && $this->strTable === 'tl_module')
+            if(!!$objStyleGroup->extendModule && $this->strTable === 'tl_module')
             {
-                $arrModules = StringUtil::deserialize($objStyleGroups->modules);
+                $arrModules = StringUtil::deserialize($objStyleGroup->modules);
 
                 if($arrModules !== null && !in_array($this->activeRecord->type, $arrModules))
                 {
@@ -128,14 +131,14 @@ class ComponentStyleSelect extends Widget
             {
                 foreach ($GLOBALS['TL_HOOKS']['styleManagerSkipField'] as $callback)
                 {
-                    if(System::importStatic($callback[0])->{$callback[1]}($objStyleGroups, $this))
+                    if(System::importStatic($callback[0])->{$callback[1]}($objStyleGroup, $this))
                     {
                         continue 2;
                     }
                 }
             }
 
-            $opts = StringUtil::deserialize($objStyleGroups->cssClasses);
+            $opts = StringUtil::deserialize($objStyleGroup->cssClasses);
 
             foreach ($opts as $opt) {
                 $arrFieldOptions[] = array(
@@ -144,9 +147,21 @@ class ComponentStyleSelect extends Widget
                 );
             }
 
-            // set options
-            $strFieldId   = $this->strId . '_' . $objStyleGroups->id;
-            $strFieldName = $this->strName . '[' . $objStyleGroups->id . ']';
+            // dynamically change or expand group options
+            if (isset($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
+            {
+                foreach ($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions'] as $callback)
+                {
+                    if($optionCallback = System::importStatic($callback[0])->{$callback[1]}($arrFieldOptions, $objStyleGroup, $this))
+                    {
+                        $arrFieldOptions = $optionCallback;
+                    }
+                }
+            }
+
+            $strId        = StyleManager::generateAlias($arrArchives[ $objStyleGroup->pid ]['identifier'], $objStyleGroup->alias);
+            $strFieldId   = $this->strId . '_' . $strId;
+            $strFieldName = $this->strName . '[' . $strId . ']';
 
             foreach ($arrFieldOptions as $strKey=>$arrOption)
             {
@@ -154,10 +169,7 @@ class ComponentStyleSelect extends Widget
                 {
                     $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
                         StringUtil::specialchars($arrOption['value']),
-
-                        // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                        static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ] ?? ''),
-
+                        static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
                         $arrOption['label']);
                 }
                 else
@@ -168,10 +180,7 @@ class ComponentStyleSelect extends Widget
                     {
                         $arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
                             StringUtil::specialchars($arrOptgroup['value']),
-
-                            // @deprecated: to be removed in Version 3.0. (interception of storage based on the alias. In future, only the ID must be set)
-                            static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->id ] ?? '') ?: static::optionSelected($arrOption['value'], $this->varValue[ $objStyleGroups->alias ] ?? ''),
-
+                            static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
                             $arrOptgroup['label']);
                     }
 
@@ -180,27 +189,27 @@ class ComponentStyleSelect extends Widget
             }
 
             // add chosen
-            if(!!$objStyleGroups->chosen)
+            if(!!$objStyleGroup->chosen)
             {
                 $strClass .= ' tl_chosen';
             }
 
             // create collection
-            $groupAlias      = ($arrArchives[ $objStyleGroups->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroups->pid ]['identifier']) . '-' . $this->id;
-            $collectionAlias = $arrArchives[ $objStyleGroups->pid ]['identifier'];
+            $groupAlias      = ($arrArchives[ $objStyleGroup->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroup->pid ]['identifier']) . '-' . $this->id;
+            $collectionAlias = $arrArchives[ $objStyleGroup->pid ]['identifier'];
 
             if(!in_array($collectionAlias, array_keys($arrCollection)))
             {
                 $arrCollection[ $collectionAlias ] = array(
-                    'label'  => $arrArchives[ $objStyleGroups->pid ]['title'],
-                    'desc'   => $arrArchives[ $objStyleGroups->pid ]['desc'],
+                    'label'  => $arrArchives[ $objStyleGroup->pid ]['title'],
+                    'desc'   => $arrArchives[ $objStyleGroup->pid ]['desc'],
                     'group'  => $groupAlias,
                     'fields' => array()
                 );
             }
 
             $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
-                ($objStyleGroups->cssClass === 'seperator' || $objStyleGroups->cssClass === 'separator' ? '<hr>' : '') . '<div' . ($objStyleGroups->cssClass ? ' class="' . $objStyleGroups->cssClass . '"' : '').'><h3><label>' . $objStyleGroups->title . '</label></h3>',
+                ($objStyleGroup->cssClass === 'seperator' || $objStyleGroup->cssClass === 'separator' ? '<hr>' : '') . '<div' . ($objStyleGroup->cssClass ? ' class="' . $objStyleGroup->cssClass . '"' : '').'><h3><label>' . $objStyleGroup->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
                 $strClass,
@@ -208,7 +217,7 @@ class ComponentStyleSelect extends Widget
                 $this->getAttributes(),
                 implode('', $arrOptions),
                 $this->wizard,
-                '<p class="tl_help' . ($objStyleGroups->description ? ' tl_tip' : '') . '" title="">'.$objStyleGroups->description.'</p></div>'
+                '<p class="tl_help' . ($objStyleGroup->description ? ' tl_tip' : '') . '" title="">'.$objStyleGroup->description.'</p></div>'
             );
 
             $isEmpty = false;

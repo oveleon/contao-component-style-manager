@@ -7,11 +7,15 @@
       </trans-unit>
       <trans-unit id="ERR.groupAliasExists">
         <source>The Alias &quot;%s&quot; already exists within this category!</source>
-        <target>L'Alias &quot;%s&quot; existe déjà dans cette catégorie !</target>
+        <target>L'Alias &quot;%s&quot; existe déjà dans cette catégorie!</target>
       </trans-unit>
       <trans-unit id="ERR.noStyleManagerConfigFound">
         <source>No style manager config found!</source>
-        <target>Pas de configuration de style manager trouvée !</target>
+        <target>Pas de configuration de style manager trouvée!</target>
+      </trans-unit>
+      <trans-unit id="MSC.styleManagerConfigImported">
+        <source>The file %s was imported successfully.</source>
+        <target>Le fichier %s a été importé avec succès.</target>
       </trans-unit>
     </body>
   </file>

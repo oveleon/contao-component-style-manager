@@ -5,47 +5,39 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\StyleManager;
+
+use Contao\System;
 
 class Styles
 {
     /**
      * Style Collection
-     * @var array|null
      */
-    private $styles = null;
+    private ?array $styles;
 
     /**
      * Current identifier
-     * @var string
      */
-    private $currIdentifier = '';
+    private string $currIdentifier = '';
 
     /**
      * Current groups
-     * @var array|null
      */
-    private $currGroups = null;
+    private ?array $currGroups = null;
 
     /**
      * Initialize the object
-     *
-     * @param array $arrStyles
      */
-    public function __construct($arrStyles=null)
+    public function __construct(?array $arrStyles = null)
     {
         $this->styles = $arrStyles;
     }
 
     /**
      * Return the css class collection of an identifier
-     *
-     * @param $identifier
-     * @param null $arrGroups
-     *
-     * @return string
      */
-    public function get($identifier, $arrGroups=null)
+    public function get($identifier, $arrGroups=null): string
     {
         if($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
         {
@@ -65,7 +57,7 @@ class Styles
 
             foreach ($arrGroups as $groupAlias)
             {
-                if($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ]))
+                if($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ] ?? null))
                 {
                     $collection[] = $value;
                 }
@@ -79,13 +71,8 @@ class Styles
 
     /**
      * Prepare css classes
-     *
-     * @param $identifier
-     * @param null $arrGroups
-     *
-     * @return Styles
      */
-    public function prepare($identifier, $arrGroups=null)
+    public function prepare($identifier, $arrGroups=null): Styles
     {
         $this->currIdentifier = $identifier;
         $this->currGroups = $arrGroups;
@@ -95,15 +82,10 @@ class Styles
 
     /**
      * Return formatted css classes
-     *
-     * @param $format
-     * @param string $method
-     *
-     * @return string
      */
-    public function format($format, $method='')
+    public function format(string $format, string $method=''): string
     {
-        if(!$format || $this->styles === null || !is_array($this->styles[ $this->currIdentifier ]))
+        if(!$format || $this->styles === null || !is_array(($this->styles[ $this->currIdentifier ] ?? null)))
         {
             return '';
         }
@@ -129,7 +111,7 @@ class Styles
                 {
                     foreach ($this->currGroups as $alias)
                     {
-                        if(($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ])) !== '')
+                        if(($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ] ?? null)) !== '')
                         {
                             $arrValues[ $alias ] = $this->parseValueType($value);
                         }
@@ -149,7 +131,7 @@ class Styles
                 {
                     foreach ($GLOBALS['TL_HOOKS']['styleManagerFormatMethod'] as $callback)
                     {
-                        return \System::importStatic($callback[0])->{$callback[1]}($format, $method, $this);
+                        return System::importStatic($callback[0])->{$callback[1]}($format, $method, $this);
                     }
                 }
 
@@ -164,14 +146,10 @@ class Styles
 
     /**
      * Return all values of a category
-     *
-     * @param $arrVariables
-     *
-     * @return array
      */
-    private function getCategoryValues($arrVariables)
+    private function getCategoryValues($arrVariables): array
     {
-        $arrValues = array();
+        $arrValues = [];
 
         foreach ($arrVariables as $alias => $arrVariable)
         {
@@ -183,22 +161,14 @@ class Styles
 
     /**
      * Return the value of a group
-     *
-     * @param $arrVariable
-     *
-     * @return mixed
      */
     private function getGroupValue($arrVariable)
     {
-        return $arrVariable['value'];
+        return $arrVariable['value'] ?? null;
     }
 
     /**
      * Return the value as correct type
-     *
-     * @param $strValue
-     *
-     * @return mixed
      */
     private function parseValueType($strValue)
     {

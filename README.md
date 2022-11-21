@@ -17,6 +17,8 @@ This plugin is designed to simplify theme customizations without the need of man
 - Passing variables to the template
     - Formatting output using predefined methods or your own
 - Import / Export
+    - Automatic import of configurations from third-party bundles (Bundle configurations) [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
+    - Partial import [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
 - Available for
     - Layouts
     - Pages
@@ -51,5 +53,7 @@ composer require oveleon/contao-component-style-manager
 ## Documentation
 - [Configuration](docs/CONFIGURATION.md)
 - [Use template variables](docs/TEMPLATE_VARIABLES.md)
-- [Extend and support other extensions](docs/SUPPORT.md)
+- [Support own extensions](docs/SUPPORT.md)
 - [Import / Export](docs/IMPORT_EXPORT.md)
+- [Bundle-Configurations](docs/BUNDLE_CONFIG.md)
+- [Migration](docs/MIGRATE.md)

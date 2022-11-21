@@ -5,23 +5,24 @@
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager;
+namespace Oveleon\ContaoComponentStyleManager\EventListener;
 
 use Contao\CoreBundle\Exception\NoContentResponseException;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\DataContainer;
+use Contao\Input;
+use Contao\System;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
-class Ajax extends \Backend
+/**
+ * @Hook("executePostActions")
+ */
+class ExecutePostActionsListener
 {
     /**
-     * Ajax actions that do require a data container object
-     *
-     * @param $strAction
-     * @param \DataContainer $dc
-     *
-     * @throws \Exception
-     * @throws NoContentResponseException
+     * Saves the status of selected tabs
      */
-    public function executePostActions($strAction, \DataContainer $dc)
+    public function __invoke($strAction, DataContainer $dc)
     {
         if($strAction !== 'selectStyleManagerSection')
         {
@@ -29,10 +30,10 @@ class Ajax extends \Backend
         }
 
         /** @var AttributeBagInterface $objSessionBag */
-        $objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
+        $objSessionBag = System::getContainer()->get('session')->getBag('contao_backend');
 
         $fs = $objSessionBag->get('stylemanager_section_states');
-        $fs[\Input::post('groupAlias')] = \Input::post('identifier');
+        $fs[Input::post('groupAlias')] = Input::post('identifier');
         $objSessionBag->set('stylemanager_section_states', $fs);
 
         throw new NoContentResponseException();

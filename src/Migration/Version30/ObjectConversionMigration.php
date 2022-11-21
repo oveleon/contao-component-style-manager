@@ -1,0 +1,94 @@
+<?php
+
+namespace Oveleon\ContaoComponentStyleManager\Migration\Version30;
+
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Migration\AbstractMigration;
+use Contao\CoreBundle\Migration\MigrationResult;
+use Doctrine\DBAL\Connection;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
+
+class ObjectConversionMigration extends AbstractMigration
+{
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * @var Sync
+     */
+    private $sync;
+
+    public function __construct(Connection $connection, ContaoFramework $framework)
+    {
+        $this->connection = $connection;
+
+        $this->framework = $framework;
+        $this->framework->initialize();
+
+        $this->sync = new Sync();
+    }
+
+    public function shouldRun(): bool
+    {
+        $schemaManager = $this->connection->createSchemaManager();
+
+        // If the database table itself does not exist we should do nothing
+        if (!$schemaManager->tablesExist(['tl_style_manager']))
+        {
+            return false;
+        }
+
+        return $this->sync->shouldRunObjectConversion('tl_article')
+            || $this->sync->shouldRunObjectConversion('tl_content')
+            || $this->sync->shouldRunObjectConversion('tl_calendar_events')
+            || $this->sync->shouldRunObjectConversion('tl_form')
+            || $this->sync->shouldRunObjectConversion('tl_form_field')
+            || $this->sync->shouldRunObjectConversion('tl_layout')
+            || $this->sync->shouldRunObjectConversion('tl_module')
+            || $this->sync->shouldRunObjectConversion('tl_news')
+            || $this->sync->shouldRunObjectConversion('tl_page')
+        ;
+    }
+
+    public function run(): MigrationResult
+    {
+        if($this->sync->shouldRunObjectConversion('tl_article'))
+            $this->sync->performObjectConversion('tl_article');
+
+        if($this->sync->shouldRunObjectConversion('tl_content'))
+            $this->sync->performObjectConversion('tl_content');
+
+        if($this->sync->shouldRunObjectConversion('tl_calendar_events'))
+            $this->sync->performObjectConversion('tl_calendar_events');
+
+        if($this->sync->shouldRunObjectConversion('tl_form'))
+            $this->sync->performObjectConversion('tl_form');
+
+        if($this->sync->shouldRunObjectConversion('tl_form_field'))
+            $this->sync->performObjectConversion('tl_form_field');
+
+        if($this->sync->shouldRunObjectConversion('tl_layout'))
+            $this->sync->performObjectConversion('tl_layout');
+
+        if($this->sync->shouldRunObjectConversion('tl_module'))
+            $this->sync->performObjectConversion('tl_module');
+
+        if($this->sync->shouldRunObjectConversion('tl_news'))
+            $this->sync->performObjectConversion('tl_news');
+
+        if($this->sync->shouldRunObjectConversion('tl_page'))
+            $this->sync->performObjectConversion('tl_page');
+
+        return new MigrationResult(
+            true,
+            'StyleManager configurations were successfully converted. Please note, if custom tables have been added to the StyleManager, they must be migrated using the `contao:stylemanager:object-conversion table` command.'
+        );
+    }
+}
