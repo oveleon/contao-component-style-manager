@@ -118,14 +118,14 @@ class Config
     /**
      * Load configuration files from third-party bundles and return them as array
      */
-    protected function loadBundleConfiguration(): ?array
+    protected function loadBundleConfiguration(): array
     {
         if($arrFiles = $this->getBundleConfigurationFiles())
         {
             return ImportController::importFiles($arrFiles, false);
         }
 
-        return null;
+        return [[],[]];
     }
 
     /**
