@@ -24,5 +24,6 @@ class ContaoComponentStyleManagerExtension extends Extension
 
         $container->setParameter('contao_component_style_manager.use_bundle_config', $config['use_bundle_config']);
         $container->setParameter('contao_component_style_manager.strict', $config['strict']);
+        $container->setParameter('contao_component_style_manager.invert_component_selection', $config['invert_component_selection']);
     }
 }

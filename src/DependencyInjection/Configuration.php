@@ -26,6 +26,9 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('strict')
                     ->defaultFalse()
                 ->end()
+                ->booleanNode('invert_component_selection')
+                    ->defaultFalse()
+                ->end()
             ->end()
         ;
 

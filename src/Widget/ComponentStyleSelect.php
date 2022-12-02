@@ -53,7 +53,10 @@ class ComponentStyleSelect extends Widget
         $arrObjStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration(array('order'=>'sorting'));
 		$arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
 
-		if($arrObjStyleGroups === null || $arrObjStyleArchives === null)
+        // Invert selection?
+        $blnInvert = System::getContainer()->getParameter('contao_component_style_manager.invert_component_selection');
+
+		if($arrObjStyleGroups === null || $arrObjStyleArchives === null && !$blnInvert)
         {
             return $this->renderEmptyMessage();
         }
@@ -93,12 +96,37 @@ class ComponentStyleSelect extends Widget
                 $arrFieldOptions[] = array('value'=>'', 'label'=>'-');
             }
 
+            if($blnInvert) {
+                // invert extendLayouts
+                $objStyleGroup->extendLayouts = ($objStyleGroup->extendLayouts === "1") ? "" : "1";
+                // invert extendPage
+                $objStyleGroup->extendPage = ($objStyleGroup->extendPage === "1") ? "" : "1";
+                // invert extendArticle
+                $objStyleGroup->extendArticle = ($objStyleGroup->extendArticle === "1") ? "" : "1";
+                // invert extendForm
+                $objStyleGroup->extendForm = ($objStyleGroup->extendForm === "1") ? "" : "1";
+                // invert extendModule
+                $objStyleGroup->extendModule = ($objStyleGroup->extendModule === "1") ? "" : "1";
+                // invert extendNews
+                $objStyleGroup->extendNews = ($objStyleGroup->extendNews === "1") ? "" : "1";
+                // invert extendEvents
+                $objStyleGroup->extendEvents = ($objStyleGroup->extendEvents === "1") ? "" : "1";
+                // invert extendContentElements
+                $objStyleGroup->extendEvents = ($objStyleGroup->extendEvents === "1") ? "" : "1";
+            }
+
             // skip specific content elements
             if(!!$objStyleGroup->extendContentElement && $this->strTable === 'tl_content')
             {
                 $arrContentElements = StringUtil::deserialize($objStyleGroup->contentElements);
 
-                if($arrContentElements !== null && !in_array($this->activeRecord->type, $arrContentElements))
+                // normal selection
+                if($arrContentElements !== null && !$blnInvert && !in_array($this->activeRecord->type, $arrContentElements))
+                {
+                    continue;
+                }
+                // invert selection
+                if($arrContentElements !== null && $blnInvert && in_array($this->activeRecord->type, $arrContentElements))
                 {
                     continue;
                 }
@@ -109,7 +137,13 @@ class ComponentStyleSelect extends Widget
             {
                 $arrFormFields = StringUtil::deserialize($objStyleGroup->formFields);
 
-                if($arrFormFields !== null && !in_array($this->activeRecord->type, $arrFormFields))
+                // normal selection
+                if($arrFormFields !== null && !$blnInvert && !in_array($this->activeRecord->type, $arrFormFields))
+                {
+                    continue;
+                }
+                // invert selection
+                if($arrFormFields !== null && $blnInvert && in_array($this->activeRecord->type, $arrFormFields))
                 {
                     continue;
                 }
@@ -120,7 +154,13 @@ class ComponentStyleSelect extends Widget
             {
                 $arrModules = StringUtil::deserialize($objStyleGroup->modules);
 
-                if($arrModules !== null && !in_array($this->activeRecord->type, $arrModules))
+                // normal selection
+                if($arrModules !== null && !$blnInvert && !in_array($this->activeRecord->type, $arrModules))
+                {
+                    continue;
+                }
+                // invert selection
+                if($arrModules !== null && $blnInvert && in_array($this->activeRecord->type, $arrModules))
                 {
                     continue;
                 }

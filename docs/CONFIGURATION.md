@@ -42,3 +42,16 @@ A special feature is that CSS groups can also be used as template variables via 
 
 ### Example css group:
 ![Manage Groups: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)
+
+### Configuration
+Sometimes it can be useful to invert the component selection. E.g. if you add a new custom element you have to reassign every style to the new element. That can be painfull if you have a lot of styles. So you can invert the component selection:
+
+```yaml
+# config.yaml
+contao_component_style_manager:
+    invert_component_selection: true
+```
+
+If activated, you even have to check the main group (Layout, Page, Article, ...). But inside the selection for Module, FormFields and ContentElements the selection will be inverted. So e.g. you want to make the Style available for every Text-Element, but not for the headlines. Then you have to select Content-Elements and within available Content-Elements you have to check "Headline". 
+
+> Please note that this applies to the bundle config too. 
