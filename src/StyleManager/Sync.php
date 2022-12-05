@@ -14,6 +14,9 @@ use Contao\File;
 use Contao\Message;
 use Contao\Model\Collection;
 use Contao\StringUtil;
+use Contao\System;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
@@ -29,6 +32,8 @@ class Sync extends Backend
 
     /**
      * Check if the object conversion should be performed
+     *
+     * @throws Exception
      */
     public function shouldRunObjectConversion($table = null): bool
     {
@@ -39,10 +44,12 @@ class Sync extends Backend
             return false;
         }
 
-        $objConfig = $this->Database->query("SELECT styleManager FROM " . $table . " WHERE styleManager IS NOT NULL LIMIT 0,1");
+        $db = System::getContainer()->get('database_connection');
+
+        $objConfig = $db->fetchFirstColumn("SELECT styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
         $archives = StyleManagerArchiveModel::countAll();
 
-        if($objConfig && $archives > 0 && $arrConfig = StringUtil::deserialize($objConfig->styleManager))
+        if(count($objConfig) && $archives > 0 && $arrConfig = StringUtil::deserialize($objConfig[0]))
         {
             $key = array_key_first($arrConfig);
 
@@ -69,7 +76,10 @@ class Sync extends Backend
             return;
         }
 
-        if($objRows = $this->Database->query("SELECT id, styleManager FROM " . $table . " WHERE styleManager IS NOT NULL"))
+        $db = System::getContainer()->get('database_connection');
+        $objRows = $db->fetchAllAssociative("SELECT id, styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
+
+        if(!empty($objRows))
         {
             $objArchives = StyleManagerArchiveModel::findAll();
             $arrArchives = [];
@@ -84,18 +94,18 @@ class Sync extends Backend
                 $arrArchives[ $objArchive->id ] = $objArchive->identifier;
             }
 
-            $arrConfigs = $objRows->fetchEach('styleManager');
+            //$arrConfigs = $objRows->fetchEach('styleManager');
             $arrIds = [];
 
-            foreach ($arrConfigs as $sttConfig)
+            foreach ($objRows as $rows)
             {
-                if($arrConfig = StringUtil::deserialize($sttConfig))
+                if($arrConfig = StringUtil::deserialize($rows['styleManager']))
                 {
                     $arrIds = array_merge($arrIds, array_keys($arrConfig));
                 }
             }
 
-            $objGroups = StyleManagerModel::findMultipleByIds($arrIds);
+            $objGroups = StyleManagerModel::findMultipleByIds(array_unique($arrIds));
             $arrGroups = [];
 
             if(null !== $objGroups)
@@ -105,7 +115,7 @@ class Sync extends Backend
                     $arrGroups[ $objGroup->id ] = $objGroup;
                 }
 
-                foreach ($objRows->fetchAllAssoc() as $arrRow)
+                foreach ($objRows as $arrRow)
                 {
                     $config = StringUtil::deserialize($arrRow['styleManager']);
 
@@ -128,12 +138,14 @@ class Sync extends Backend
 
                     $newConfig = array_combine($arrAliasPairKeys, $config);
 
-                    $this->Database
-                        ->prepare("UPDATE " . $table . " SET styleManager=? WHERE id=?")
-                        ->execute(
-                            serialize($newConfig),
-                            $arrRow['id']
-                        );
+                    $db->executeStatement("
+                        UPDATE
+                            ".$table."
+                        SET
+                            styleManager = ?
+                        WHERE
+                            id = ?
+                    ", [serialize($newConfig), $arrRow['id']]);
                 }
             }
         }
