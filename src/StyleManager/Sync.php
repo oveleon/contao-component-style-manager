@@ -9,12 +9,12 @@ namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\Backend;
 use Contao\Controller;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\File;
 use Contao\Message;
 use Contao\Model\Collection;
 use Contao\StringUtil;
-use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use DOMDocument;
@@ -25,9 +25,17 @@ use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
 class Sync extends Backend
 {
-    public function __construct()
+    protected ContaoFramework $framework;
+    protected Connection $connection;
+
+    public function __construct(ContaoFramework $framework, Connection $connection)
     {
+        $this->framework = $framework;
+        $this->framework->initialize();
+
         parent::__construct();
+
+        $this->connection = $connection;
     }
 
     /**
@@ -44,9 +52,7 @@ class Sync extends Backend
             return false;
         }
 
-        $db = System::getContainer()->get('database_connection');
-
-        $objConfig = $db->fetchFirstColumn("SELECT styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
+        $objConfig = $this->connection->fetchFirstColumn("SELECT styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
         $archives = StyleManagerArchiveModel::countAll();
 
         if(count($objConfig) && $archives > 0 && $arrConfig = StringUtil::deserialize($objConfig[0]))
@@ -76,8 +82,7 @@ class Sync extends Backend
             return;
         }
 
-        $db = System::getContainer()->get('database_connection');
-        $objRows = $db->fetchAllAssociative("SELECT id, styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
+        $objRows = $this->connection->fetchAllAssociative("SELECT id, styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
 
         if(!empty($objRows))
         {
@@ -94,7 +99,6 @@ class Sync extends Backend
                 $arrArchives[ $objArchive->id ] = $objArchive->identifier;
             }
 
-            //$arrConfigs = $objRows->fetchEach('styleManager');
             $arrIds = [];
 
             foreach ($objRows as $rows)
@@ -138,7 +142,7 @@ class Sync extends Backend
 
                     $newConfig = array_combine($arrAliasPairKeys, $config);
 
-                    $db->executeStatement("
+                    $this->connection->executeStatement("
                         UPDATE
                             ".$table."
                         SET
