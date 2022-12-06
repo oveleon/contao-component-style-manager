@@ -23,7 +23,7 @@ use DOMNode;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
-class Sync extends Backend
+class Sync
 {
     protected ContaoFramework $framework;
     protected Connection $connection;
@@ -32,9 +32,6 @@ class Sync extends Backend
     {
         $this->framework = $framework;
         $this->framework->initialize();
-
-        parent::__construct();
-
         $this->connection = $connection;
     }
 
@@ -45,9 +42,12 @@ class Sync extends Backend
      */
     public function shouldRunObjectConversion($table = null): bool
     {
-        $arrTables = $this->Database->listTables();
+        $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
+            $this->connection->createSchemaManager() :
+            $this->connection->getSchemaManager()
+        ;
 
-        if(null === $table || !in_array($table, $arrTables))
+        if(null === $table || !$schemaManager->tablesExist([$table]))
         {
             return false;
         }
@@ -72,12 +72,17 @@ class Sync extends Backend
 
     /**
      * Perform the object conversion
+     *
+     * @throws Exception
      */
     public function performObjectConversion($table = null): void
     {
-        $arrTables = $this->Database->listTables();
+        $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
+            $this->connection->createSchemaManager() :
+            $this->connection->getSchemaManager()
+        ;
 
-        if(null === $table || !in_array($table, $arrTables))
+        if(null === $table || !$schemaManager->tablesExist([$table]))
         {
             return;
         }
@@ -273,7 +278,7 @@ class Sync extends Backend
         if (null === $objArchives)
         {
             Message::addError($GLOBALS['TL_LANG']['ERR']['noStyleManagerConfigFound']);
-            self::redirect(self::getReferer());
+            Backend::redirect(Backend::getReferer());
         }
 
         // Root element
@@ -307,7 +312,7 @@ class Sync extends Backend
      */
     protected function addArchiveData(DOMDocument $xml, DOMNode $archives, Collection $objArchive): void
     {
-        $this->loadDataContainer('tl_style_manager_archive');
+        Controller::loadDataContainer('tl_style_manager_archive');
 
         // Add archive node
         $row = $xml->createElement('archive');
@@ -323,6 +328,8 @@ class Sync extends Backend
 
     /**
      * Add a children data row to the XML document
+     *
+     * @throws \DOMException
      */
     protected function addChildrenData(DOMDocument $xml, DOMElement $archive, int $pid): void
     {
@@ -337,7 +344,7 @@ class Sync extends Backend
             return;
         }
 
-        $this->loadDataContainer('tl_style_manager');
+        Controller::loadDataContainer('tl_style_manager');
 
         while($objChildren->next())
         {
@@ -352,6 +359,8 @@ class Sync extends Backend
 
     /**
      * Add field data to the XML document
+     *
+     * @throws \DOMException
      */
     protected function addRowData(DOMDocument $xml, DOMNode $row, array $arrData): void
     {
