@@ -96,25 +96,6 @@ class ComponentStyleSelect extends Widget
                 $arrFieldOptions[] = array('value'=>'', 'label'=>'-');
             }
 
-            if($blnInvert) {
-                // invert extendLayouts
-                $objStyleGroup->extendLayouts = ($objStyleGroup->extendLayouts === "1") ? "" : "1";
-                // invert extendPage
-                $objStyleGroup->extendPage = ($objStyleGroup->extendPage === "1") ? "" : "1";
-                // invert extendArticle
-                $objStyleGroup->extendArticle = ($objStyleGroup->extendArticle === "1") ? "" : "1";
-                // invert extendForm
-                $objStyleGroup->extendForm = ($objStyleGroup->extendForm === "1") ? "" : "1";
-                // invert extendModule
-                $objStyleGroup->extendModule = ($objStyleGroup->extendModule === "1") ? "" : "1";
-                // invert extendNews
-                $objStyleGroup->extendNews = ($objStyleGroup->extendNews === "1") ? "" : "1";
-                // invert extendEvents
-                $objStyleGroup->extendEvents = ($objStyleGroup->extendEvents === "1") ? "" : "1";
-                // invert extendContentElements
-                $objStyleGroup->extendEvents = ($objStyleGroup->extendEvents === "1") ? "" : "1";
-            }
-
             // skip specific content elements
             if(!!$objStyleGroup->extendContentElement && $this->strTable === 'tl_content')
             {
