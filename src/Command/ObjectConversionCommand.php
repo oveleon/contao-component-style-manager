@@ -32,12 +32,12 @@ class ObjectConversionCommand extends Command
     protected ContaoFramework $framework;
     private Sync $sync;
 
-    public function __construct(ContaoFramework $contaoFramework)
+    public function __construct(ContaoFramework $contaoFramework, Sync $sync)
     {
         $this->framework = $contaoFramework;
         $this->framework->initialize();
 
-        $this->sync = new Sync();
+        $this->sync = $sync;
 
         parent::__construct();
     }

@@ -25,14 +25,14 @@ class ObjectConversionMigration extends AbstractMigration
      */
     private $sync;
 
-    public function __construct(Connection $connection, ContaoFramework $framework)
+    public function __construct(Connection $connection, ContaoFramework $framework, Sync $sync)
     {
         $this->connection = $connection;
 
         $this->framework = $framework;
         $this->framework->initialize();
 
-        $this->sync = new Sync();
+        $this->sync = $sync;
     }
 
     public function shouldRun(): bool
