@@ -173,6 +173,24 @@
       <trans-unit id="tl_style_manager.modules.1">
         <source>Select the modules that this group may be displayed for.</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager.formFieldsInverted.0">
+        <source>Excluded form fields</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.formFieldsInverted.1">
+        <source>Select the form fields that this group may be &lt;strong&gt;not&lt;/strong&gt; displayed for (Inverted mode active).</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modulesInverted.0">
+        <source>Excluded modules</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modulesInverted.1">
+        <source>Select the modules that this group may be &lt;strong&gt;not&lt;/strong&gt; displayed for (Inverted mode active).</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.contentElementsInverted.0">
+        <source>Excluded content elements</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.contentElementsInverted.1">
+        <source>Select the content elements that this group may be &lt;strong&gt;not&lt;/strong&gt; displayed for (Inverted mode active).</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
