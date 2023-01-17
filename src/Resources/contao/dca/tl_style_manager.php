@@ -223,12 +223,13 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = [
     ]
 ];
 
-$blnInvert = System::getContainer()->getParameter('contao_component_style_manager.invert_component_selection');
-if($blnInvert) {
-    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['formFields']['eval']['mandatory'] = false;
-    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['modules']['eval']['mandatory'] = false;
+// Inverted mode
+if ($blnInvert = System::getContainer()->getParameter('contao_component_style_manager.invert_component_selection'))
+{
+    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['formFields']['label']                  = &$GLOBALS['TL_LANG']['tl_style_manager']['formFieldsInverted'];
+    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['formFields']['eval']['mandatory']      = false;
+    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['modules']['label']                     = &$GLOBALS['TL_LANG']['tl_style_manager']['modulesInverted'];
+    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['modules']['eval']['mandatory']         = false;
+    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['contentElements']['label']             = &$GLOBALS['TL_LANG']['tl_style_manager']['contentElementsInverted'];
     $GLOBALS['TL_DCA']['tl_style_manager']['fields']['contentElements']['eval']['mandatory'] = false;
-    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['formFields']['label'] = &$GLOBALS['TL_LANG']['tl_style_manager']['formFieldsInverted'];
-    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['modules']['label'] = &$GLOBALS['TL_LANG']['tl_style_manager']['modulesInverted'];
-    $GLOBALS['TL_DCA']['tl_style_manager']['fields']['contentElements']['label'] = &$GLOBALS['TL_LANG']['tl_style_manager']['contentElementsInverted'];
 }

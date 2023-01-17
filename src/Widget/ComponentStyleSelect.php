@@ -31,32 +31,32 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 class ComponentStyleSelect extends Widget
 {
 
-	/**
-	 * Submit user input
-	 * @var boolean
-	 */
-	protected $blnSubmitInput = true;
+    /**
+     * Submit user input
+     * @var boolean
+     */
+    protected $blnSubmitInput = true;
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'be_widget';
+    /**
+     * Template
+     * @var string
+     */
+    protected $strTemplate = 'be_widget';
 
-	/**
-	 * Generate the widget and return it as string
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
+    /**
+     * Generate the widget and return it as string
+     *
+     * @return string
+     */
+    public function generate()
+    {
         $arrObjStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration(array('order'=>'sorting'));
-		$arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
+        $arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
 
-        // Invert selection?
+        // Inverted mode
         $blnInvert = System::getContainer()->getParameter('contao_component_style_manager.invert_component_selection');
 
-		if($arrObjStyleGroups === null || $arrObjStyleArchives === null && !$blnInvert)
+        if ($arrObjStyleGroups === null || $arrObjStyleArchives === null && !$blnInvert)
         {
             return $this->renderEmptyMessage();
         }
@@ -67,7 +67,7 @@ class ComponentStyleSelect extends Widget
         $arrOrder      = array();
 
         // Prepare archives
-		foreach($arrObjStyleArchives as $objStyleArchive)
+        foreach($arrObjStyleArchives as $objStyleArchive)
         {
             $arrArchives[ $objStyleArchive->id ] = array(
                 'title'      => $objStyleArchive->title,
@@ -97,53 +97,44 @@ class ComponentStyleSelect extends Widget
             }
 
             // skip specific content elements
-            if(!!$objStyleGroup->extendContentElement && $this->strTable === 'tl_content')
+            if ($this->strTable === 'tl_content' && !!$objStyleGroup->extendContentElement)
             {
-                $arrContentElements = StringUtil::deserialize($objStyleGroup->contentElements);
-
-                // normal selection
-                if($arrContentElements !== null && !$blnInvert && !in_array($this->activeRecord->type, $arrContentElements))
+                if (null !== ($arrContentElements = StringUtil::deserialize($objStyleGroup->contentElements)))
                 {
-                    continue;
-                }
-                // invert selection
-                if($arrContentElements !== null && $blnInvert && in_array($this->activeRecord->type, $arrContentElements))
-                {
-                    continue;
+                    if (
+                        (!$blnInvert && !in_array($this->activeRecord->type, $arrContentElements)) ||
+                        ($blnInvert && in_array($this->activeRecord->type, $arrContentElements))
+                    ){
+                        continue;
+                    }
                 }
             }
 
             // skip specific form fields
-            if(!!$objStyleGroup->extendFormFields && $this->strTable === 'tl_form_field')
+            if ($this->strTable === 'tl_form_field' && !!$objStyleGroup->extendFormFields)
             {
-                $arrFormFields = StringUtil::deserialize($objStyleGroup->formFields);
-
-                // normal selection
-                if($arrFormFields !== null && !$blnInvert && !in_array($this->activeRecord->type, $arrFormFields))
+                if (null !== ($arrFormFields = StringUtil::deserialize($objStyleGroup->formFields)))
                 {
-                    continue;
-                }
-                // invert selection
-                if($arrFormFields !== null && $blnInvert && in_array($this->activeRecord->type, $arrFormFields))
-                {
-                    continue;
+                    if (
+                        (!$blnInvert && !in_array($this->activeRecord->type, $arrFormFields)) ||
+                        ($blnInvert && in_array($this->activeRecord->type, $arrFormFields))
+                    ){
+                        continue;
+                    }
                 }
             }
 
             // skip specific modules
-            if(!!$objStyleGroup->extendModule && $this->strTable === 'tl_module')
+            if ($this->strTable === 'tl_module' && !!$objStyleGroup->extendModule)
             {
-                $arrModules = StringUtil::deserialize($objStyleGroup->modules);
-
-                // normal selection
-                if($arrModules !== null && !$blnInvert && !in_array($this->activeRecord->type, $arrModules))
+                if (null !== ($arrModules = StringUtil::deserialize($objStyleGroup->modules)))
                 {
-                    continue;
-                }
-                // invert selection
-                if($arrModules !== null && $blnInvert && in_array($this->activeRecord->type, $arrModules))
-                {
-                    continue;
+                    if (
+                        (!$blnInvert && !in_array($this->activeRecord->type, $arrModules)) ||
+                        ($blnInvert && in_array($this->activeRecord->type, $arrModules))
+                    ){
+                        continue;
+                    }
                 }
             }
 
@@ -244,8 +235,8 @@ class ComponentStyleSelect extends Widget
             $isEmpty = false;
         }
 
-		if($isEmpty)
-		{
+        if($isEmpty)
+        {
             return $this->renderEmptyMessage();
         }
 
@@ -260,7 +251,7 @@ class ComponentStyleSelect extends Widget
             return (array_search($key1, $arrOrder) > array_search($key2, $arrOrder));
         });
 
-		// collect groups
+        // collect groups
         foreach ($arrCollection as $alias => $collection)
         {
             $arrGroups[ $collection['group'] ][ $alias ] = $collection;
@@ -315,8 +306,8 @@ class ComponentStyleSelect extends Widget
             $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
         }
 
-		return implode("", $arrSections);
-	}
+        return implode("", $arrSections);
+    }
 
     /**
      * Check for a valid option and prepare template variables
