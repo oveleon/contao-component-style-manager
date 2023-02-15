@@ -80,6 +80,9 @@ class ComponentStyleSelect extends Widget
         // Restore default values
         $this->varValue = StyleManager::deserializeValues($this->varValue);
 
+        // Show group title
+        $blnShowGroupTitle = System::getContainer()->getParameter('contao_component_style_manager.show_group_title');
+
         // Prepare group fields
         foreach($arrObjStyleGroups as $objStyleGroup)
         {
@@ -201,10 +204,11 @@ class ComponentStyleSelect extends Widget
             if(!in_array($collectionAlias, array_keys($arrCollection)))
             {
                 $arrCollection[ $collectionAlias ] = array(
-                    'label'  => $arrArchives[ $objStyleGroup->pid ]['title'],
-                    'desc'   => $arrArchives[ $objStyleGroup->pid ]['desc'],
-                    'group'  => $groupAlias,
-                    'fields' => array()
+                    'label'      => $arrArchives[ $objStyleGroup->pid ]['title'],
+                    'desc'       => $arrArchives[ $objStyleGroup->pid ]['desc'],
+                    'group'      => $groupAlias,
+                    'groupTitle' => $arrArchives[ $objStyleGroup->pid ]['group'] ?? null,
+                    'fields'     => array()
                 );
             }
 
@@ -250,6 +254,7 @@ class ComponentStyleSelect extends Widget
         {
             $arrNavigation = array();
             $arrContent = array();
+            $groupTitle = null;
 
             $i = 0;
 
@@ -282,6 +287,12 @@ class ComponentStyleSelect extends Widget
                     implode("", $group['fields'])
                 );
 
+                // Set group title if it exists
+                if ($blnShowGroupTitle && null !== $group['groupTitle'])
+                {
+                    $groupTitle = '<h4 class="sm-group-title">' . $group['groupTitle'] . '</h4>';
+                }
+
                 $i++;
             }
 
@@ -291,7 +302,7 @@ class ComponentStyleSelect extends Widget
                 $arrNavigation[0] = str_replace("><label", "checked><label", $arrNavigation[0]);
             }
 
-            $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
+            $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . $groupTitle . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
         }
 
 		return implode("", $arrSections);

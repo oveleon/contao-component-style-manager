@@ -27,6 +27,11 @@ class Styles
     private ?array $currGroups = null;
 
     /**
+     * Excluded groups
+     */
+    private ?array $exclGroups = null;
+
+    /**
      * Initialize the object
      */
     public function __construct(?array $arrStyles = null)
@@ -55,6 +60,11 @@ class Styles
         {
             $collection = array();
 
+            if(null !== $this->exclGroups)
+            {
+                $this->removeExcludedGroups($arrGroups);
+            }
+
             foreach ($arrGroups as $groupAlias)
             {
                 if($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ] ?? null))
@@ -75,7 +85,17 @@ class Styles
     public function prepare($identifier, $arrGroups=null): Styles
     {
         $this->currIdentifier = $identifier;
-        $this->currGroups = $arrGroups;
+        $this->currGroups     = $arrGroups;
+
+        return $this;
+    }
+
+    /**
+     * Exclude css classes
+     */
+    public function exclude(?array $exclGroups=null): Styles
+    {
+        $this->exclGroups = $exclGroups;
 
         return $this;
     }
@@ -118,6 +138,11 @@ class Styles
                     }
                 }
 
+                if(null !== $this->exclGroups)
+                {
+                    $arrValues = array_diff($arrValues, $this->exclGroups);
+                }
+
                 if($arrValues !== null && $jsonValue = json_encode($arrValues))
                 {
                     return sprintf($format, $jsonValue);
@@ -150,6 +175,11 @@ class Styles
     private function getCategoryValues($arrVariables): array
     {
         $arrValues = [];
+
+        if(null !== $this->exclGroups)
+        {
+            $this->removeExcludedGroups($arrVariables);
+        }
 
         foreach ($arrVariables as $alias => $arrVariable)
         {
@@ -186,5 +216,24 @@ class Styles
         }
 
         return $strValue;
+    }
+
+    /**
+     * Removes excluded groups
+     */
+    private function removeExcludedGroups(array &$currGroups): void
+    {
+        foreach ($this->exclGroups as $exclude)
+        {
+            if (array_key_exists($exclude, $currGroups))
+            {
+                unset($currGroups[$exclude]);
+            }
+            // in case the excluded group is a value -> when a group was passed
+            else if (in_array($exclude, $currGroups))
+            {
+                $currGroups = array_diff($currGroups, [$exclude]);
+            }
+        }
     }
 }

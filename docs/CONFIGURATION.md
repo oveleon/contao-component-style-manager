@@ -42,3 +42,13 @@ A special feature is that CSS groups can also be used as template variables via 
 
 ### Example css group:
 ![Manage Groups: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)
+
+# Hide group titles
+Since version 3.1, the group titles will be shown above the StyleManager widget
+
+To disabled showing the group title, you can use the following configuration:
+```yaml
+# config.yaml
+contao_component_style_manager:
+    show_group_title: false
+```
