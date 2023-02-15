@@ -80,6 +80,9 @@ class ComponentStyleSelect extends Widget
         // Restore default values
         $this->varValue = StyleManager::deserializeValues($this->varValue);
 
+        // Show group title
+        $blnShowGroupTitle = System::getContainer()->getParameter('contao_component_style_manager.show_group_title');
+
         // Prepare group fields
         foreach($arrObjStyleGroups as $objStyleGroup)
         {
@@ -285,7 +288,7 @@ class ComponentStyleSelect extends Widget
                 );
 
                 // Set group title if it exists
-                if (null !== $group['groupTitle'])
+                if ($blnShowGroupTitle && null !== $group['groupTitle'])
                 {
                     $groupTitle = '<h4 class="sm-group-title">' . $group['groupTitle'] . '</h4>';
                 }
