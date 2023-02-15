@@ -93,7 +93,7 @@ class Styles
     /**
      * Exclude css classes
      */
-    public function exclude($exclGroups=null): Styles
+    public function exclude(?array $exclGroups=null): Styles
     {
         $this->exclGroups = $exclGroups;
 
