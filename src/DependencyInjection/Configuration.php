@@ -26,6 +26,9 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('strict')
                     ->defaultFalse()
                 ->end()
+                ->booleanNode('show_group_title')
+                    ->defaultTrue()
+                ->end()
             ->end()
         ;
 
