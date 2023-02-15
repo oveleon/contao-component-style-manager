@@ -29,7 +29,7 @@ class Styles
     /**
      * Excluded groups
      */
-    private ?array $excludedGroups = null;
+    private ?array $exclGroups = null;
 
     /**
      * Initialize the object
@@ -42,14 +42,12 @@ class Styles
     /**
      * Return the css class collection of an identifier
      */
-    public function get($identifier, $arrGroups=null, $excludedGroups=null): string
+    public function get($identifier, $arrGroups=null): string
     {
         if($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
         {
             return '';
         }
-
-        $this->excludedGroups = $excludedGroups;
 
         // return full collection
         if($arrGroups === null)
@@ -62,9 +60,9 @@ class Styles
         {
             $collection = array();
 
-            if(null !== $this->excludedGroups)
+            if(null !== $this->exclGroups)
             {
-                $this->removeExcludedGroups($arrGroups, $this->excludedGroups);
+                $this->removeExcludedGroups($arrGroups);
             }
 
             foreach ($arrGroups as $groupAlias)
@@ -84,11 +82,20 @@ class Styles
     /**
      * Prepare css classes
      */
-    public function prepare($identifier, $arrGroups=null, $excludedGroups=null): Styles
+    public function prepare($identifier, $arrGroups=null): Styles
     {
         $this->currIdentifier = $identifier;
         $this->currGroups     = $arrGroups;
-        $this->excludedGroups = $excludedGroups;
+
+        return $this;
+    }
+
+    /**
+     * Exclude css classes
+     */
+    public function exclude($exclGroups=null): Styles
+    {
+        $this->exclGroups = $exclGroups;
 
         return $this;
     }
@@ -131,9 +138,9 @@ class Styles
                     }
                 }
 
-                if(null !== $this->excludedGroups)
+                if(null !== $this->exclGroups)
                 {
-                    $arrValues = array_diff($arrValues, $this->excludedGroups);
+                    $arrValues = array_diff($arrValues, $this->exclGroups);
                 }
 
                 if($arrValues !== null && $jsonValue = json_encode($arrValues))
@@ -153,7 +160,7 @@ class Styles
                     }
                 }
 
-                if($value = $this->get($this->currIdentifier, $this->currGroups, $this->excludedGroups))
+                if($value = $this->get($this->currIdentifier, $this->currGroups))
                 {
                     return sprintf($format, $value);
                 }
@@ -169,9 +176,9 @@ class Styles
     {
         $arrValues = [];
 
-        if (null !== $this->excludedGroups)
+        if(null !== $this->exclGroups)
         {
-            $this->removeExcludedGroups($arrVariables, $this->excludedGroups);
+            $this->removeExcludedGroups($arrVariables);
         }
 
         foreach ($arrVariables as $alias => $arrVariable)
@@ -214,18 +221,18 @@ class Styles
     /**
      * Removes excluded groups
      */
-    private function removeExcludedGroups(array &$groups, array $excludedGroups): void
+    private function removeExcludedGroups(array &$currGroups): void
     {
-        foreach ($excludedGroups as $exclude)
+        foreach ($this->exclGroups as $exclude)
         {
-            if (array_key_exists($exclude, $groups))
+            if (array_key_exists($exclude, $currGroups))
             {
-                unset($groups[$exclude]);
+                unset($currGroups[$exclude]);
             }
             // in case the excluded group is a value -> when a group was passed
-            else if (in_array($exclude, $groups))
+            else if (in_array($exclude, $currGroups))
             {
-                $groups = array_diff($groups, [$exclude]);
+                $currGroups = array_diff($currGroups, [$exclude]);
             }
         }
     }
