@@ -43,7 +43,7 @@ class StyleManagerArchiveListener
     /**
      * @Callback(table="tl_style_manager_archive", target="list.global_operations.import.button")
      */
-    public function importConfigButton(string $href, string $label, string $title, string $class, string $attributes): string
+    public function importConfigButton(?string $href, string $label, string $title, string $class, string $attributes): string
     {
         if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
         {
@@ -65,7 +65,7 @@ class StyleManagerArchiveListener
     /**
      * @Callback(table="tl_style_manager_archive", target="list.global_operations.config.button")
      */
-    public function bundleConfigButton(string $href, string $label, string $title, string $class, string $attributes): string
+    public function bundleConfigButton(?string $href, string $label, string $title, string $class, string $attributes): string
     {
         if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
         {
