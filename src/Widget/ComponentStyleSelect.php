@@ -232,7 +232,7 @@ class ComponentStyleSelect extends Widget
             return $this->renderEmptyMessage();
         }
 
-        $objSession = System::getContainer()->get('session')->getBag('contao_backend');
+        $objSession = System::getContainer()->get('request_stack')->getSession()->getBag('contao_backend');
         $arrSession = $objSession->get('stylemanager_section_states');
 
         $arrGroups   = array();
@@ -269,7 +269,7 @@ class ComponentStyleSelect extends Widget
                     $this->id,
                     $groupAlias,
                     $identifier,
-                    REQUEST_TOKEN
+                    System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue()
                 );
 
                 $arrNavigation[ $index ] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" %s>%s</label>',
@@ -309,6 +309,17 @@ class ComponentStyleSelect extends Widget
 	}
 
     /**
+     * Return the empty message
+     *
+     * @return string
+     */
+    private function renderEmptyMessage()
+    {
+        System::loadLanguageFile('tl_style_manager');
+        return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+    }
+
+    /**
      * Check for a valid option and prepare template variables
      */
     public function validate()
@@ -345,16 +356,5 @@ class ComponentStyleSelect extends Widget
             Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
                 ->execute($value, $this->activeRecord->id);
         }
-    }
-
-    /**
-     * Return the empty message
-     *
-     * @return string
-     */
-    private function renderEmptyMessage()
-    {
-        System::loadLanguageFile('tl_style_manager');
-        return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
     }
 }
