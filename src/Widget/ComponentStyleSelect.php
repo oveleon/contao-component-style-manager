@@ -8,6 +8,8 @@
 namespace Oveleon\ContaoComponentStyleManager\Widget;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Database;
 use Contao\Input;
 use Contao\StringUtil;
@@ -16,6 +18,7 @@ use Contao\Widget;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Provide methods to handle select menus for style manager.
@@ -27,33 +30,56 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
  * @property boolean $chosen
  *
  * @author Daniele Sciannimanica <daniele@oveleon.de>
+ * @author Daniel Jahnsmüller <tastaturberuf.de>
  */
 class ComponentStyleSelect extends Widget
 {
 
-	/**
-	 * Submit user input
-	 * @var boolean
-	 */
-	protected $blnSubmitInput = true;
+    /**
+     * Submit user input
+     * @var boolean
+     */
+    protected $blnSubmitInput = true;
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'be_widget';
+    /**
+     * Template
+     * @var string
+     */
+    protected $strTemplate = 'be_widget';
 
-	/**
-	 * Generate the widget and return it as string
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
+    private ContaoCsrfTokenManager $tokenManager;
+
+    private InsertTagParser $insertTagParser;
+
+    private RequestStack $requestStack;
+
+    private bool $showGroupTitle;
+
+
+    public function __construct($arrAttributes = null)
+    {
+        parent::__construct($arrAttributes);
+
+        $container = System::getContainer();
+
+        $this->tokenManager = $container->get('contao.csrf.token_manager');
+        $this->insertTagParser = $container->get('contao.insert_tag.parser');
+        $this->requestStack = $container->get('request_stack');
+
+        $this->showGroupTitle = (bool) $container->getParameter('contao_component_style_manager.show_group_title');
+    }
+
+    /**
+     * Generate the widget and return it as string
+     *
+     * @return string
+     */
+    public function generate()
+    {
         $arrObjStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration(array('order'=>'sorting'));
-		$arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
+        $arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
 
-		if($arrObjStyleGroups === null || $arrObjStyleArchives === null)
+        if($arrObjStyleGroups === null || $arrObjStyleArchives === null)
         {
             return $this->renderEmptyMessage();
         }
@@ -64,7 +90,7 @@ class ComponentStyleSelect extends Widget
         $arrOrder      = array();
 
         // Prepare archives
-		foreach($arrObjStyleArchives as $objStyleArchive)
+        foreach($arrObjStyleArchives as $objStyleArchive)
         {
             $arrArchives[ $objStyleArchive->id ] = array(
                 'title'      => $objStyleArchive->title,
@@ -79,9 +105,6 @@ class ComponentStyleSelect extends Widget
 
         // Restore default values
         $this->varValue = StyleManager::deserializeValues($this->varValue);
-
-        // Show group title
-        $blnShowGroupTitle = System::getContainer()->getParameter('contao_component_style_manager.show_group_title');
 
         // Prepare group fields
         foreach($arrObjStyleGroups as $objStyleGroup)
@@ -227,12 +250,12 @@ class ComponentStyleSelect extends Widget
             $isEmpty = false;
         }
 
-		if($isEmpty)
-		{
+        if($isEmpty)
+        {
             return $this->renderEmptyMessage();
         }
 
-        $objSession = System::getContainer()->get('request_stack')->getSession()->getBag('contao_backend');
+        $objSession = $this->requestStack->getSession()->getBag('contao_backend');
         $arrSession = $objSession->get('stylemanager_section_states');
 
         $arrGroups   = array();
@@ -243,7 +266,7 @@ class ComponentStyleSelect extends Widget
             return (array_search($key1, $arrOrder) > array_search($key2, $arrOrder));
         });
 
-		// collect groups
+        // collect groups
         foreach ($arrCollection as $alias => $collection)
         {
             $arrGroups[ $collection['group'] ][ $alias ] = $collection;
@@ -269,7 +292,7 @@ class ComponentStyleSelect extends Widget
                     $this->id,
                     $groupAlias,
                     $identifier,
-                    System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue()
+                    $this->tokenManager->getDefaultTokenValue()
                 );
 
                 $arrNavigation[ $index ] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" %s>%s</label>',
@@ -283,12 +306,12 @@ class ComponentStyleSelect extends Widget
 
                 $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s%s</div>',
                     $identifier,
-                    (trim($group['desc']) ? '<div class="long desc">' . $this->replaceInsertTags(nl2br($group['desc'])) . '</div>' : ''),
+                    (trim($group['desc']) ? '<div class="long desc">' . $this->insertTagParser->replaceInline(nl2br($group['desc'])) . '</div>' : ''),
                     implode("", $group['fields'])
                 );
 
                 // Set group title if it exists
-                if ($blnShowGroupTitle && null !== $group['groupTitle'])
+                if ($this->showGroupTitle && null !== $group['groupTitle'])
                 {
                     $groupTitle = '<h4 class="sm-group-title">' . $group['groupTitle'] . '</h4>';
                 }
@@ -305,8 +328,8 @@ class ComponentStyleSelect extends Widget
             $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . $groupTitle . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
         }
 
-		return implode("", $arrSections);
-	}
+        return implode("", $arrSections);
+    }
 
     /**
      * Return the empty message
@@ -357,4 +380,5 @@ class ComponentStyleSelect extends Widget
                 ->execute($value, $this->activeRecord->id);
         }
     }
+
 }
