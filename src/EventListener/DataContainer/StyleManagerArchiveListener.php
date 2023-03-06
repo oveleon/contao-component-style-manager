@@ -10,9 +10,19 @@ use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
+use Symfony\Component\Routing\RouterInterface;
 
 class StyleManagerArchiveListener
 {
+
+    private RouterInterface $router;
+
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
     /**
      * @Callback(table="tl_style_manager_archive", target="config.onload")
      */
@@ -54,7 +64,7 @@ class StyleManagerArchiveListener
         }
 
         return vsprintf('<a href="%s" class="%s" title="%s" %s>%s</a> ', [
-            TL_SCRIPT. '/' . ImportController::ROUTE,
+            $this->router->generate(ImportController::class),
             $class,
             StringUtil::specialchars($title),
             $attributes,
@@ -77,7 +87,7 @@ class StyleManagerArchiveListener
             }
 
             return vsprintf('<a href="%s" class="%s" %s>%s: %s</a>', [
-                TL_SCRIPT. '/' . ImportController::ROUTE,
+                $this->router->generate(ImportController::class),
                 $class,
                 $attributes,
                 $label,
