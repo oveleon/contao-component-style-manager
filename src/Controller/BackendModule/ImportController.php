@@ -118,6 +118,63 @@ class ImportController extends AbstractBackendController
     }
 
     /**
+     * Create a tree from archives and groups
+     */
+    public function createImportTree($archives, $groups, $files): array
+    {
+        $collection = [
+            'files' => $files,
+            'collection' => []
+        ];
+
+        $_groups = $groups;
+
+        // Check if archive exists
+        $getGroups = function (int $pid) use (&$_groups): array
+        {
+            $collection = [];
+
+            foreach ($_groups ?? [] as $alias => &$group)
+            {
+                if($pid === $group->pid)
+                {
+                    $collection[ $alias ] = $group;
+
+                    array_splice($_groups, array_search($alias, $_groups), 1);
+                }
+            }
+
+            return $collection;
+        };
+
+        foreach ($archives ?? [] as $key => $archive)
+        {
+            $collection['collection'][ $key ] = [
+                'archive'  => $archive,
+                'children' => $getGroups((int) $archive->id)
+            ];
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Partial import
+     */
+    private function importPartial(array $files, array $archives, array $groups): ?array
+    {
+        return $this->importFiles($files, true, $archives, $groups);
+    }
+
+    /**
+     * Import based on bundle configurations
+     */
+    public function importBundleConfigFiles(array $files, bool $partial = false): ?array
+    {
+        return $this->importFiles(array_map(fn($n) => html_entity_decode($n), $files), !$partial);
+    }
+
+    /**
      * Import using a FileUploader
      */
     public function importByFileUploader(FileUpload $objUploader, bool $partial = false): ?array
@@ -449,62 +506,5 @@ class ImportController extends AbstractBackendController
         }
 
         return [$arrStyleArchives, $arrStyleGroups, $files];
-    }
-
-    /**
-     * Partial import
-     */
-    private function importPartial(array $files, array $archives, array $groups): ?array
-    {
-        return $this->importFiles($files, true, $archives, $groups);
-    }
-
-    /**
-     * Import based on bundle configurations
-     */
-    public function importBundleConfigFiles(array $files, bool $partial = false): ?array
-    {
-        return $this->importFiles(array_map(fn($n) => html_entity_decode($n), $files), !$partial);
-    }
-
-    /**
-     * Create a tree from archives and groups
-     */
-    public function createImportTree($archives, $groups, $files): array
-    {
-        $collection = [
-            'files' => $files,
-            'collection' => []
-        ];
-
-        $_groups = $groups;
-
-        // Check if archive exists
-        $getGroups = function (int $pid) use (&$_groups): array
-        {
-            $collection = [];
-
-            foreach ($_groups ?? [] as $alias => &$group)
-            {
-                if($pid === $group->pid)
-                {
-                    $collection[ $alias ] = $group;
-
-                    array_splice($_groups, array_search($alias, $_groups), 1);
-                }
-            }
-
-            return $collection;
-        };
-
-        foreach ($archives ?? [] as $key => $archive)
-        {
-            $collection['collection'][ $key ] = [
-                'archive'  => $archive,
-                'children' => $getGroups((int) $archive->id)
-            ];
-        }
-
-        return $collection;
     }
 }
