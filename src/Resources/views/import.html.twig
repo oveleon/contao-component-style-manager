@@ -1,12 +1,6 @@
-{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+{% extends "@Contao/be_main" %}
 
-{% block headline %}
-    {{ headline }}
-{% endblock %}
-
-{% block error %}{% endblock %}
-
-{% block main %}
+{% block main_content %}
     {% if messages %}
         {{ messages|raw }}
     {% endif %}
