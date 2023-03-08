@@ -41,6 +41,8 @@ class Sync
      */
     public function shouldRunObjectConversion($table = null): bool
     {
+        $this->framework->initialize();
+
         $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
             $this->connection->createSchemaManager() :
             $this->connection->getSchemaManager()
@@ -76,6 +78,8 @@ class Sync
      */
     public function performObjectConversion($table = null): void
     {
+        $this->framework->initialize();
+
         $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
             $this->connection->createSchemaManager() :
             $this->connection->getSchemaManager()
