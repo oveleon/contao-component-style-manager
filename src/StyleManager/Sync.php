@@ -31,7 +31,6 @@ class Sync
     public function __construct(ContaoFramework $framework, Connection $connection)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
         $this->connection = $connection;
     }
 
@@ -265,6 +264,8 @@ class Sync
      */
     public function export(?DataContainer $dc, $objArchives = null, bool $blnSendToBrowser = true)
     {
+        $this->framework->initialize();
+
         // Create a new XML document
         $xml = new DOMDocument('1.0', 'UTF-8');
         $xml->formatOutput = true;
