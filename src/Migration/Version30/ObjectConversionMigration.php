@@ -2,7 +2,6 @@
 
 namespace Oveleon\ContaoComponentStyleManager\Migration\Version30;
 
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
@@ -16,22 +15,13 @@ class ObjectConversionMigration extends AbstractMigration
     private $connection;
 
     /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
      * @var Sync
      */
     private $sync;
 
-    public function __construct(Connection $connection, ContaoFramework $framework, Sync $sync)
+    public function __construct(Connection $connection, Sync $sync)
     {
         $this->connection = $connection;
-
-        $this->framework = $framework;
-        $this->framework->initialize();
-
         $this->sync = $sync;
     }
 

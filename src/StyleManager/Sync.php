@@ -31,7 +31,6 @@ class Sync
     public function __construct(ContaoFramework $framework, Connection $connection)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
         $this->connection = $connection;
     }
 
@@ -42,6 +41,8 @@ class Sync
      */
     public function shouldRunObjectConversion($table = null): bool
     {
+        $this->framework->initialize();
+
         $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
             $this->connection->createSchemaManager() :
             $this->connection->getSchemaManager()
@@ -77,6 +78,8 @@ class Sync
      */
     public function performObjectConversion($table = null): void
     {
+        $this->framework->initialize();
+
         $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
             $this->connection->createSchemaManager() :
             $this->connection->getSchemaManager()
@@ -265,6 +268,8 @@ class Sync
      */
     public function export(?DataContainer $dc, $objArchives = null, bool $blnSendToBrowser = true)
     {
+        $this->framework->initialize();
+
         // Create a new XML document
         $xml = new DOMDocument('1.0', 'UTF-8');
         $xml->formatOutput = true;
