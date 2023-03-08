@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoComponentStyleManager\Command;
 
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -28,15 +27,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ObjectConversionCommand extends Command
 {
     protected static $defaultName = 'contao:stylemanager:object-conversion';
-
-    protected ContaoFramework $framework;
     private Sync $sync;
 
-    public function __construct(ContaoFramework $contaoFramework, Sync $sync)
+    public function __construct(Sync $sync)
     {
-        $this->framework = $contaoFramework;
-        $this->framework->initialize();
-
         $this->sync = $sync;
 
         parent::__construct();
