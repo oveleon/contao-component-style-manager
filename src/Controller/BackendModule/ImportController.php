@@ -4,6 +4,8 @@ namespace Oveleon\ContaoComponentStyleManager\Controller\BackendModule;
 
 use Contao\Config;
 use Contao\Controller;
+use Contao\CoreBundle\Controller\AbstractBackendController;
+use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\Database;
 use Contao\File;
@@ -14,31 +16,29 @@ use Contao\System;
 use DOMDocument;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config as BundleConfig;
-use Twig\Environment as TwigEnvironment;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("%contao.backend.route_prefix%/style-manager-import", name=ImportController::class, defaults={"_scope": "backend"})
  */
-class ImportController extends AbstractController
+class ImportController extends AbstractBackendController
 {
-    const ROUTE = 'style-manager-import';
+    public const ROUTE = 'style-manager-import';
 
-    protected TwigEnvironment $twig;
     protected RequestStack $requestStack;
     protected TranslatorInterface $translator;
+    private ContaoCsrfTokenManager $tokenManager;
 
-    public function __construct(TwigEnvironment $twig, RequestStack $requestStack, TranslatorInterface $translator)
+    public function __construct(RequestStack $requestStack, TranslatorInterface $translator, ContaoCsrfTokenManager $tokenManager)
     {
-        $this->twig = $twig;
         $this->requestStack = $requestStack;
         $this->translator = $translator;
+        $this->tokenManager = $tokenManager;
     }
 
     public function __invoke(): Response
@@ -85,7 +85,7 @@ class ImportController extends AbstractController
             $configs = $this->createImportTree(...$configs);
         }
 
-        return new Response($this->twig->render('@ContaoComponentStyleManager/import.html.twig', [
+        return $this->render('@ContaoComponentStyleManager/import.html.twig', [
             'headline'        => $partial ? $this->translator->trans('tl_style_manager_import.importPartial', [], 'contao_default') : 'Import',
             'messages'        => Message::generate(),
             'useBundleConfig' => System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'),
@@ -94,12 +94,12 @@ class ImportController extends AbstractController
             'configs'         => $configs,
             'form'            => [
                 'id'                   => 'style_manager_import',
-                'rt'                   => System::getContainer()->get('contao.csrf.token_manager')->getDefaultTokenValue(),
+                'rt'                   => $this->tokenManager->getDefaultTokenValue(),
                 'maxFileSize'          => Config::get('maxFileSize'),
                 'uploadWidget'         => $objUploader->generateMarkup()
             ],
             'action'          => [
-                'back'                 => str_replace('/' . self::ROUTE, '', TL_SCRIPT) . '?do=style_manager',
+                'back'                 => str_replace('/' . self::ROUTE, '', $this->generateUrl('contao_backend')) . '?do=style_manager',
             ],
             'label'           => [
                 'back'                 => $this->translator->trans('MSC.backBT', [], 'contao_default'),
@@ -114,7 +114,7 @@ class ImportController extends AbstractController
                 'bundleConfigEmpty'    => $this->translator->trans('tl_style_manager_import.bundleConfigEmpty', [], 'contao_default'),
                 'bundleConfigInactive' => $this->translator->trans('tl_style_manager_import.bundleConfigInactive', [], 'contao_default'),
             ]
-        ]));
+        ]);
     }
 
     /**

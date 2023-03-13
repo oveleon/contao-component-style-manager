@@ -1,12 +1,6 @@
-{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+{% extends "@Contao/be_main" %}
 
-{% block headline %}
-    {{ headline }}
-{% endblock %}
-
-{% block error %}{% endblock %}
-
-{% block main %}
+{% block main_content %}
     {% if messages %}
         {{ messages|raw }}
     {% endif %}
@@ -88,7 +82,7 @@
                         <h3>
                             {{ label.bundleUpload }}
                             <a href="/contao/help?table=tl_style_manager_archive&amp;field=bundleConfig" title="" onclick="Backend.openModalIframe({'title':'{{ label.bundleUpload }}','url':this.href});return false">
-                                <img src="system/themes/flexible/icons/about.svg" width="16" height="16">
+                                <img src="/bundles/contaocomponentstylemanager/icons/about.svg" width="16" height="16">
                             </a>
                         </h3>
                         {% if useBundleConfig %}
