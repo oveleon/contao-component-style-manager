@@ -5,10 +5,12 @@
  * (c) https://www.oveleon.de/
 */
 
+use Contao\DC_Table;
+
 $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
     // Config
     'config' => [
-        'dataContainer'               => 'Table',
+        'dataContainer'               => DC_Table::class,
         'ctable'                      => ['tl_style_manager'],
         'switchToEdit'                => true,
         'enableVersioning'            => true,
