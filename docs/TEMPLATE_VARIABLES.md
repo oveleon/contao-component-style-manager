@@ -8,7 +8,7 @@
 
 ---
 
-### As Twig ist not yet fully supported (Contao ^5.1), this feature will only work with Legacy-Templates)
+### As Twig is not yet fully supported (Contao ^5.1), this feature will only work with Legacy-Templates)
 https://docs.contao.org/dev/framework/templates/legacy/
 
 > To use legacy-templates (html5) in contao ^5.1, you can force this by overwriting config.php in "/contao/config/config.php".
