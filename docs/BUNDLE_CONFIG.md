@@ -9,12 +9,20 @@
 ---
 
 # Bundle-Configurations
-Instead of the import function, from version 3, configurations can be automatically provided by other bundles.  For the deployment, a configuration file, which can be exported via the StyleManager, must be stored under `contao/templates` of the bundle. The file needs to start with `style-manager-`. If the automatic import of these configuration files is not prevented (allowed by default), archives and CSS groups are automatically added to the defined areas.
+Instead of the import function, from version 3, configurations can be automatically provided by other bundles.
 
-To prevent dynamic configurations from being read in, you can make the following configuration:
+## Configuration files
+For the deployment, a configuration file, which can be exported via the StyleManager, must be stored under `/templates` 
+or `/templates/*`.
+
+> The filename needs to start with `style-manager-`.
+
+If the automatic import of these configuration files is not prevented (allowed by default), 
+archives and CSS groups are automatically added to the defined areas.
+
+To prevent dynamic configurations from being parsed, you can disable it with following configuration:
 ```yaml
 # config.yaml
 contao_component_style_manager:
     use_bundle_config: false
 ```
-

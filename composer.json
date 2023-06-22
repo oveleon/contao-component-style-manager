@@ -1,37 +1,36 @@
 {
-  "name":"oveleon/contao-component-style-manager",
-  "type":"contao-bundle",
-  "description":"Style and CSS-Class Manager for Contao Open Source CMS",
-  "keywords":["contao","styles","css","manager"],
-  "homepage":"https://www.oveleon.de/stylemanager.html",
-  "license":"MIT",
-  "authors":[
+  "name": "oveleon/contao-component-style-manager",
+  "type": "contao-bundle",
+  "description": "Style and CSS-Class Manager for Contao Open Source CMS",
+  "keywords": ["contao", "styles", "css", "manager"],
+  "homepage": "https://www.oveleon.de/stylemanager.html",
+  "license": "MIT",
+  "authors": [
     {
-      "name":"Oveleon",
-      "homepage":"https://oveleon.de/",
-      "role":"Developer"
+      "name": "Oveleon",
+      "homepage": "https://oveleon.de/",
+      "role": "Developer"
     },
     {
-      "name":"Daniele Sciannimanica",
-      "homepage":"https://github.com/doishub",
-      "role":"Developer"
+      "name": "Daniele Sciannimanica",
+      "homepage": "https://github.com/doishub",
+      "role": "Developer"
     }
   ],
-  "require":{
-    "php":"^7.4 || ^8.0",
+  "require": {
+    "php": "^8.0",
     "ext-json": "*",
     "ext-dom": "*",
-    "contao/core-bundle":"^4.13 || ^5.1"
+    "contao/core-bundle": "^4.13 || ^5.1"
   },
   "require-dev": {
-    "contao/manager-plugin": "^2.0"
+    "contao/manager-plugin": "^2.3.1"
   },
   "conflict": {
     "contao/core": "*",
-    "contao/core-bundle": "4.4.1",
     "contao/manager-plugin": "<2.0 || >=3.0"
   },
-  "autoload":{
+  "autoload": {
     "psr-4": {
       "Oveleon\\ContaoComponentStyleManager\\": "src/"
     },
@@ -45,10 +44,17 @@
       "src/Resources/contao/templates/"
     ]
   },
-  "extra":{
+  "extra": {
     "branch-alias": {
-      "dev-master": "3.1.x-dev"
+      "dev-master": "3.3.x-dev"
     },
     "contao-manager-plugin": "Oveleon\\ContaoComponentStyleManager\\ContaoManager\\Plugin"
+  },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "php-http/discovery": true,
+      "contao/manager-plugin": true
+    }
   }
 }
