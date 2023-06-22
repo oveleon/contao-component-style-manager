@@ -8,6 +8,7 @@
 
 namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
+use Contao\StringUtil;
 use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 
@@ -77,15 +78,15 @@ class Config
         $arrFiles = System::getContainer()->get('contao.resource_finder')->findIn('templates')->files()->name('style-manager-*.xml');
         $arrBundleConfigs = null;
 
-        if($projectTemplates = glob($projectDir . '/templates/style-manager-*.xml'))
+        if ($projectTemplates = array_merge((glob($projectDir . '/templates/style-manager-*.xml') ?: []), (glob($projectDir . '/templates/*/style-manager-*.xml') ?: [])))
         {
             foreach ($projectTemplates as $template)
             {
-                $arrBundleConfigs[basename($template) . ' <b>(/templates)</b>'] = str_replace($projectDir, '', $template);
+                $arrBundleConfigs[basename($template) . ' <b>(/'. dirname(StringUtil::striprootdir($template)) .')</b>'] = str_replace($projectDir, '', $template);
             }
         }
 
-        if($arrFiles->hasResults())
+        if ($arrFiles->hasResults())
         {
             foreach ($arrFiles as $file)
             {
