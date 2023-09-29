@@ -1,3 +1,28 @@
+:root {
+  --sm-text: #4c4c4c;
+  --sm-orange: #f47c00;
+  --sm-border: #e6e6e8;
+  --sm-content-bg: #f1f1f1;
+  --sm-content-border: #ccc;
+  --sm-token-bg: #f1e3c8;
+  --sm-token-border: #f1b56d;
+  --sm-tab-bg: #fdfdfd;
+  --sm-header-bg: #74B739;
+  --sm-header-color: #fff;
+}
+
+html[data-color-scheme=dark] {
+  --sm-text: #cccccc;
+  --sm-border: #414448;
+  --sm-content-bg: #212429;
+  --sm-content-border: #ccc;
+  --sm-token-bg: #23201b;
+  --sm-token-border: #edad3b;
+  --sm-tab-bg: #212327;
+  --sm-header-bg: #74B739;
+  --sm-header-color: #fff;
+}
+
 #pal_style_manager_legend .widget.stylemanager > h3 {
   display: none;
 }
@@ -34,8 +59,8 @@
   z-index: 1;
   padding: 8px 10px;
   margin-right: 4px;
-  background: #f1f1f1;
-  border: solid #e6e6e8;
+  background: var(--sm-content-bg);
+  border: solid var(--sm-border);
   border-width: 1px 1px 0 1px;
   border-radius: 3px 3px 0 0;
   opacity: 0.8;
@@ -48,8 +73,8 @@
 }
 .widget.stylemanager .tab-content {
   display: none;
-  border: 1px solid #e6e6e8;
-  background: #fdfdfd;
+  border: 1px solid var(--sm-border);
+  background: var(--sm-tab-bg);
   padding: 5px 5px 15px 5px;
 }
 .widget.stylemanager .tab-content > hr {
@@ -58,12 +83,17 @@
   clear: both;
   width: calc(100% - 30px);
   margin: 22px 15px 6px;
-  background: #e6e6e8;
+  background: var(--sm-border);
 }
 .widget.stylemanager .tab-content > div {
   margin-left: 15px;
   margin-right: 15px;
   min-height: 80px;
+  width: calc((100% / var(--sm-i, 1)) - 30px);
+  float: left;
+}
+.widget.stylemanager .tab-content > div.long {
+  --sm-i:1!important;
 }
 .widget.stylemanager .tab-content > div + hr {
   display: block;
@@ -80,55 +110,31 @@
   padding-bottom: 20px;
   margin-bottom: 7px;
   min-height: auto;
-  color: #4c4c4c;
+  color: var(--sm-text);
   line-height: 1.3;
-  border-bottom: 1px solid #e6e6e8;
+  border-bottom: 1px solid var(--sm-border);
 }
 .widget.stylemanager .tab-content:after {
   display: block;
   content: "";
   clear: both;
 }
-.widget.stylemanager .tab-nav {
-  display: none;
-}
-.widget.stylemanager .tab-container [id^=nav-0]:checked ~ [id^=tab-0],
-.widget.stylemanager .tab-container [id^=nav-1]:checked ~ [id^=tab-1],
-.widget.stylemanager .tab-container [id^=nav-2]:checked ~ [id^=tab-2],
-.widget.stylemanager .tab-container [id^=nav-3]:checked ~ [id^=tab-3],
-.widget.stylemanager .tab-container [id^=nav-4]:checked ~ [id^=tab-4],
-.widget.stylemanager .tab-container [id^=nav-5]:checked ~ [id^=tab-5],
-.widget.stylemanager .tab-container [id^=nav-6]:checked ~ [id^=tab-6],
-.widget.stylemanager .tab-container [id^=nav-7]:checked ~ [id^=tab-7],
-.widget.stylemanager .tab-container [id^=nav-8]:checked ~ [id^=tab-8],
-.widget.stylemanager .tab-container [id^=nav-9]:checked ~ [id^=tab-9],
-.widget.stylemanager .tab-container [id^=nav-10]:checked ~ [id^=tab-10],
-.widget.stylemanager .tab-container [id^=nav-11]:checked ~ [id^=tab-11],
-.widget.stylemanager .tab-container [id^=nav-12]:checked ~ [id^=tab-12],
-.widget.stylemanager .tab-container [id^=nav-13]:checked ~ [id^=tab-13],
-.widget.stylemanager .tab-container [id^=nav-14]:checked ~ [id^=tab-14],
-.widget.stylemanager .tab-container [id^=nav-15]:checked ~ [id^=tab-15],
-.widget.stylemanager .tab-container [id^=nav-16]:checked ~ [id^=tab-16],
-.widget.stylemanager .tab-container [id^=nav-17]:checked ~ [id^=tab-17],
-.widget.stylemanager .tab-container [id^=nav-18]:checked ~ [id^=tab-18],
-.widget.stylemanager .tab-container [id^=nav-19]:checked ~ [id^=tab-19],
-.widget.stylemanager .tab-container [id^=nav-20]:checked ~ [id^=tab-20],
-.widget.stylemanager .tab-container [id^=nav-21]:checked ~ [id^=tab-21],
-.widget.stylemanager .tab-container [id^=nav-22]:checked ~ [id^=tab-22],
-.widget.stylemanager .tab-container [id^=nav-23]:checked ~ [id^=tab-23],
-.widget.stylemanager .tab-container [id^=nav-24]:checked ~ [id^=tab-24],
-.widget.stylemanager .tab-container [id^=nav-25]:checked ~ [id^=tab-25] {
+
+.stylemanager .tab-nav[id^=nav-39]:checked ~ [id^=tab-39], .stylemanager .tab-nav[id^=nav-38]:checked ~ [id^=tab-38], .stylemanager .tab-nav[id^=nav-37]:checked ~ [id^=tab-37], .stylemanager .tab-nav[id^=nav-36]:checked ~ [id^=tab-36], .stylemanager .tab-nav[id^=nav-35]:checked ~ [id^=tab-35], .stylemanager .tab-nav[id^=nav-34]:checked ~ [id^=tab-34], .stylemanager .tab-nav[id^=nav-33]:checked ~ [id^=tab-33], .stylemanager .tab-nav[id^=nav-32]:checked ~ [id^=tab-32], .stylemanager .tab-nav[id^=nav-31]:checked ~ [id^=tab-31], .stylemanager .tab-nav[id^=nav-30]:checked ~ [id^=tab-30], .stylemanager .tab-nav[id^=nav-29]:checked ~ [id^=tab-29], .stylemanager .tab-nav[id^=nav-28]:checked ~ [id^=tab-28], .stylemanager .tab-nav[id^=nav-27]:checked ~ [id^=tab-27], .stylemanager .tab-nav[id^=nav-26]:checked ~ [id^=tab-26], .stylemanager .tab-nav[id^=nav-25]:checked ~ [id^=tab-25], .stylemanager .tab-nav[id^=nav-24]:checked ~ [id^=tab-24], .stylemanager .tab-nav[id^=nav-23]:checked ~ [id^=tab-23], .stylemanager .tab-nav[id^=nav-22]:checked ~ [id^=tab-22], .stylemanager .tab-nav[id^=nav-21]:checked ~ [id^=tab-21], .stylemanager .tab-nav[id^=nav-20]:checked ~ [id^=tab-20], .stylemanager .tab-nav[id^=nav-19]:checked ~ [id^=tab-19], .stylemanager .tab-nav[id^=nav-18]:checked ~ [id^=tab-18], .stylemanager .tab-nav[id^=nav-17]:checked ~ [id^=tab-17], .stylemanager .tab-nav[id^=nav-16]:checked ~ [id^=tab-16], .stylemanager .tab-nav[id^=nav-15]:checked ~ [id^=tab-15], .stylemanager .tab-nav[id^=nav-14]:checked ~ [id^=tab-14], .stylemanager .tab-nav[id^=nav-13]:checked ~ [id^=tab-13], .stylemanager .tab-nav[id^=nav-12]:checked ~ [id^=tab-12], .stylemanager .tab-nav[id^=nav-11]:checked ~ [id^=tab-11], .stylemanager .tab-nav[id^=nav-10]:checked ~ [id^=tab-10], .stylemanager .tab-nav[id^=nav-9]:checked ~ [id^=tab-9], .stylemanager .tab-nav[id^=nav-8]:checked ~ [id^=tab-8], .stylemanager .tab-nav[id^=nav-7]:checked ~ [id^=tab-7], .stylemanager .tab-nav[id^=nav-6]:checked ~ [id^=tab-6], .stylemanager .tab-nav[id^=nav-5]:checked ~ [id^=tab-5], .stylemanager .tab-nav[id^=nav-4]:checked ~ [id^=tab-4], .stylemanager .tab-nav[id^=nav-3]:checked ~ [id^=tab-3], .stylemanager .tab-nav[id^=nav-2]:checked ~ [id^=tab-2], .stylemanager .tab-nav[id^=nav-1]:checked ~ [id^=tab-1], .stylemanager .tab-nav[id^=nav-0]:checked ~ [id^=tab-0] {
   display: block;
 }
-.widget.stylemanager .tab-container [id^=nav-]:checked + label {
+
+.stylemanager .tab-nav {
+  display: none;
+}
+.stylemanager .tab-nav[id^=nav-]:checked + label {
   top: 1px;
   padding-bottom: 9px;
-  border-top-color: #f47c00;
-  background: #FDFDFD;
+  border-top-color: var(--sm-orange);
+  background: var(--sm-tab-bg);
   opacity: 1;
   cursor: default;
 }
-
 #tl_listing .sm_list_token {
   display: inline-block;
   font-size: 0.8em;
@@ -137,13 +143,13 @@
   text-align: center;
   padding: 1px 3px;
   width: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--sm-content-border);
   border-radius: 2px;
-  background-color: #f1f1f1;
+  background-color: var(--sm-content-bg);
 }
 #tl_listing .sm_list_token.var {
-  background-color: #f1e3c8;
-  border-color: #f1b56d;
+  background-color: var(--sm-token-bg);
+  border-color: var(--sm-token-border);
   cursor: help;
 }
 
@@ -156,12 +162,8 @@
 }
 
 @media (min-width: 600px) {
-  .widget.stylemanager .tab-content > div {
-    width: calc(50% - 30px);
-    float: left;
-  }
-  .widget.stylemanager .tab-content > div.long {
-    width: calc(100% - 30px);
+  :root {
+    --sm-i: 2;
   }
 }
 @media (min-width: 770px) {
@@ -174,8 +176,8 @@
     left: 18px;
     display: inline-block;
     padding: 4px 9px;
-    background: #74B739;
-    color: #fff;
+    background: var(--sm-header-bg);
+    color: var(--sm-header-color);
     border-radius: 10px;
     font-size: 0.9em;
     line-height: 1;
@@ -185,12 +187,8 @@
   }
 }
 @media (min-width: 1200px) {
-  .widget.stylemanager .tab-content > div {
-    width: calc(33.333% - 30px);
-    float: left;
-  }
-  .widget.stylemanager .tab-content > div.long {
-    width: calc(100% - 30px);
+  :root {
+    --sm-i: 3;
   }
 }
 
