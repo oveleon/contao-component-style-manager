@@ -49,7 +49,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "3.3.x-dev"
+      "dev-main": "3.4.x-dev"
     },
     "contao-manager-plugin": "Oveleon\\ContaoComponentStyleManager\\ContaoManager\\Plugin"
   },
