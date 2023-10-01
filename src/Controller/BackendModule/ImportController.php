@@ -343,6 +343,7 @@ class ImportController extends AbstractBackendController
                         {
                             $objArchive = new StyleManagerArchiveModel();
                             $objArchive->id = ++$intArchiveId;
+                            $objArchive->tstamp = time();
                         }
                     }
                     else
@@ -394,6 +395,7 @@ class ImportController extends AbstractBackendController
                                     {
                                         $objChildren = new StyleManagerModel();
                                         $objChildren->id = ++$intGroupId;
+                                        $objChildren->tstamp = time();
                                     }
                                 }
                                 else
