@@ -27,6 +27,9 @@
       <trans-unit id="tl_style_manager_import.importManual">
         <source>Manual import</source>
       </trans-unit>
+      <trans-unit id="tl_style_manager_import.importExplanation">
+        <source>Select the records that you want to import.</source>
+      </trans-unit>
       <trans-unit id="tl_style_manager_import.uploadFile">
         <source>Here you can upload one .xml file to be imported.</source>
       </trans-unit>

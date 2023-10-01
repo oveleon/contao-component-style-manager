@@ -109,6 +109,7 @@ class ImportController extends AbstractBackendController
                 'importPartial'        => $this->translator->trans('tl_style_manager_import.importPartial', [], 'contao_default'),
                 'importPartialDesc'    => $this->translator->trans('tl_style_manager_import.importPartialDesc', [], 'contao_default'),
                 'importManual'         => $this->translator->trans('tl_style_manager_import.importManual', [], 'contao_default'),
+                'importExplanation'    => $this->translator->trans('tl_style_manager_import.importExplanation', [], 'contao_default'),
                 'widgetDescription'    => $this->translator->trans('tl_style_manager_import.uploadFile', [], 'contao_default'),
                 'bundleUpload'         => $this->translator->trans('tl_style_manager_import.bundleConfig', [], 'contao_default'),
                 'bundleConfigEmpty'    => $this->translator->trans('tl_style_manager_import.bundleConfigEmpty', [], 'contao_default'),
@@ -343,6 +344,7 @@ class ImportController extends AbstractBackendController
                         {
                             $objArchive = new StyleManagerArchiveModel();
                             $objArchive->id = ++$intArchiveId;
+                            $objArchive->tstamp = time();
                         }
                     }
                     else
@@ -394,6 +396,7 @@ class ImportController extends AbstractBackendController
                                     {
                                         $objChildren = new StyleManagerModel();
                                         $objChildren->id = ++$intGroupId;
+                                        $objChildren->tstamp = time();
                                     }
                                 }
                                 else
