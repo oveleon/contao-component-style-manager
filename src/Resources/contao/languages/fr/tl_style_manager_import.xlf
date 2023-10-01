@@ -35,6 +35,10 @@
         <source>Manual import</source>
         <target>Importation manuelle</target>
       </trans-unit>
+      <trans-unit id="tl_style_manager_import.importExplanation">
+        <source>Select the records that you want to import.</source>
+        <target>Sélectionnez les enregistrements que vous souhaitez importer.</target>
+      </trans-unit>
       <trans-unit id="tl_style_manager_import.uploadFile">
         <source>Here you can upload one .xml file to be imported.</source>
         <target>Ici, vous pouvez télécharger un fichier .xml pour l'importation.</target>

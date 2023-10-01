@@ -35,7 +35,7 @@ html[data-color-scheme=dark] {
 .widget.stylemanager > h3 {
   margin-bottom: 15px;
 }
-.widget.stylemanager .sm-group-title {
+.widget.stylemanager .sm-groupTitle {
   margin-top: 1rem;
   padding-bottom: 0.5rem;
 }
@@ -89,7 +89,7 @@ html[data-color-scheme=dark] {
   margin-left: 15px;
   margin-right: 15px;
   min-height: 80px;
-  width: calc((100% / var(--sm-i, 1)) - 30px);
+  width: calc(100% / var(--sm-i, 1) - 30px);
   float: left;
 }
 .widget.stylemanager .tab-content > div.long {
@@ -118,6 +118,54 @@ html[data-color-scheme=dark] {
   display: block;
   content: "";
   clear: both;
+}
+
+.sm-bt {
+  border-top: 1px solid var(--sm-border);
+}
+.sm-groupAlias, .sm-childAlias {
+  opacity: 0.65;
+  font-size: smaller;
+  font-style: italic;
+}
+.sm-groupAlias {
+  font-size: small;
+}
+.sm-hl-container {
+  display: flex;
+  flex-wrap: wrap;
+  line-height: 1.2;
+}
+.sm-groupHeadline {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.sm-container {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--sm-border);
+}
+.sm-container .children {
+  margin: 10px 0 0 0;
+  padding: 5px 15px;
+  flex-basis: 100%;
+  border: 1px solid var(--sm-border);
+  border-radius: 3px;
+}
+.sm-container label {
+  margin-left: 5px;
+  flex: 1;
+}
+.sm-container input[type=checkbox],
+.sm-container label {
+  cursor: pointer;
+}
+.sm-container .child {
+  display: flex;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--sm-border);
+}
+.sm-container .child:last-of-type {
+  border-bottom: none;
 }
 
 .stylemanager .tab-nav[id^=nav-39]:checked ~ [id^=tab-39], .stylemanager .tab-nav[id^=nav-38]:checked ~ [id^=tab-38], .stylemanager .tab-nav[id^=nav-37]:checked ~ [id^=tab-37], .stylemanager .tab-nav[id^=nav-36]:checked ~ [id^=tab-36], .stylemanager .tab-nav[id^=nav-35]:checked ~ [id^=tab-35], .stylemanager .tab-nav[id^=nav-34]:checked ~ [id^=tab-34], .stylemanager .tab-nav[id^=nav-33]:checked ~ [id^=tab-33], .stylemanager .tab-nav[id^=nav-32]:checked ~ [id^=tab-32], .stylemanager .tab-nav[id^=nav-31]:checked ~ [id^=tab-31], .stylemanager .tab-nav[id^=nav-30]:checked ~ [id^=tab-30], .stylemanager .tab-nav[id^=nav-29]:checked ~ [id^=tab-29], .stylemanager .tab-nav[id^=nav-28]:checked ~ [id^=tab-28], .stylemanager .tab-nav[id^=nav-27]:checked ~ [id^=tab-27], .stylemanager .tab-nav[id^=nav-26]:checked ~ [id^=tab-26], .stylemanager .tab-nav[id^=nav-25]:checked ~ [id^=tab-25], .stylemanager .tab-nav[id^=nav-24]:checked ~ [id^=tab-24], .stylemanager .tab-nav[id^=nav-23]:checked ~ [id^=tab-23], .stylemanager .tab-nav[id^=nav-22]:checked ~ [id^=tab-22], .stylemanager .tab-nav[id^=nav-21]:checked ~ [id^=tab-21], .stylemanager .tab-nav[id^=nav-20]:checked ~ [id^=tab-20], .stylemanager .tab-nav[id^=nav-19]:checked ~ [id^=tab-19], .stylemanager .tab-nav[id^=nav-18]:checked ~ [id^=tab-18], .stylemanager .tab-nav[id^=nav-17]:checked ~ [id^=tab-17], .stylemanager .tab-nav[id^=nav-16]:checked ~ [id^=tab-16], .stylemanager .tab-nav[id^=nav-15]:checked ~ [id^=tab-15], .stylemanager .tab-nav[id^=nav-14]:checked ~ [id^=tab-14], .stylemanager .tab-nav[id^=nav-13]:checked ~ [id^=tab-13], .stylemanager .tab-nav[id^=nav-12]:checked ~ [id^=tab-12], .stylemanager .tab-nav[id^=nav-11]:checked ~ [id^=tab-11], .stylemanager .tab-nav[id^=nav-10]:checked ~ [id^=tab-10], .stylemanager .tab-nav[id^=nav-9]:checked ~ [id^=tab-9], .stylemanager .tab-nav[id^=nav-8]:checked ~ [id^=tab-8], .stylemanager .tab-nav[id^=nav-7]:checked ~ [id^=tab-7], .stylemanager .tab-nav[id^=nav-6]:checked ~ [id^=tab-6], .stylemanager .tab-nav[id^=nav-5]:checked ~ [id^=tab-5], .stylemanager .tab-nav[id^=nav-4]:checked ~ [id^=tab-4], .stylemanager .tab-nav[id^=nav-3]:checked ~ [id^=tab-3], .stylemanager .tab-nav[id^=nav-2]:checked ~ [id^=tab-2], .stylemanager .tab-nav[id^=nav-1]:checked ~ [id^=tab-1], .stylemanager .tab-nav[id^=nav-0]:checked ~ [id^=tab-0] {

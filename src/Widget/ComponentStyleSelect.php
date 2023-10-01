@@ -313,7 +313,7 @@ class ComponentStyleSelect extends Widget
                 // Set group title if it exists
                 if ($this->showGroupTitle && null !== $group['groupTitle'])
                 {
-                    $groupTitle = '<h4 class="sm-group-title">' . $group['groupTitle'] . '</h4>';
+                    $groupTitle = '<h4 class="sm-groupTitle">' . $group['groupTitle'] . '</h4>';
                 }
 
                 $i++;
