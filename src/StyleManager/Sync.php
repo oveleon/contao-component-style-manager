@@ -205,12 +205,13 @@ class Sync
                                 }
 
                                 // Overwrite existing value
-                                $key = array_search($field, array_column($arrClasses, 'key'));
-
-                                $arrClasses[ $key ] = [
-                                    'key' => $cssClass['key'],
-                                    'value' => $cssClass['value']
-                                ];
+                                if (!$key = array_search($field, array_column($arrClasses, 'key')))
+                                {
+                                    $arrClasses[ $key ] = [
+                                        'key' => $cssClass['key'],
+                                        'value' => $cssClass['value']
+                                    ];
+                                }
 
                                 continue;
                             }
