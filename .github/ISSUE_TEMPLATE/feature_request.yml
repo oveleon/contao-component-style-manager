@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest new features
+labels: [enhancement]
+assignees:
+  - zoglo
+body:
+  - type: checkboxes
+    attributes:
+      label: Prerequisites
+      description: Please take a couple of minutes to help our maintainers to work more efficiently.
+      options:
+        - label: I [checked](https://github.com/oveleon/contao-component-style-manager/issues?q=is%3Aissue) for duplicate feature requests (open and closed)
+          required: true
+        - label: I have read the [contributing guidelines](https://github.com/oveleon/contao-component-style-manager#bugs-and-feature-requests)
+          required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Give us clear details about what to add, including relevant links and screenshots if available.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Explain why this change is necessary or beneficial and what problems it can solve.
+    validations:
+      required: true
