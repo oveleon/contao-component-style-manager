@@ -1,0 +1,41 @@
+name: Report a bug
+description: Report a bug, issue or problem you have identified using the contao-component-style-manager
+labels: [bug, unconfirmed]
+assignees:
+  - doishub
+  - zoglo
+body:
+  - type: checkboxes
+    attributes:
+      label: Prerequisites
+      description: Please take a couple of minutes to help our maintainers to work more efficiently.
+      options:
+        - label: I [checked](https://github.com/oveleon/contao-component-style-manager/issues?q=is%3Aissue) for duplicate issues (open and closed)
+          required: true
+        - label: I am using the latest stable [version/release](https://packagist.org/packages/oveleon/contao-component-style-manager) of the Contao Component Style Manager
+          required: true
+        - label: I have read the [contributing guidelines](https://github.com/oveleon/contao-component-style-manager#bugs-and-feature-requests)
+          required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Please select the topic(s) that most closely match your concern
+      options:
+        - Template (HTML/Twig)
+        - Backend (PHP/CSS)
+        - Other (Specify within description)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please describe the issue and what you expected to happen, including detailed instructions on how to reproduce it in a fresh Contao installation without any third-party extensions installed.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste the relevant stacktrace within enabled debug-mode. This will be automatically formatted into code, so no need for backticks.
+      render: shell
