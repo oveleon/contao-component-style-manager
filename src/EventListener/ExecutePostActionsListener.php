@@ -24,13 +24,13 @@ class ExecutePostActionsListener
      */
     public function __invoke($strAction, DataContainer $dc)
     {
-        if($strAction !== 'selectStyleManagerSection')
+        if ($strAction !== 'selectStyleManagerSection')
         {
             return;
         }
 
         /** @var AttributeBagInterface $objSessionBag */
-        $objSessionBag = System::getContainer()->get('session')->getBag('contao_backend');
+        $objSessionBag = System::getContainer()->get('request_stack')->getSession()->getBag('contao_backend');
 
         $fs = $objSessionBag->get('stylemanager_section_states');
         $fs[Input::post('groupAlias')] = Input::post('identifier');
