@@ -15,6 +15,7 @@ use Contao\File;
 use Contao\Message;
 use Contao\Model\Collection;
 use Contao\StringUtil;
+use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use DOMDocument;
@@ -22,16 +23,20 @@ use DOMElement;
 use DOMNode;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Psr\Log\LoggerInterface;
 
 class Sync
 {
     protected ContaoFramework $framework;
     protected Connection $connection;
 
-    public function __construct(ContaoFramework $framework, Connection $connection)
+    private ?LoggerInterface $logger;
+
+    public function __construct(ContaoFramework $framework, Connection $connection, LoggerInterface $logger = null)
     {
         $this->framework = $framework;
         $this->connection = $connection;
+        $this->logger = $logger;
     }
 
     /**
@@ -63,6 +68,13 @@ class Sync
             if($key === StyleManager::VARS_KEY && count($arrConfig) > 1)
             {
                 $key = array_keys($arrConfig)[1];
+            }
+
+            if (is_numeric($key) && empty(StyleManagerModel::findById($key)))
+            {
+                // Skip if the configuration was already converted or can not be found anymore as the PK does not exist
+                $this->logger->error('Style Manager conversion for table "'.$table.'" and id "'.$key.'" has been skipped due to primary key not existing anymore.)');
+                return false;
             }
 
             return is_numeric($key);
