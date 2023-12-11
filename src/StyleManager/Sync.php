@@ -73,7 +73,7 @@ class Sync
             if (is_numeric($key) && empty(StyleManagerModel::findById($key)))
             {
                 // Skip if the configuration was already converted or can not be found anymore as the PK does not exist
-                $this->logger->error('Style Manager conversion for table "'.$table.'" and id "'.$key.'" has been skipped due to primary key not existing anymore.)');
+                $this->logger->error('Style Manager conversion for table "'.$table.'" and id "'.$key.'" has been skipped due to primary key not existing anymore.');
                 return false;
             }
 
