@@ -19,6 +19,23 @@ class StyleManagerExtension extends AbstractExtension
 
     public function createContext(array $data): Styles
     {
+        // ToDo: Enable when contao ships fe_page as a twig template
+        /*if($GLOBALS['TL_PTY'][$data['type']] ?? false)
+        {
+            global $objPage;
+
+            $layout = LayoutModel::findByPk($data['layoutId']);
+
+            $arrStyles = array_filter(array_merge_recursive(
+                StringUtil::deserialize($objPage?->styleManager, true),
+                StringUtil::deserialize($layout?->styleManager, true)
+            ));
+        }
+        else
+        {
+            $arrStyles = StringUtil::deserialize($data['styleManager'], true);
+        }*/
+
         $arrStyles = StringUtil::deserialize($data['styleManager'], true);
 
         return new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
