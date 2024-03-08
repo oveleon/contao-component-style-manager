@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/modules.php" source-language="en">
+    <body>
+      <trans-unit id="MOD.style_manager.0">
+        <source>Style Manager</source>
+      </trans-unit>
+      <trans-unit id="MOD.style_manager.1">
+        <source>Manage styles and CSS classes</source>
+      </trans-unit>
+      <trans-unit id="MOD.style_manager_archive.0">
+        <source>Style Manager Categories</source>
+      </trans-unit>
+      <trans-unit id="MOD.style_manager_archive.1">
+        <source>Manage categories</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

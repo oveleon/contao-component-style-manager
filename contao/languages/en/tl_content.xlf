@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_content.php" source-language="en">
+    <body>
+      <trans-unit id="tl_content.style_manager_legend">
+        <source>Style Manager</source>
+      </trans-unit>
+
+      <trans-unit id="tl_content.styleManager.0">
+        <source>Style Manager</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
