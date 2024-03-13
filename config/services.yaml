@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Oveleon\ContaoComponentStyleManager\:
+        resource: '../src/'
+        exclude: '../src/{Model,DependencyInjection,Resources}'

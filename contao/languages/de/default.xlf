@@ -1,0 +1,22 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/default.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="ERR.identifierExists">
+        <source>The Identifier &quot;%s&quot; already exists!</source>
+        <target>Die Kennung &quot;%s&quot; existiert bereits!</target>
+      </trans-unit>
+      <trans-unit id="ERR.groupAliasExists">
+        <source>The Alias &quot;%s&quot; already exists within this category!</source>
+        <target>Der Alias &quot;%s&quot; existiert bereits innerhalb dieser Kategorie!</target>
+      </trans-unit>
+      <trans-unit id="ERR.noStyleManagerConfigFound">
+        <source>No style manager config found!</source>
+        <target>Keine Konfiguration für den Style-Manager gefunden!</target>
+      </trans-unit>
+      <trans-unit id="MSC.styleManagerConfigImported">
+        <source>The file %s was imported successfully.</source>
+        <target>Die Datei %s wurde erfolgreich importiert.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

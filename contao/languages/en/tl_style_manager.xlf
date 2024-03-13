@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_style_manager.php" source-language="en">
+    <body>
+      <trans-unit id="tl_style_manager.title_legend">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.config_legend">
+        <source>Configuration</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.publish_legend">
+        <source>Publishing</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.expert_legend">
+        <source>Expert settings</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.ow_key">
+        <source>CSS Class</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.ow_value">
+        <source>Title / Description</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.noStylesDefined">
+        <source>No styles are defined for this area.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.new.0">
+        <source>New css group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.new.1">
+        <source>Create a new css group.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.editheader.0">
+        <source>Edit group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.editheader.1">
+        <source>Edit group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.copy.0">
+        <source>Copy group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.copy.1">
+        <source>Copy group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.delete.0">
+        <source>Delete group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.delete.1">
+        <source>Delete group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.show.0">
+        <source>Show group info</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.show.1">
+        <source>Show group info</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.title.0">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.title.1">
+        <source>Title or group name of the statements.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.description.0">
+        <source>Description</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.description.1">
+        <source>Here you can enter a field description.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.alias.0">
+        <source>Alias</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.alias.1">
+        <source>Here you can define an alias which is needed to receive the selected CSS class of this group in templates. (For example $this->styleManager->get('myCategoryIdentifier', ['thisAlias']).</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.cssClass.0">
+        <source>CSS class</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.cssClass.1">
+        <source>Here you can add custom classes to the backend field.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.chosen.0">
+        <source>Add search field</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.chosen.1">
+        <source>Use of chosen for a search field within the select box.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.blankOption.0">
+        <source>Include Blank Option</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.blankOption.1">
+        <source>Adds an empty option to the widget. If this option is not selected, it is mandatory to choose one of the CSS classes. The first defined CSS class will be set as default.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.0">
+        <source>Use as template variable</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.passToTemplate.1">
+        <source>The selected class is not set directly, but is passed to the selected template and can be retrieved via the category identifier (e.g. $this->styleManager->get('myCategoryIdentifier'))</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.cssClasses.0">
+        <source>CSS classes</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.cssClasses.1">
+        <source>Define the CSS classes and their descriptions that are available in this group.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendLayout.0">
+        <source>Layouts</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendLayout.1">
+        <source>Provides the CSS classes in layouts.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.0">
+        <source>Forms</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.1">
+        <source>Provides the CSS classes in forms.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.0">
+        <source>Form fields</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.1">
+        <source>Provides the CSS classes in form fields.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendPage.0">
+        <source>Pages</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendPage.1">
+        <source>Provides the CSS classes in pages.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendArticle.0">
+        <source>Articles</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendArticle.1">
+        <source>Provides the CSS classes in articles.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendModule.0">
+        <source>Modules</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendModule.1">
+        <source>Provides the CSS classes in modules.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.0">
+        <source>News</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendNews.1">
+        <source>Provides the CSS classes in news.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.0">
+        <source>Events</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendEvents.1">
+        <source>Provides the CSS classes in events.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendContentElement.0">
+        <source>Content elements</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendContentElement.1">
+        <source>Provides the CSS classes in content elements.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.contentElements.0">
+        <source>Available content elements</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.contentElements.1">
+        <source>Select the content elements that this group may be displayed for.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.formFields.0">
+        <source>Available form fields</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.formFields.1">
+        <source>Select the form fields that this group may be displayed for.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modules.0">
+        <source>Available modules</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.modules.1">
+        <source>Select the modules that this group may be displayed for.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

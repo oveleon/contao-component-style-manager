@@ -85,7 +85,7 @@ class ImportController extends AbstractBackendController
             $configs = $this->createImportTree(...$configs);
         }
 
-        return $this->render('@ContaoComponentStyleManager/import.html.twig', [
+        return $this->render('@Contao/import.html.twig', [
             'headline'        => $partial ? $this->translator->trans('tl_style_manager_import.importPartial', [], 'contao_default') : 'Import',
             'messages'        => Message::generate(),
             'useBundleConfig' => System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'),
