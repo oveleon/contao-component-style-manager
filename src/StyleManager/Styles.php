@@ -86,6 +86,7 @@ class Styles
     {
         $this->currIdentifier = $identifier;
         $this->currGroups     = $arrGroups;
+        $this->exclGroups     = null;
 
         return $this;
     }
