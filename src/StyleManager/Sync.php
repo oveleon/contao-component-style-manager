@@ -217,7 +217,7 @@ class Sync
                                 }
 
                                 // Overwrite existing value
-                                if (!$key = array_search($field, array_column($arrClasses, 'key')))
+                                if (false !== ($key = array_search($cssClass['key'], array_column($arrClasses, 'key'))))
                                 {
                                     $arrClasses[ $key ] = [
                                         'key' => $cssClass['key'],
