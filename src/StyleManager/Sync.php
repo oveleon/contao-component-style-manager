@@ -18,6 +18,7 @@ use Contao\StringUtil;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\Column;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
@@ -55,6 +56,14 @@ class Sync
 
         if(null === $table || !$schemaManager->tablesExist([$table]))
         {
+            return false;
+        }
+
+        $columnNames = array_map(static function (Column $column) {
+            return $column->getName();
+        }, $schemaManager->listTableColumns($table));
+
+        if (!\in_array('styleManager', $columnNames, true)) {
             return false;
         }
 
