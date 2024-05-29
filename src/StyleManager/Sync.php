@@ -59,7 +59,7 @@ class Sync
             return false;
         }
 
-        $columnNames = array_map(static function (Column $column) {
+        $columnNames = array_map(static function (Column $column): string {
             return $column->getName();
         }, $schemaManager->listTableColumns($table));
 
