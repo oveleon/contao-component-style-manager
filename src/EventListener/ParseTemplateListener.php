@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -7,25 +10,22 @@
 
 namespace Oveleon\ContaoComponentStyleManager\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\StringUtil;
 use Contao\Template;
 use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
 
-/**
- * @Hook("parseTemplate")
- */
+#[AsHook('parseTemplate')]
 class ParseTemplateListener
 {
     /**
      * Parse Template and set Variables
      */
-    public function __invoke(Template $template)
+    public function __invoke(Template $template): void
     {
         // Check page and template variables to pass them to the template
-        if(strpos($template->getName(), 'fe_page') === 0)
-        {
+        if (str_starts_with($template->getName(), 'fe_page')) {
             global $objPage;
 
             $arrStyles = array_filter(array_merge_recursive(

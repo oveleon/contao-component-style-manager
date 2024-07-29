@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -16,7 +19,7 @@ use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
 class StyleManager
 {
-    const VARS_KEY = '__vars__';
+    public const VARS_KEY = '__vars__';
 
     /**
      * Valid CSS-Class fields [field => size]
@@ -59,7 +62,7 @@ class StyleManager
      *
      * @param $dc
      */
-    public function addPalette($dc)
+    public function addPalette($dc): void
     {
         $palette = PaletteManipulator::create()
             ->addLegend('style_manager_legend', 'expert_legend', PaletteManipulator::POSITION_BEFORE)
@@ -83,7 +86,7 @@ class StyleManager
      *
      * @return mixed
      */
-    public static function clearClasses($varValue, $dc)
+    public static function clearClasses(mixed $varValue, $dc)
     {
         if(self::isMultipleField($dc->field))
         {
@@ -125,7 +128,7 @@ class StyleManager
      *
      * @return mixed
      */
-    public static function updateClasses($varValue, $dc)
+    public static function updateClasses(mixed $varValue, $dc)
     {
         if(self::isMultipleField($dc->field))
         {
@@ -162,7 +165,7 @@ class StyleManager
      *
      * @return mixed
      */
-    public static function resetClasses($varValue, $dc, $strTable)
+    public static function resetClasses(mixed $varValue, $dc, $strTable)
     {
         if(self::isMultipleField($dc->field))
         {
@@ -193,7 +196,7 @@ class StyleManager
             $varValue  = ' ' . $varValue . ' ';
 
             $varValue = str_replace($arrStyles, ' ', $varValue);
-            $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
+            $varValue = trim((string) preg_replace('#\s+#', ' ', $varValue));
         }
 
         if(self::isMultipleField($dc->field))
@@ -210,7 +213,7 @@ class StyleManager
      * @param $arrValues
      * @param $strTable
      */
-    public static function cleanupClasses(&$arrValues, $strTable)
+    public static function cleanupClasses(&$arrValues, $strTable): void
     {
         if(is_array($arrValues))
         {
@@ -368,7 +371,7 @@ class StyleManager
                 foreach ($values as $alias => $arrItem)
                 {
                     $strId = self::generateAlias($archiveAlias, $alias);
-                    $arrValue[ $strId ] = html_entity_decode($arrItem['value']);
+                    $arrValue[$strId] = html_entity_decode((string) $arrItem['value']);
                 }
             }
 

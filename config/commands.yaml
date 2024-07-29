@@ -1,9 +1,9 @@
 services:
-  _defaults:
-    autoconfigure: true
-    public: false
+    _defaults:
+        autoconfigure: true
+        public: false
 
-  contao.stylemanager.object_conversion:
-    class: Oveleon\ContaoComponentStyleManager\Command\ObjectConversionCommand
-    arguments:
-      - '@contao.framework'
+    contao.stylemanager.object_conversion:
+        class: Oveleon\ContaoComponentStyleManager\Command\ObjectConversionCommand
+        arguments:
+            - '@contao.framework'

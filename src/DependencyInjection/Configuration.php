@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of ContaoComponentStyleManager.
+ *
+ * (c) https://www.oveleon.de/
+ */
+
 namespace Oveleon\ContaoComponentStyleManager\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -7,18 +15,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('contao_component_style_manager');
-
-        if (\method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // Backwards compatibility
-            $rootNode = $treeBuilder->root('contao_component_style_manager');
-        }
-
-        $rootNode
+        $treeBuilder
+            ->getRootNode()
             ->children()
                 ->booleanNode('use_bundle_config')
                     ->defaultTrue()

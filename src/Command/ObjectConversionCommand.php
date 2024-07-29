@@ -27,12 +27,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ObjectConversionCommand extends Command
 {
     protected static $defaultName = 'contao:stylemanager:object-conversion';
-    private Sync $sync;
 
-    public function __construct(Sync $sync)
+    public function __construct(private readonly Sync $sync)
     {
-        $this->sync = $sync;
-
         parent::__construct();
     }
 
@@ -41,7 +38,8 @@ class ObjectConversionCommand extends Command
         $this
             ->setDescription('Converts the StyleManager object to the new schema based on the given table.')
             ->addArgument('table', InputArgument::REQUIRED, 'The name of the Table')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Check tables even if they have already been converted.');
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Check tables even if they have already been converted.')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

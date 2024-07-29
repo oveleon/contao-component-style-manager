@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -23,18 +26,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Provide methods to handle select menus for style manager.
  *
- * @property boolean $mandatory
- * @property integer $size
- * @property boolean $multiple
- * @property array   $options
- * @property boolean $chosen
- *
- * @author Daniele Sciannimanica <daniele@oveleon.de>
- * @author Daniel Jahnsmüller <tastaturberuf.de>
+ * @property bool  $mandatory
+ * @property int   $size
+ * @property bool  $multiple
+ * @property array $options
+ * @property bool  $chosen
  */
 class ComponentStyleSelect extends Widget
 {
-
     /**
      * Submit user input
      * @var boolean
@@ -47,14 +46,13 @@ class ComponentStyleSelect extends Widget
      */
     protected $strTemplate = 'be_widget';
 
-    private ContaoCsrfTokenManager $tokenManager;
+    private readonly ContaoCsrfTokenManager $tokenManager;
 
-    private InsertTagParser $insertTagParser;
+    private readonly InsertTagParser $insertTagParser;
 
-    private RequestStack $requestStack;
+    private readonly RequestStack $requestStack;
 
-    private bool $showGroupTitle;
-
+    private readonly bool $showGroupTitle;
 
     public function __construct($arrAttributes = null)
     {
@@ -380,5 +378,4 @@ class ComponentStyleSelect extends Widget
                 ->execute($value, $this->activeRecord->id);
         }
     }
-
 }

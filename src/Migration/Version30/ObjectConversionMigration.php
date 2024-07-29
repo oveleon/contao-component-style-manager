@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of ContaoComponentStyleManager.
+ *
+ * (c) https://www.oveleon.de/
+ */
+
 namespace Oveleon\ContaoComponentStyleManager\Migration\Version30;
 
 use Contao\CoreBundle\Migration\AbstractMigration;
@@ -9,20 +17,10 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 
 class ObjectConversionMigration extends AbstractMigration
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var Sync
-     */
-    private $sync;
-
-    public function __construct(Connection $connection, Sync $sync)
-    {
-        $this->connection = $connection;
-        $this->sync = $sync;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly Sync $sync,
+    ) {
     }
 
     public function shouldRun(): bool
