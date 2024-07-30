@@ -92,21 +92,27 @@ class Config
         {
             foreach ($arrFiles as $file)
             {
-                $strRelpath = $file->getRealPath();
+                $strRelPath = $file->getRealPath();
 
-                try{
-                    $filePath = str_replace('\\', "/",$strRelpath);
-                    $bundleName = str_replace("/vendor/", "", substr($filePath, strpos($filePath, '/vendor/')));
+                $filePath = str_replace('\\', "/", $strRelPath);
+                $vendorPosition = strpos($filePath, '/vendor/');
 
-                    if (str_contains($bundleName, '/src'))
+                if (false !== $vendorPosition)
+                {
+                    $bundleName = str_replace("/vendor/", "", substr($filePath, $vendorPosition));
+                    $srcPosition = strpos($bundleName, '/src');
+
+                    if (false !== $srcPosition)
                     {
-                        $bundleName = substr($bundleName, 0, strpos($bundleName, '/src'));
+                        $bundleName = substr($bundleName, 0, $srcPosition);
                     }
-                }catch (\Exception $e){
+                }
+                else
+                {
                     $bundleName = 'vendor';
                 }
 
-                $arrBundleConfigs[basename($strRelpath) . ' <b>(' . $bundleName . ')</b>'] = str_replace($projectDir, '', $strRelpath);
+                $arrBundleConfigs[basename($strRelPath) . ' <b>(' . $bundleName . ')</b>'] = str_replace($projectDir, '', $strRelPath);
             }
         }
 

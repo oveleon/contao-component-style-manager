@@ -299,12 +299,12 @@ class ComponentStyleSelect extends Widget
                     $isSelected,
                     $identifier,
                     $onClick,
-                    $group['label']
+                    $group['label'] ?? ''
                 );
 
                 $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s%s</div>',
                     $identifier,
-                    (trim($group['desc']) ? '<div class="long desc">' . $this->insertTagParser->replaceInline(nl2br($group['desc'])) . '</div>' : ''),
+                    (trim($group['desc'] ?? '') ? '<div class="long desc">' . $this->insertTagParser->replaceInline(nl2br($group['desc'])) . '</div>' : ''),
                     implode("", $group['fields'])
                 );
 

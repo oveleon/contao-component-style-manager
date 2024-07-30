@@ -314,8 +314,8 @@ class ImportController extends AbstractBackendController
                     return $database->prepare("SELECT identifier FROM tl_style_manager_archive WHERE identifier=?")->execute($identifier)->numRows > 0;
                 };
 
-                // Check if children exists
-                $childrenExists = function (string $alias, string $pid) use($database, $blnSave, $arrStyleGroups) : bool
+                // Check if children exist
+                $childrenExists = function (string $alias, int $pid) use($database, $blnSave, $arrStyleGroups) : bool
                 {
                     if(!$blnSave)
                     {
