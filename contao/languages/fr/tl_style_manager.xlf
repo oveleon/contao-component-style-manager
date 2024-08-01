@@ -38,11 +38,11 @@
         <source>Create a new css group.</source>
         <target>Créer un nouveau groupe css.</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.editheader.0">
+      <trans-unit id="tl_style_manager.edit.0">
         <source>Edit group</source>
         <target>Editer le groupe</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.editheader.1">
+      <trans-unit id="tl_style_manager.edit.1">
         <source>Edit group</source>
         <target>Editer le groupe</target>
       </trans-unit>
