@@ -196,7 +196,7 @@ class Sync
         foreach ($objMerge->row() as $field => $value)
         {
             if(
-                ($skipEmpty && (!$value || strtolower($value) === 'null')) ||
+                ($skipEmpty && (!$value || strtolower((string) $value) === 'null')) ||
                 (null !== $skipFields && in_array($field, $skipFields))
             )
             {

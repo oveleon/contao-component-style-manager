@@ -235,7 +235,7 @@ class StyleManager
 
                 foreach($objStyles as $objStyle)
                 {
-                    $arrExistingKeys[] = self::generateAlias($arrArchives[ $objStyle->pid ], $objStyle->alias);
+                    $arrExistingKeys[] = self::generateAlias($arrArchives[ $objStyle->pid ] ?? '', $objStyle->alias);
 
                     $arrGroup = StringUtil::deserialize($objStyle->cssClasses, true);
 
