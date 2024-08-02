@@ -1,3 +1,0 @@
-stylemanager:
-    resource: '../src/Controller'
-    type: attribute
