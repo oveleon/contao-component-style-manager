@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\Command;
 
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,29 +20,20 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-/**
- * Converts the StyleManager object to the new schema.
- *
- * @internal
- */
+#[AsCommand(name: 'contao:stylemanager:object-conversion', description: 'Converts the StyleManager object to the new schema based on the given table.')]
 class ObjectConversionCommand extends Command
 {
-    protected static $defaultName = 'contao:stylemanager:object-conversion';
-    private Sync $sync;
-
-    public function __construct(Sync $sync)
+    public function __construct(private readonly Sync $sync)
     {
-        $this->sync = $sync;
-
         parent::__construct();
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Converts the StyleManager object to the new schema based on the given table.')
             ->addArgument('table', InputArgument::REQUIRED, 'The name of the Table')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Check tables even if they have already been converted.');
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Check tables even if they have already been converted.')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -62,7 +54,7 @@ class ObjectConversionCommand extends Command
 
             $this->sync->performObjectConversion($strTable);
 
-            $io->success(sprintf('Table %s were successfully converted.', $strTable));
+            $io->success(sprintf('Table %s was successfully converted.', $strTable));
         }
         else
         {

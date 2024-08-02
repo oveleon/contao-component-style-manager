@@ -33,16 +33,16 @@
       <trans-unit id="tl_style_manager_archive.export.1">
         <source>Export a config</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.editheader.0">
-        <source>Edit category</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.editheader.1">
-        <source>Edit category</source>
-      </trans-unit>
       <trans-unit id="tl_style_manager_archive.edit.0">
-        <source>Edit group</source>
+        <source>Edit category</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.edit.1">
+        <source>Edit category</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.children.0">
+        <source>Edit group</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.children.1">
         <source>Edit group</source>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.copy.0">

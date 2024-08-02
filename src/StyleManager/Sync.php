@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -15,7 +18,6 @@ use Contao\File;
 use Contao\Message;
 use Contao\Model\Collection;
 use Contao\StringUtil;
-use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Column;
@@ -28,16 +30,11 @@ use Psr\Log\LoggerInterface;
 
 class Sync
 {
-    protected ContaoFramework $framework;
-    protected Connection $connection;
-
-    private ?LoggerInterface $logger;
-
-    public function __construct(ContaoFramework $framework, Connection $connection, LoggerInterface $logger = null)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->logger = $logger;
+    public function __construct(
+        protected ContaoFramework $framework,
+        protected Connection $connection,
+        private readonly ?LoggerInterface $logger = null
+    ) {
     }
 
     /**
@@ -199,7 +196,7 @@ class Sync
         foreach ($objMerge->row() as $field => $value)
         {
             if(
-                ($skipEmpty && (!$value || strtolower($value) === 'null')) ||
+                ($skipEmpty && (!$value || strtolower((string) $value) === 'null')) ||
                 (null !== $skipFields && in_array($field, $skipFields))
             )
             {
@@ -319,7 +316,7 @@ class Sync
         }
 
         // Generate temp name
-        $strTmp = md5(uniqid(mt_rand(), true));
+        $strTmp = md5(uniqid((string) mt_rand(), true));
 
         // Create file and open the "save as …" dialogue
         $objFile = new File('system/tmp/' . $strTmp);

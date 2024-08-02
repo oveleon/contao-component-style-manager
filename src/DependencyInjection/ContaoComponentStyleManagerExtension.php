@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of ContaoComponentStyleManager.
+ *
+ * (c) https://www.oveleon.de/
+ */
+
 namespace Oveleon\ContaoComponentStyleManager\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
@@ -9,7 +17,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class ContaoComponentStyleManagerExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 
@@ -19,7 +27,6 @@ class ContaoComponentStyleManagerExtension extends Extension
         );
 
         $loader->load('migrations.yaml');
-        $loader->load('commands.yaml');
         $loader->load('services.yaml');
 
         $container->setParameter('contao_component_style_manager.use_bundle_config', $config['use_bundle_config']);

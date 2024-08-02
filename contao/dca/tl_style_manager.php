@@ -42,7 +42,7 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = [
             ]
         ],
         'operations' => [
-            'editheader' => [
+            'edit' => [
                 'href'          => 'act=edit',
                 'icon'          => 'edit.svg'
             ],

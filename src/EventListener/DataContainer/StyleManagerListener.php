@@ -1,9 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of ContaoComponentStyleManager.
+ *
+ * (c) https://www.oveleon.de/
+ */
+
 namespace Oveleon\ContaoComponentStyleManager\EventListener\DataContainer;
 
 use Contao\Controller;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\System;
@@ -11,9 +19,7 @@ use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 
 class StyleManagerListener
 {
-    /**
-     * @Callback(table="tl_style_manager", target="config.onload")
-     */
+    #[AsCallback(table: 'tl_style_manager', target: 'config.onload')]
     public function checkRegisteredBundles(): void
     {
         $bundles = System::getContainer()->getParameter('kernel.bundles');
@@ -29,9 +35,7 @@ class StyleManagerListener
         }
     }
 
-    /**
-     * @Callback(table="tl_style_manager", target="list.sorting.child_record")
-     */
+    #[AsCallback(table: 'tl_style_manager', target: 'list.sorting.child_record')]
     public function listGroupRecords(array $row): string
     {
         $arrExtends = null;
@@ -68,9 +72,7 @@ class StyleManagerListener
         return $label;
     }
 
-    /**
-     * @Callback(table="tl_style_manager", target="fields.alias.save")
-     */
+    #[AsCallback(table: 'tl_style_manager', target: 'fields.alias.save')]
     public function generateAlias($varValue, DataContainer $dc): string
     {
         $aliasExists = function (string $alias) use ($dc): bool
@@ -93,9 +95,7 @@ class StyleManagerListener
         return $varValue;
     }
 
-    /**
-     * @Callback(table="tl_style_manager", target="fields.cssClasses.load")
-     */
+    #[AsCallback(table: 'tl_style_manager', target: 'fields.cssClasses.load')]
     public function translateKeyValue($varValue)
     {
         Controller::loadLanguageFile('tl_style_manager');
@@ -106,9 +106,7 @@ class StyleManagerListener
         return $varValue;
     }
 
-    /**
-     * @Callback(table="tl_style_manager", target="fields.formFields.options")
-     */
+    #[AsCallback(table: 'tl_style_manager', target: 'fields.formFields.options')]
     public function getFormFields(): array
     {
         Controller::loadLanguageFile('tl_form_field');
@@ -124,9 +122,7 @@ class StyleManagerListener
         return $arrFields;
     }
 
-    /**
-     * @Callback(table="tl_style_manager", target="fields.contentElements.options")
-     */
+    #[AsCallback(table: 'tl_style_manager', target: 'fields.contentElements.options')]
     public function getContentElements(): array
     {
         $groups = [];
@@ -142,9 +138,7 @@ class StyleManagerListener
         return $groups;
     }
 
-    /**
-     * @Callback(table="tl_style_manager", target="fields.modules.options")
-     */
+    #[AsCallback(table: 'tl_style_manager', target: 'fields.modules.options')]
     public function getModules(): array
     {
         $groups = [];

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -11,11 +14,6 @@ use Contao\System;
 
 class Styles
 {
-    /**
-     * Style Collection
-     */
-    private ?array $styles;
-
     /**
      * Current identifier
      */
@@ -32,11 +30,11 @@ class Styles
     private ?array $exclGroups = null;
 
     /**
-     * Initialize the object
+     * Initialize the object.
      */
-    public function __construct(?array $arrStyles = null)
-    {
-        $this->styles = $arrStyles;
+    public function __construct(
+        private readonly ?array $styles = null // Style collection
+    ) {
     }
 
     /**
@@ -203,15 +201,17 @@ class Styles
      */
     private function parseValueType($strValue)
     {
-        if(is_numeric($strValue))
+        if (is_numeric($strValue))
         {
             return (float) $strValue;
         }
-        elseif(strtolower($strValue) === 'true')
+
+        if ('true' === strtolower((string) $strValue))
         {
             return true;
         }
-        elseif(strtolower($strValue) === 'false')
+
+        if ('false' === strtolower((string) $strValue))
         {
             return false;
         }

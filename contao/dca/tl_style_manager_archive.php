@@ -5,6 +5,7 @@
  * (c) https://www.oveleon.de/
 */
 
+use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
@@ -54,12 +55,12 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
         ],
         'operations' => [
             'edit' => [
-                'href'                => 'table=tl_style_manager',
+                'href'                => 'act=edit',
                 'icon'                => 'edit.svg'
             ],
-            'editheader' => [
-                'href'                => 'act=edit',
-                'icon'                => 'header.svg',
+            'children' => [
+                'href'                => 'table=tl_style_manager',
+                'icon'                => 'children.svg'
             ],
             'copy' => [
                 'href'                => 'act=copy',
@@ -130,3 +131,21 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
         ]
     ]
 ];
+
+// Backwards compatibility for old icons and position
+$version = ContaoCoreBundle::getVersion();
+
+if (version_compare($version, '5', '<'))
+{
+    $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['edit']['icon'] = 'header.svg';
+    $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['children']['icon'] = 'edit.svg';
+
+    // Swap places for Backwards compatibility
+    [
+        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['children'],
+        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['edit']
+    ] = [
+        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['edit'],
+        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['children']
+    ];
+}

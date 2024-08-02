@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -7,12 +10,10 @@
 
 namespace Oveleon\ContaoComponentStyleManager\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Widget;
 
-/**
- * @Hook("addCustomRegexp")
- */
+#[AsHook('addCustomRegexp')]
 class AddCustomRegexpListener
 {
     /**

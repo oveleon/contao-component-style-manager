@@ -29,10 +29,10 @@
       <trans-unit id="tl_style_manager.new.1">
         <source>Create a new css group.</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager.editheader.0">
+      <trans-unit id="tl_style_manager.edit.0">
         <source>Edit group</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager.editheader.1">
+      <trans-unit id="tl_style_manager.edit.1">
         <source>Edit group</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.copy.0">

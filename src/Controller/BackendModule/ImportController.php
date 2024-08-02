@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of ContaoComponentStyleManager.
+ *
+ * (c) https://www.oveleon.de/
+ */
+
 namespace Oveleon\ContaoComponentStyleManager\Controller\BackendModule;
 
 use Contao\Config;
@@ -23,22 +31,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("%contao.backend.route_prefix%/style-manager-import", name=ImportController::class, defaults={"_scope": "backend"})
- */
+#[Route(path: '%contao.backend.route_prefix%/style-manager-import', name: ImportController::class, defaults: ['_scope' => 'backend'])]
 class ImportController extends AbstractBackendController
 {
     public const ROUTE = 'style-manager-import';
 
-    protected RequestStack $requestStack;
-    protected TranslatorInterface $translator;
-    private ContaoCsrfTokenManager $tokenManager;
-
-    public function __construct(RequestStack $requestStack, TranslatorInterface $translator, ContaoCsrfTokenManager $tokenManager)
-    {
-        $this->requestStack = $requestStack;
-        $this->translator = $translator;
-        $this->tokenManager = $tokenManager;
+    public function __construct(
+        protected RequestStack $requestStack,
+        protected TranslatorInterface $translator,
+        private readonly ContaoCsrfTokenManager $tokenManager,
+    ) {
     }
 
     public function __invoke(): Response
@@ -312,8 +314,8 @@ class ImportController extends AbstractBackendController
                     return $database->prepare("SELECT identifier FROM tl_style_manager_archive WHERE identifier=?")->execute($identifier)->numRows > 0;
                 };
 
-                // Check if children exists
-                $childrenExists = function (string $alias, string $pid) use($database, $blnSave, $arrStyleGroups) : bool
+                // Check if children exist
+                $childrenExists = function (string $alias, int $pid) use($database, $blnSave, $arrStyleGroups) : bool
                 {
                     if(!$blnSave)
                     {

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -92,7 +95,6 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
  *
  * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
-
 class StyleManagerModel extends Model
 {
     /**

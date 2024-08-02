@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
@@ -7,15 +10,13 @@
 
 namespace Oveleon\ContaoComponentStyleManager\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\StringUtil;
 use Contao\Widget;
 use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
 
-/**
- * @Hook("loadFormField")
- */
+#[AsHook('loadFormField')]
 class LoadFormFieldListener
 {
     /**

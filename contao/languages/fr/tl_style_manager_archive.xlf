@@ -43,19 +43,19 @@
         <source>Export a config</source>
         <target>Exporter une configuration</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.editheader.0">
-        <source>Edit category</source>
-        <target>Éditer la catégorie</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.editheader.1">
-        <source>Edit category</source>
-        <target>Éditer la catégorie</target>
-      </trans-unit>
       <trans-unit id="tl_style_manager_archive.edit.0">
+        <source>Edit category</source>
+        <target>Éditer la catégorie</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.edit.1">
+        <source>Edit category</source>
+        <target>Éditer la catégorie</target>
+      </trans-unit>
+      <trans-unit id="tl_style_manager_archive.children.0">
         <source>Edit group</source>
         <target>Éditer le groupe</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager_archive.edit.1">
+      <trans-unit id="tl_style_manager_archive.children.1">
         <source>Edit group</source>
         <target>Éditer le groupe</target>
       </trans-unit>
