@@ -2,10 +2,10 @@
 <p align="center">
     <a href="https://github.com/sponsors/oveleon"><img src="https://img.shields.io/github/sponsors/oveleon?label=Sponsor&logo=GitHub&color=%23fe8e86"/></a>
 </p>
-<p align="center"><i>Allows you to easily manage your own CSS classes as groups</i></p>
 <div align="center">
     <img src="https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/combined-groups.png">
 </div>
+<p align="center"><i>Allows you to easily manage your own CSS classes as groups</i></p>
 <p align="center">
     <a href="https://github.com/oveleon/contao-component-style-manager"><img src="https://img.shields.io/github/v/release/oveleon/contao-component-style-manager?color=ef9838"/></a>
     <a href="https://github.com/oveleon/contao-component-style-manager"><img src="https://img.shields.io/github/license/oveleon/contao-component-style-manager?color=ef9838"/></a>
