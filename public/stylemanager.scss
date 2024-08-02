@@ -23,6 +23,7 @@ html[data-color-scheme=dark] {
   --sm-header-color: #fff;
 }
 
+// Contao 4.13 only
 #pal_style_manager_legend {
 
   .widget {
@@ -45,6 +46,7 @@ html[data-color-scheme=dark] {
 
     > h3 {
       margin-bottom: 15px;
+      display: none;
     }
 
     .sm-groupTitle {
