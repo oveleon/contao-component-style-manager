@@ -85,7 +85,7 @@ class StyleManagerListener
         // Generate an alias if there is none
         if ($varValue == '')
         {
-            $varValue = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, $dc->id, $aliasExists);
+            $varValue = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, [], $aliasExists);
         }
         elseif ($aliasExists($varValue))
         {
