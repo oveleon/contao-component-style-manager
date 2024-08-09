@@ -399,6 +399,9 @@ class Sync
                 $v = 'NULL';
             }
 
+            // Cast interger values to string (See #108) 
+            $v = (string) $v;
+
             $value = $xml->createTextNode($v);
             $field->appendChild($value);
         }
