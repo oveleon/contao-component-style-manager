@@ -33,6 +33,9 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
         ];
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): RouteCollection|null
     {
         return $resolver

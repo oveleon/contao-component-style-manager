@@ -196,10 +196,9 @@ class Sync
         foreach ($objMerge->row() as $field => $value)
         {
             if(
-                ($skipEmpty && (!$value || strtolower((string) $value) === 'null')) ||
-                (null !== $skipFields && in_array($field, $skipFields))
-            )
-            {
+                ($skipEmpty && (!$value || strtolower((string) $value) === 'null'))
+                || (null !== $skipFields && in_array($field, $skipFields))
+            ) {
                 continue;
             }
 
@@ -209,9 +208,12 @@ class Sync
                 case 'cssClasses':
                     if($objOriginal->{$field})
                     {
+                        /** @var array $arrClasses */
                         $arrClasses = StringUtil::deserialize($objOriginal->{$field}, true);
-                        $arrExists  = self::flattenKeyValueArray($arrClasses);
-                        $arrValues  = StringUtil::deserialize($value, true);
+                        $arrExists = self::flattenKeyValueArray($arrClasses);
+
+                        /** @var array $arrValues */
+                        $arrValues = StringUtil::deserialize($value, true);
 
                         foreach($arrValues as $cssClass)
                         {
@@ -250,8 +252,11 @@ class Sync
 
                     if(isset($fieldOptions['eval']['multiple']) && !!$fieldOptions['eval']['multiple'] && $fieldOptions['inputType'] === 'checkbox')
                     {
+                        /** @var array $arrElements */
                         $arrElements = StringUtil::deserialize($objOriginal->{$field}, true);
-                        $arrValues   = StringUtil::deserialize($value, true);
+
+                        /** @var array $arrValues */
+                        $arrValues = StringUtil::deserialize($value, true);
 
                         foreach($arrValues as $element)
                         {
@@ -399,7 +404,7 @@ class Sync
                 $v = 'NULL';
             }
 
-            $value = $xml->createTextNode($v);
+            $value = $xml->createTextNode((string) $v);
             $field->appendChild($value);
         }
     }
@@ -411,7 +416,7 @@ class Sync
     {
         if(empty($arr))
         {
-            return $arr;
+            return [];
         }
 
         $arrTmp = array();

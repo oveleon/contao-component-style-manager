@@ -139,7 +139,7 @@ class Styles
 
                 if(null !== $this->exclGroups)
                 {
-                    $arrValues = array_diff($arrValues, $this->exclGroups);
+                    $arrValues = array_diff($arrValues ?? [], $this->exclGroups);
                 }
 
                 if($arrValues !== null && $jsonValue = json_encode($arrValues))
@@ -224,6 +224,11 @@ class Styles
      */
     private function removeExcludedGroups(array &$currGroups): void
     {
+        if (null === $this->exclGroups)
+        {
+            return;
+        }
+
         foreach ($this->exclGroups as $exclude)
         {
             if (array_key_exists($exclude, $currGroups))
