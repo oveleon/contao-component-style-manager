@@ -51,7 +51,6 @@ class ImportController extends AbstractBackendController
         // Add xml extension as valid upload type
         Config::set('uploadTypes', Config::get('uploadTypes') . ',xml');
 
-        /** @var FileUpload $objUploader */
         $objUploader = new FileUpload();
 
         // Get current request
@@ -143,7 +142,10 @@ class ImportController extends AbstractBackendController
                 {
                     $collection[ $alias ] = $group;
 
-                    array_splice($_groups, array_search($alias, $_groups), 1);
+                    // If nothing was found, cast strings and false to 0
+                    $offset = (int) array_search($alias, $_groups);
+
+                    array_splice($_groups, $offset, 1);
                 }
             }
 
@@ -191,6 +193,7 @@ class ImportController extends AbstractBackendController
         $uploaded = $objUploader->uploadTo('system/tmp');
 
         // Get root dir
+        /** @var string $rootDir */
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
 
         if (empty($uploaded))
@@ -273,7 +276,7 @@ class ImportController extends AbstractBackendController
                 // Continue if there is no readable XML file
                 if (!$xml->loadXML($objFile->getContent()))
                 {
-                    Message::addError($translator->trans('tl_theme.missing_xml', [basename($filePath)], 'contao_default'));
+                    Message::addError($translator?->trans('tl_theme.missing_xml', [basename($filePath)], 'contao_default'));
                     continue;
                 }
 
@@ -362,7 +365,7 @@ class ImportController extends AbstractBackendController
                         if($strField === 'field')
                         {
                             $strName  = $archive->item($a)->getAttribute('title');
-                            $strValue = $archive->item($a)->nodeValue;
+                            $strValue = $archive->item($a)->nodeValue ?? '';
 
                             if($strName === 'id' || strtolower($strValue) === 'null')
                             {
@@ -425,9 +428,12 @@ class ImportController extends AbstractBackendController
                                         case 'cssClasses':
                                             if($objChildren->{$strName})
                                             {
+                                                /** @var array<array<int|string>> $arrClasses */
                                                 $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
                                                 $arrExists  = Sync::flattenKeyValueArray($arrClasses);
-                                                $arrValues  = StringUtil::deserialize($strValue, true);
+
+                                                /** @var array<array<int|string>> $arrValues */
+                                                $arrValues = StringUtil::deserialize($strValue, true);
 
                                                 foreach($arrValues as $cssClass)
                                                 {
@@ -451,7 +457,9 @@ class ImportController extends AbstractBackendController
 
                                             if(isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
                                             {
+                                                /** @var array<array<int|string>> $arrElements */
                                                 $arrElements = StringUtil::deserialize($objChildren->{$strName}, true);
+                                                /** @var array<array<int|string>> $arrValues */
                                                 $arrValues   = StringUtil::deserialize($strValue, true);
 
                                                 foreach($arrValues as $element)

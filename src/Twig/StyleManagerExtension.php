@@ -44,6 +44,7 @@ class StyleManagerExtension extends AbstractExtension
             $arrStyles = StringUtil::deserialize($data['styleManager'], true);
         }*/
 
+        /** @var array $arrStyles */
         $arrStyles = StringUtil::deserialize($data['styleManager'], true);
 
         return new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);

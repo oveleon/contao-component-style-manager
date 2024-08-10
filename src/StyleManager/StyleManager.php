@@ -107,6 +107,7 @@ class StyleManager
                 $arrValues[ $k ] = ' ' . $v . ' ';
             }
 
+            // Might need a strict type check for varvalue in the future as all following operations won't work with id or null
             $varValue = ' ' . $varValue . ' ';
             $varValue = str_replace($arrValues, '  ', $varValue);
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));

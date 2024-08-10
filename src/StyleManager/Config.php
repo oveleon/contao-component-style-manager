@@ -76,8 +76,10 @@ class Config
      */
     public static function getBundleConfigurationFiles(): ?array
     {
+
+        /** @var string $projectDir */
         $projectDir = System::getContainer()->getParameter('kernel.project_dir');
-        $arrFiles = System::getContainer()->get('contao.resource_finder')->findIn('templates')->files()->name('style-manager-*.xml');
+        $arrFiles = System::getContainer()->get('contao.resource_finder')?->findIn('templates')?->files()?->name('style-manager-*.xml');
         $arrBundleConfigs = null;
 
         if ($projectTemplates = array_merge((glob($projectDir . '/templates/style-manager-*.xml') ?: []), (glob($projectDir . '/templates/*/style-manager-*.xml') ?: [])))
@@ -129,9 +131,11 @@ class Config
      */
     protected function loadBundleConfiguration(): array
     {
-        if($arrFiles = $this->getBundleConfigurationFiles())
-        {
-            return ImportController::importFiles($arrFiles, false);
+        if (
+            ($arrFiles = $this->getBundleConfigurationFiles())
+            && (is_array($bundleConfig = ImportController::importFiles($arrFiles, false)))
+        ) {
+            return $bundleConfig;
         }
 
         return [[],[]];

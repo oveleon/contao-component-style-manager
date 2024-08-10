@@ -46,11 +46,11 @@ class ComponentStyleSelect extends Widget
      */
     protected $strTemplate = 'be_widget';
 
-    private readonly ContaoCsrfTokenManager $tokenManager;
+    private readonly ?ContaoCsrfTokenManager $tokenManager;
 
-    private readonly InsertTagParser $insertTagParser;
+    private readonly ?InsertTagParser $insertTagParser;
 
-    private readonly RequestStack $requestStack;
+    private readonly ?RequestStack $requestStack;
 
     private readonly bool $showGroupTitle;
 
@@ -120,7 +120,8 @@ class ComponentStyleSelect extends Widget
             // skip specific content elements
             if(!!$objStyleGroup->extendContentElement && $this->strTable === 'tl_content')
             {
-                $arrContentElements = StringUtil::deserialize($objStyleGroup->contentElements);
+                /** @var array $arrContentElements */
+                $arrContentElements = StringUtil::deserialize($objStyleGroup->contentElements, true);
 
                 if($arrContentElements !== null && !in_array($this->activeRecord->type, $arrContentElements))
                 {
@@ -253,8 +254,8 @@ class ComponentStyleSelect extends Widget
             return $this->renderEmptyMessage();
         }
 
-        $objSession = $this->requestStack->getSession()->getBag('contao_backend');
-        $arrSession = $objSession->get('stylemanager_section_states');
+        $objSession = $this->requestStack?->getSession()->getBag('contao_backend');
+        $arrSession = $objSession?->get('stylemanager_section_states');
 
         $arrGroups   = array();
         $arrSections = array();
@@ -290,7 +291,7 @@ class ComponentStyleSelect extends Widget
                     $this->id,
                     $groupAlias,
                     $identifier,
-                    $this->tokenManager->getDefaultTokenValue()
+                    $this->tokenManager?->getDefaultTokenValue()
                 );
 
                 $arrNavigation[ $index ] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" %s>%s</label>',
@@ -304,7 +305,7 @@ class ComponentStyleSelect extends Widget
 
                 $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s%s</div>',
                     $identifier,
-                    (trim($group['desc'] ?? '') ? '<div class="long desc">' . $this->insertTagParser->replaceInline(nl2br($group['desc'])) . '</div>' : ''),
+                    (trim($group['desc'] ?? '') ? '<div class="long desc">' . $this->insertTagParser?->replaceInline(nl2br($group['desc'])) . '</div>' : ''),
                     implode("", $group['fields'])
                 );
 
