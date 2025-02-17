@@ -50,6 +50,10 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = [
                 'href'          => 'act=paste&mode=copy',
                 'icon'          => 'copy.svg'
             ],
+            'cut' => [
+                'href'          => 'act=paste&amp;mode=cut',
+                'icon'          => 'cut.svg'
+            ],
             'delete' => [
                 'href'          => 'act=delete',
                 'icon'          => 'delete.svg',
