@@ -56,11 +56,13 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
         'operations' => [
             'edit' => [
                 'href'                => 'act=edit',
-                'icon'                => 'edit.svg'
+                'icon'                => 'edit.svg',
+                'primary'             => true
             ],
             'children' => [
                 'href'                => 'table=tl_style_manager',
-                'icon'                => 'children.svg'
+                'icon'                => 'children.svg',
+                'primary'             => true
             ],
             'copy' => [
                 'href'                => 'act=copy',

@@ -44,7 +44,8 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = [
         'operations' => [
             'edit' => [
                 'href'          => 'act=edit',
-                'icon'          => 'edit.svg'
+                'icon'          => 'edit.svg',
+                'primary'       => true
             ],
             'copy' => [
                 'href'          => 'act=paste&mode=copy',
