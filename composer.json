@@ -75,11 +75,5 @@
       "php-http/discovery": true,
       "contao/manager-plugin": true
     }
-  },
-  "scripts": {
-    "all": [
-      "@phpstan"
-    ],
-    "phpstan": "@php vendor/bin/phpstan analyze"
   }
 }
