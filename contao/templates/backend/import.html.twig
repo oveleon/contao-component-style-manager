@@ -11,7 +11,7 @@
 
     <div class="tl_formbody_edit">
         {% if partial %}
-            <form id="{{ form.id }}" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+            <form id="{{ form.id }}" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data" data-turbo="false">
                 <input type="hidden" name="FORM_SUBMIT" value="{{ form.id }}_partial">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{ form.rt }}">
 
@@ -59,7 +59,7 @@
                 </div>
             </form>
         {% else %}
-            <form id="{{ form.id }}" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+            <form id="{{ form.id }}" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data" data-turbo="false">
                 <input type="hidden" name="FORM_SUBMIT" value="{{ form.id }}">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{ form.rt }}">
                 <input type="hidden" name="MAX_FILE_SIZE" value="{{ form.maxFileSize }}">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </form>
-            <form id="{{ form.id }}_bundle" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+            <form id="{{ form.id }}_bundle" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data" data-turbo="false">
                 <input type="hidden" name="FORM_SUBMIT" value="{{ form.id }}_bundle">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{ form.rt }}">
                 <div class="tl_tbox sm-bt">
