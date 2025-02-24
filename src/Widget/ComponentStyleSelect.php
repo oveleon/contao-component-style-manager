@@ -217,7 +217,7 @@ class ComponentStyleSelect extends Widget
             if(!!$objStyleGroup->chosen)
             {
                 $strClass .= ' tl_chosen';
-                $this->arrAttributes['data-controller'] = trim(($this->arrAttributes['data-controller'] ?? '') . ' contao--choices');
+                $this->arrAttributes['data-controller'] = 'contao--choices';
             }
 
             // create collection
