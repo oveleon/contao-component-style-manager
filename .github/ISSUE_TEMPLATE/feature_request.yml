@@ -1,8 +1,6 @@
 name: Feature request
 description: Suggest new features
 labels: [enhancement]
-assignees:
-  - zoglo
 body:
   - type: checkboxes
     attributes:

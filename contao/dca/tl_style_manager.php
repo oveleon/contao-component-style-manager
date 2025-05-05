@@ -13,7 +13,6 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = [
     'config' => [
         'dataContainer'    => DC_Table::class,
         'ptable'           => 'tl_style_manager_archive',
-        'switchToEdit'     => true,
         'enableVersioning' => true,
         'markAsCopy'       => 'title',
         'sql' => [
