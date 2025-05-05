@@ -266,254 +266,269 @@ class ImportController extends AbstractBackendController
         {
             $objFile = new File($filePath);
 
-            // Check if file exists
-            if ($objFile->exists())
+            if (!$objFile->exists())
             {
-                // Load xml file
-                $xml = new DOMDocument();
-                $xml->preserveWhiteSpace = false;
-
-                // Continue if there is no readable XML file
-                if (!$xml->loadXML($objFile->getContent()))
+                if (!is_file($filePath) || !is_readable($filePath))
                 {
-                    Message::addError($translator?->trans('tl_theme.missing_xml', [basename($filePath)], 'contao_default'));
                     continue;
                 }
 
-                // Get archives node
-                $archives = $xml->getElementsByTagName('archives');
+                $content = file_get_contents($filePath);
 
-                if($archives->count()){
-                    // Skip archives node
-                    $archives = $archives->item(0)->childNodes;
-                }else return null;
-
-                // Lock the tables
-                $arrLocks = array
-                (
-                    'tl_style_manager_archive' => 'WRITE',
-                    'tl_style_manager'         => 'WRITE'
-                );
-
-                // Load the DCAs of the locked tables
-                foreach (array_keys($arrLocks) as $table)
+                if (false === $content)
                 {
-                    Controller::loadDataContainer($table);
+                    continue;
+                }
+            }
+            else
+            {
+                $content = $objFile->getContent();
+            }
+
+            // Load xml file
+            $xml = new DOMDocument();
+            $xml->preserveWhiteSpace = false;
+
+            // Continue if there is no readable XML file
+            if (!$xml->loadXML($content))
+            {
+                Message::addError($translator?->trans('tl_theme.missing_xml', [basename($filePath)], 'contao_default'));
+                continue;
+            }
+
+            // Get archives node
+            $archives = $xml->getElementsByTagName('archives');
+
+            if($archives->count()){
+                // Skip archives node
+                $archives = $archives->item(0)->childNodes;
+            }else return null;
+
+            // Lock the tables
+            $arrLocks = array
+            (
+                'tl_style_manager_archive' => 'WRITE',
+                'tl_style_manager'         => 'WRITE'
+            );
+
+            // Load the DCAs of the locked tables
+            foreach (array_keys($arrLocks) as $table)
+            {
+                Controller::loadDataContainer($table);
+            }
+
+            if($blnSave)
+            {
+                $database->lockTables($arrLocks);
+            }
+
+            // Check if archive exists
+            $archiveExists = function (string $identifier) use ($database, $blnSave, $arrStyleArchives) : bool
+            {
+                if(!$blnSave)
+                {
+                    return array_key_exists($identifier, $arrStyleArchives);
                 }
 
-                if($blnSave)
+                return $database->prepare("SELECT identifier FROM tl_style_manager_archive WHERE identifier=?")->execute($identifier)->numRows > 0;
+            };
+
+            // Check if children exist
+            $childrenExists = function (string $alias, int $pid) use($database, $blnSave, $arrStyleGroups) : bool
+            {
+                if(!$blnSave)
                 {
-                    $database->lockTables($arrLocks);
+                    return array_key_exists($alias, $arrStyleGroups);
                 }
 
-                // Check if archive exists
-                $archiveExists = function (string $identifier) use ($database, $blnSave, $arrStyleArchives) : bool
+                return $database->prepare("SELECT alias FROM tl_style_manager WHERE alias=? AND pid=?")->execute($alias, $pid)->numRows > 0;
+            };
+
+            // Loop through the archives
+            for ($i=0; $i<$archives->length; $i++)
+            {
+                $archive = $archives->item($i)->childNodes;
+                $identifier = $archives->item($i)->getAttribute('identifier');
+
+                if(null !== $allowedArchives && !in_array($identifier, $allowedArchives))
                 {
-                    if(!$blnSave)
-                    {
-                        return array_key_exists($identifier, $arrStyleArchives);
-                    }
+                    continue;
+                }
 
-                    return $database->prepare("SELECT identifier FROM tl_style_manager_archive WHERE identifier=?")->execute($identifier)->numRows > 0;
-                };
-
-                // Check if children exist
-                $childrenExists = function (string $alias, int $pid) use($database, $blnSave, $arrStyleGroups) : bool
+                if(!$blnSave || !$archiveExists($identifier))
                 {
-                    if(!$blnSave)
+                    if(!$blnSave && $archiveExists($identifier))
                     {
-                        return array_key_exists($alias, $arrStyleGroups);
-                    }
-
-                    return $database->prepare("SELECT alias FROM tl_style_manager WHERE alias=? AND pid=?")->execute($alias, $pid)->numRows > 0;
-                };
-
-                // Loop through the archives
-                for ($i=0; $i<$archives->length; $i++)
-                {
-                    $archive = $archives->item($i)->childNodes;
-                    $identifier = $archives->item($i)->getAttribute('identifier');
-
-                    if(null !== $allowedArchives && !in_array($identifier, $allowedArchives))
-                    {
-                        continue;
-                    }
-
-                    if(!$blnSave || !$archiveExists($identifier))
-                    {
-                        if(!$blnSave && $archiveExists($identifier))
-                        {
-                            $objArchive = $arrStyleArchives[$identifier];
-                        }
-                        else
-                        {
-                            $objArchive = new StyleManagerArchiveModel();
-                            $objArchive->id = ++$intArchiveId;
-                            $objArchive->tstamp = time();
-                        }
+                        $objArchive = $arrStyleArchives[$identifier];
                     }
                     else
                     {
-                        $objArchive = StyleManagerArchiveModel::findByIdentifier($identifier);
+                        $objArchive = new StyleManagerArchiveModel();
+                        $objArchive->id = ++$intArchiveId;
+                        $objArchive->tstamp = time();
                     }
+                }
+                else
+                {
+                    $objArchive = StyleManagerArchiveModel::findByIdentifier($identifier);
+                }
 
-                    // Loop through the archives fields
-                    for ($a=0; $a<$archive->length; $a++)
+                // Loop through the archives fields
+                for ($a=0; $a<$archive->length; $a++)
+                {
+                    $strField = $archive->item($a)->nodeName;
+
+                    if($strField === 'field')
                     {
-                        $strField = $archive->item($a)->nodeName;
+                        $strName  = $archive->item($a)->getAttribute('title');
+                        $strValue = $archive->item($a)->nodeValue ?? '';
 
-                        if($strField === 'field')
+                        if($strName === 'id' || strtolower($strValue) === 'null')
                         {
-                            $strName  = $archive->item($a)->getAttribute('title');
-                            $strValue = $archive->item($a)->nodeValue ?? '';
+                            continue;
+                        }
 
-                            if($strName === 'id' || strtolower($strValue) === 'null')
+                        $objArchive->{$strName} = $strValue;
+                    }
+                    elseif($strField === 'children')
+                    {
+                        $children = $archive->item($a)->childNodes;
+
+                        // Loop through the archives fields
+                        for ($c=0; $c<$children->length; $c++)
+                        {
+                            $alias = $children->item($c)->getAttribute('alias');
+                            $fields = $children->item($c)->childNodes;
+
+                            $strChildAlias = Sync::combineAliases($objArchive->identifier, $alias);
+
+                            if(null !== $allowedGroups && !in_array($strChildAlias, $allowedGroups))
                             {
                                 continue;
                             }
 
-                            $objArchive->{$strName} = $strValue;
-                        }
-                        elseif($strField === 'children')
-                        {
-                            $children = $archive->item($a)->childNodes;
-
-                            // Loop through the archives fields
-                            for ($c=0; $c<$children->length; $c++)
+                            if(!$blnSave || !$childrenExists($strChildAlias, $objArchive->id))
                             {
-                                $alias = $children->item($c)->getAttribute('alias');
-                                $fields = $children->item($c)->childNodes;
+                                if(!$blnSave && $childrenExists($strChildAlias, $objArchive->id))
+                                {
+                                    $objChildren = $arrStyleGroups[$strChildAlias];
+                                }
+                                else
+                                {
+                                    $objChildren = new StyleManagerModel();
+                                    $objChildren->id = ++$intGroupId;
+                                    $objChildren->tstamp = time();
+                                }
+                            }
+                            else
+                            {
+                                $objChildren = StyleManagerModel::findByAliasAndPid($alias, $objArchive->id);
+                            }
 
-                                $strChildAlias = Sync::combineAliases($objArchive->identifier, $alias);
+                            // Loop through the children fields
+                            for ($f=0; $f<$fields->length; $f++)
+                            {
+                                $strName = $fields->item($f)->getAttribute('title');
+                                $strValue = $fields->item($f)->nodeValue;
 
-                                if(null !== $allowedGroups && !in_array($strChildAlias, $allowedGroups))
+                                if($strName === 'id' || !$strValue || strtolower($strValue) === 'null')
                                 {
                                     continue;
                                 }
 
-                                if(!$blnSave || !$childrenExists($strChildAlias, $objArchive->id))
+                                switch($strName)
                                 {
-                                    if(!$blnSave && $childrenExists($strChildAlias, $objArchive->id))
-                                    {
-                                        $objChildren = $arrStyleGroups[$strChildAlias];
-                                    }
-                                    else
-                                    {
-                                        $objChildren = new StyleManagerModel();
-                                        $objChildren->id = ++$intGroupId;
-                                        $objChildren->tstamp = time();
-                                    }
-                                }
-                                else
-                                {
-                                    $objChildren = StyleManagerModel::findByAliasAndPid($alias, $objArchive->id);
-                                }
+                                    case 'pid':
+                                        $strValue = $objArchive->id;
+                                        break;
+                                    case 'cssClasses':
+                                        if($objChildren->{$strName})
+                                        {
+                                            /** @var array<array<int|string>> $arrClasses */
+                                            $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
+                                            $arrExists  = Sync::flattenKeyValueArray($arrClasses);
 
-                                // Loop through the children fields
-                                for ($f=0; $f<$fields->length; $f++)
-                                {
-                                    $strName = $fields->item($f)->getAttribute('title');
-                                    $strValue = $fields->item($f)->nodeValue;
+                                            /** @var array<array<int|string>> $arrValues */
+                                            $arrValues = StringUtil::deserialize($strValue, true);
 
-                                    if($strName === 'id' || !$strValue || strtolower($strValue) === 'null')
-                                    {
-                                        continue;
-                                    }
-
-                                    switch($strName)
-                                    {
-                                        case 'pid':
-                                            $strValue = $objArchive->id;
-                                            break;
-                                        case 'cssClasses':
-                                            if($objChildren->{$strName})
+                                            foreach($arrValues as $cssClass)
                                             {
-                                                /** @var array<array<int|string>> $arrClasses */
-                                                $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
-                                                $arrExists  = Sync::flattenKeyValueArray($arrClasses);
-
-                                                /** @var array<array<int|string>> $arrValues */
-                                                $arrValues = StringUtil::deserialize($strValue, true);
-
-                                                foreach($arrValues as $cssClass)
+                                                if(array_key_exists($cssClass['key'], $arrExists))
                                                 {
-                                                    if(array_key_exists($cssClass['key'], $arrExists))
-                                                    {
-                                                        continue;
-                                                    }
-
-                                                    $arrClasses[] = array(
-                                                        'key' => $cssClass['key'],
-                                                        'value' => $cssClass['value']
-                                                    );
+                                                    continue;
                                                 }
 
-                                                $strValue  = serialize($arrClasses);
+                                                $arrClasses[] = array(
+                                                    'key' => $cssClass['key'],
+                                                    'value' => $cssClass['value']
+                                                );
                                             }
 
-                                            break;
-                                        default:
-                                            $dcaField = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$strName];
+                                            $strValue  = serialize($arrClasses);
+                                        }
 
-                                            if(isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
+                                        break;
+                                    default:
+                                        $dcaField = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$strName];
+
+                                        if(isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
+                                        {
+                                            /** @var array<array<int|string>> $arrElements */
+                                            $arrElements = StringUtil::deserialize($objChildren->{$strName}, true);
+                                            /** @var array<array<int|string>> $arrValues */
+                                            $arrValues   = StringUtil::deserialize($strValue, true);
+
+                                            foreach($arrValues as $element)
                                             {
-                                                /** @var array<array<int|string>> $arrElements */
-                                                $arrElements = StringUtil::deserialize($objChildren->{$strName}, true);
-                                                /** @var array<array<int|string>> $arrValues */
-                                                $arrValues   = StringUtil::deserialize($strValue, true);
-
-                                                foreach($arrValues as $element)
+                                                if(in_array($element, $arrElements))
                                                 {
-                                                    if(in_array($element, $arrElements))
-                                                    {
-                                                        continue;
-                                                    }
-
-                                                    $arrElements[] = $element;
+                                                    continue;
                                                 }
 
-                                                $strValue  = serialize($arrElements);
+                                                $arrElements[] = $element;
                                             }
-                                    }
 
-                                    $objChildren->{$strName} = $strValue;
+                                            $strValue  = serialize($arrElements);
+                                        }
                                 }
 
-                                // Save children data
-                                if($blnSave)
-                                {
-                                    $objChildren->save();
-                                }
-                                else
-                                {
-                                    $strKey = Sync::combineAliases($objArchive->identifier, $objChildren->alias);
-                                    $arrStyleGroups[ $strKey ] = $objChildren->current();
-                                }
+                                $objChildren->{$strName} = $strValue;
+                            }
+
+                            // Save children data
+                            if($blnSave)
+                            {
+                                $objChildren->save();
+                            }
+                            else
+                            {
+                                $strKey = Sync::combineAliases($objArchive->identifier, $objChildren->alias);
+                                $arrStyleGroups[ $strKey ] = $objChildren->current();
                             }
                         }
                     }
-
-                    // Save archive data
-                    if($blnSave)
-                    {
-                        $objArchive->save();
-                    }
-                    else
-                    {
-                        $arrStyleArchives[ $objArchive->identifier ] = $objArchive->current();
-                    }
                 }
 
-                // Unlock the tables
+                // Save archive data
                 if($blnSave)
                 {
-                    $database->unlockTables();
-                    Message::addConfirmation($translator->trans('MSC.styleManagerConfigImported', [basename($filePath)], 'contao_default'));
+                    $objArchive->save();
                 }
+                else
+                {
+                    $arrStyleArchives[ $objArchive->identifier ] = $objArchive->current();
+                }
+            }
+
+            // Unlock the tables
+            if($blnSave)
+            {
+                $database->unlockTables();
+                Message::addConfirmation($translator->trans('MSC.styleManagerConfigImported', [basename($filePath)], 'contao_default'));
             }
         }
 
-        if($blnSave)
+        if ($blnSave)
         {
             return null;
         }
