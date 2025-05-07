@@ -342,21 +342,26 @@ class StyleManager
             return $v !== false && !is_null($v) && ($v != '' || $v == '0');
         });
 
-        // Rebuild array for template variables
-        foreach($objStyleGroups as $objStyleGroup)
+        // Rebuild the array for template variables
+        foreach ($objStyleGroups as $objStyleGroup)
         {
+            if (!isset($arrArchives[ $objStyleGroup->pid ]))
+            {
+                continue;
+            }
+
             $strId = self::generateAlias($arrArchives[ $objStyleGroup->pid ], $objStyleGroup->alias);
 
-            if(array_key_exists($strId, $arrValue))
+            if (array_key_exists($strId, $arrValue))
             {
-                if(!!$objStyleGroup->passToTemplate)
+                if (!!$objStyleGroup->passToTemplate)
                 {
                     $identifier = $arrArchives[ $objStyleGroup->pid ];
 
-                    $arrValue[ StyleManager::VARS_KEY ][ $identifier ][ $objStyleGroup->alias ] = array(
+                    $arrValue[ StyleManager::VARS_KEY ][ $identifier ][ $objStyleGroup->alias ] = [
                         'id'    => $objStyleGroup->id,
                         'value' => $arrValue[ $strId ]
-                    );
+                    ];
 
                     unset($arrValue[ $strId ]);
                 }
