@@ -14,6 +14,7 @@ use Contao\Backend;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
 use Contao\System;
+use Oveleon\ContaoComponentStyleManager\Event\AddStyleManagerPaletteEvent;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
@@ -64,17 +65,26 @@ class StyleManager
      */
     public function addPalette($dc): void
     {
-        $palette = PaletteManipulator::create()
-            ->addLegend('style_manager_legend', 'expert_legend', PaletteManipulator::POSITION_BEFORE)
-            ->addField(['styleManager'], 'style_manager_legend', PaletteManipulator::POSITION_APPEND);
+        $eventDispatcher = System::getContainer()->get('event_dispatcher');
 
-        foreach ($GLOBALS['TL_DCA'][ $dc->table ]['palettes'] as $key=>$value){
-            if($key === '__selector__')
+        $pm = PaletteManipulator::create()
+            ->addLegend('style_manager_legend', 'expert_legend', PaletteManipulator::POSITION_BEFORE)
+            ->addField(['styleManager'], 'style_manager_legend', PaletteManipulator::POSITION_APPEND)
+        ;
+
+        foreach ($GLOBALS['TL_DCA'][ $dc->table ]['palettes'] as $palette => $value)
+        {
+            $event = new AddStyleManagerPaletteEvent($dc, $palette);
+            $eventDispatcher->dispatch($event);
+
+            $palette = $event->getPalette();
+
+            if ($palette === '__selector__' || $palette === '__skip__')
             {
                 continue;
             }
 
-            $palette->applyToPalette($key, $dc->table);
+            $pm->applyToPalette($palette, $dc->table);
         }
     }
 
