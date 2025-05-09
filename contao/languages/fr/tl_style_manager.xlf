@@ -31,11 +31,11 @@
         <target>Pas de styles définis pour cette zone.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.new.0">
-        <source>New css group</source>
+        <source>New CSS group</source>
         <target>Nouveau groupe css</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.new.1">
-        <source>Create a new css group.</source>
+        <source>Create a new CSS group.</source>
         <target>Créer un nouveau groupe css.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.edit.0">

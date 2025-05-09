@@ -24,10 +24,10 @@
         <source>No styles are defined for this area.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.new.0">
-        <source>New css group</source>
+        <source>New CSS group</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.new.1">
-        <source>Create a new css group.</source>
+        <source>Create a new CSS group.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.edit.0">
         <source>Edit group</source>
@@ -107,18 +107,6 @@
       <trans-unit id="tl_style_manager.extendLayout.1">
         <source>Provides the CSS classes in layouts.</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager.extendForm.0">
-        <source>Forms</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.extendForm.1">
-        <source>Provides the CSS classes in forms.</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.extendFormFields.0">
-        <source>Form fields</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager.extendFormFields.1">
-        <source>Provides the CSS classes in form fields.</source>
-      </trans-unit>
       <trans-unit id="tl_style_manager.extendPage.0">
         <source>Pages</source>
       </trans-unit>
@@ -148,6 +136,18 @@
       </trans-unit>
       <trans-unit id="tl_style_manager.extendEvents.1">
         <source>Provides the CSS classes in events.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.0">
+        <source>Forms</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendForm.1">
+        <source>Provides the CSS classes in forms.</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.0">
+        <source>Form fields</source>
+      </trans-unit>
+      <trans-unit id="tl_style_manager.extendFormFields.1">
+        <source>Provides the CSS classes in form fields.</source>
       </trans-unit>
       <trans-unit id="tl_style_manager.extendContentElement.0">
         <source>Content elements</source>
