@@ -30,7 +30,7 @@
         <target>separator</target>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.3.1">
-        <source>Cancels all floats and breaks the element into the next line. Additionally a line is added to create meaningful sections.</source>
+        <source>Cancels all floats and breaks the element into the next line. Additionally, a line is added to create meaningful sections.</source>
         <target>Annule toutes les classes float et pousse l'élément à la ligne suivante. Ajoute également une ligne pour créer des sections explicitement.</target>
       </trans-unit>
     </body>

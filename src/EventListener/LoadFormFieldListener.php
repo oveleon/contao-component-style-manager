@@ -22,9 +22,9 @@ class LoadFormFieldListener
     /**
      * Parse Template and set Variables
      */
-    public function __invoke(Widget $objWidget)
+    public function __invoke(Widget $objWidget): Widget
     {
-        if(!($objWidget->styleManager instanceof Styles))
+        if (!($objWidget->styleManager instanceof Styles))
         {
             $arrStyles = StringUtil::deserialize($objWidget->styleManager);
             $objWidget->styleManager = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);

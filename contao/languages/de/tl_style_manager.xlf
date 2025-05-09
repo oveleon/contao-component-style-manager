@@ -31,11 +31,11 @@
         <target>Für diesen Bereich sind keine Stile hinterlegt.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.new.0">
-        <source>New css group</source>
+        <source>New CSS group</source>
         <target>Neue CSS-Gruppe</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.new.1">
-        <source>Create a new css group.</source>
+        <source>Create a new CSS group.</source>
         <target>Neue CSS-Gruppe erstellen.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.edit.0">
@@ -64,11 +64,11 @@
       </trans-unit>
       <trans-unit id="tl_style_manager.show.0">
         <source>Show group info</source>
-        <target>Gruppeinformationen anzeigen</target>
+        <target>Gruppeninformationen anzeigen</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.show.1">
         <source>Show group info</source>
-        <target>Gruppeinformationen anzeigen</target>
+        <target>Gruppeninformationen anzeigen</target>
       </trans-unit>
       <trans-unit id="tl_style_manager.title.0">
         <source>Title</source>

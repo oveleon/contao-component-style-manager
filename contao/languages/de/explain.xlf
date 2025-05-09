@@ -14,8 +14,8 @@
         <target>long</target>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.1.1">
-        <source>Displays the field with 100% width.</source>
-        <target>Zeigt das Feld mit 100% Breite an.</target>
+        <source>Displays the field with 100 % width.</source>
+        <target>Zeigt das Feld mit 100 % Breite an.</target>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.2.0">
         <source>clr</source>
@@ -30,8 +30,8 @@
         <target>separator</target>
       </trans-unit>
       <trans-unit id="XPL.styleManagerFieldClass.3.1">
-        <source>Cancels all floats and breaks the element into the next line. Additionally a line is added to create meaningful sections.</source>
-        <target>Hebt alle floats auf und umbricht das Element in die nächste Zeile. Zusätzlich wird eine Linie hinzugefügt um sinnvole Abschnitte erzeugen zu können.</target>
+        <source>Cancels all floats and breaks the element into the next line. Additionally, a line is added to create meaningful sections.</source>
+        <target>Hebt alle floats auf und umbricht das Element in die nächste Zeile. Zusätzlich wird eine Linie hinzugefügt um sinnvolle Abschnitte erzeugen zu können.</target>
       </trans-unit>
     </body>
   </file>

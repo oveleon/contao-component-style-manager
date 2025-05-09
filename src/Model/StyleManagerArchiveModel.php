@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\Model;
 
 use Contao\Model;
+use Contao\Model\Collection;
 use Contao\System;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
 
@@ -31,13 +32,13 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
  * @method static StyleManagerArchiveModel|null findOneByTitle($col, $val, $opt=array())
  * @method static StyleManagerArchiveModel|null findOneByIdentifier($col, $val, $opt=array())
  *
- * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findMultipleByIds($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByTstamp($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByTitle($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByIdentifier($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByGroupAlias($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findBy($col, $val, array $opt=array())
- * @method static \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findAll(array $opt=array())
+ * @method static Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findMultipleByIds($val, array $opt=array())
+ * @method static Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByTstamp($val, array $opt=array())
+ * @method static Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByTitle($val, array $opt=array())
+ * @method static Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByIdentifier($val, array $opt=array())
+ * @method static Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findByGroupAlias($val, array $opt=array())
+ * @method static Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findBy($col, $val, array $opt=array())
+ * @method static Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())
  * @method static integer countByTstamp($id, array $opt=array())
@@ -49,7 +50,6 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
  */
 class StyleManagerArchiveModel extends Model
 {
-
     /**
      * Table name
      * @var string
@@ -58,21 +58,19 @@ class StyleManagerArchiveModel extends Model
 
     /**
      * Find configuration archives and published archives
-     *
-     * @return \Model\Collection|StyleManagerArchiveModel[]|StyleManagerArchiveModel|null An array of models or null if there are no archive
      */
-    public static function findAllWithConfiguration(array $arrOptions=array())
+    public static function findAllWithConfiguration(array $arrOptions = []): Collection|StyleManagerArchiveModel|array|null
     {
         $objArchives = static::findAll($arrOptions);
 
-        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        if (System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
         {
             $bundleConfig = Config::getInstance();
             $arrArchives = $bundleConfig::getArchives();
 
-            if(null !== $arrArchives)
+            if (null !== $arrArchives)
             {
-                if(null !== $objArchives)
+                if (null !== $objArchives)
                 {
                     $arrArchives = array_merge(
                         $objArchives->getModels(),

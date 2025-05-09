@@ -13,6 +13,7 @@ namespace Oveleon\ContaoComponentStyleManager\Migration\Version30;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 
 class ObjectConversionMigration extends AbstractMigration
@@ -23,6 +24,9 @@ class ObjectConversionMigration extends AbstractMigration
     ) {
     }
 
+    /**
+     * @throws Exception
+     */
     public function shouldRun(): bool
     {
         $schemaManager = $this->connection->createSchemaManager();
@@ -45,33 +49,36 @@ class ObjectConversionMigration extends AbstractMigration
         ;
     }
 
+    /**
+     * @throws Exception
+     */
     public function run(): MigrationResult
     {
-        if($this->sync->shouldRunObjectConversion('tl_article'))
+        if ($this->sync->shouldRunObjectConversion('tl_article'))
             $this->sync->performObjectConversion('tl_article');
 
-        if($this->sync->shouldRunObjectConversion('tl_content'))
+        if ($this->sync->shouldRunObjectConversion('tl_content'))
             $this->sync->performObjectConversion('tl_content');
 
-        if($this->sync->shouldRunObjectConversion('tl_calendar_events'))
+        if ($this->sync->shouldRunObjectConversion('tl_calendar_events'))
             $this->sync->performObjectConversion('tl_calendar_events');
 
-        if($this->sync->shouldRunObjectConversion('tl_form'))
+        if ($this->sync->shouldRunObjectConversion('tl_form'))
             $this->sync->performObjectConversion('tl_form');
 
-        if($this->sync->shouldRunObjectConversion('tl_form_field'))
+        if ($this->sync->shouldRunObjectConversion('tl_form_field'))
             $this->sync->performObjectConversion('tl_form_field');
 
-        if($this->sync->shouldRunObjectConversion('tl_layout'))
+        if ($this->sync->shouldRunObjectConversion('tl_layout'))
             $this->sync->performObjectConversion('tl_layout');
 
-        if($this->sync->shouldRunObjectConversion('tl_module'))
+        if ($this->sync->shouldRunObjectConversion('tl_module'))
             $this->sync->performObjectConversion('tl_module');
 
-        if($this->sync->shouldRunObjectConversion('tl_news'))
+        if ($this->sync->shouldRunObjectConversion('tl_news'))
             $this->sync->performObjectConversion('tl_news');
 
-        if($this->sync->shouldRunObjectConversion('tl_page'))
+        if ($this->sync->shouldRunObjectConversion('tl_page'))
             $this->sync->performObjectConversion('tl_page');
 
         return new MigrationResult(

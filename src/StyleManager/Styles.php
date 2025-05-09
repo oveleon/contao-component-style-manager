@@ -22,50 +22,50 @@ class Styles
     /**
      * Current groups
      */
-    private ?array $currGroups = null;
+    private array|null $currGroups = null;
 
     /**
      * Excluded groups
      */
-    private ?array $exclGroups = null;
+    private array|null $exclGroups = null;
 
     /**
      * Initialize the object.
      */
     public function __construct(
-        private readonly ?array $styles = null // Style collection
+        private readonly array|null $styles = null // Style collection
     ) {
     }
 
     /**
-     * Return the css class collection of an identifier
+     * Return the CSS class collection of an identifier
      */
-    public function get($identifier, $arrGroups=null): string
+    public function get(string|int $identifier, $arrGroups = null): string
     {
-        if($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
+        if ($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
         {
             return '';
         }
 
-        // return full collection
-        if($arrGroups === null)
+        // return the full collection
+        if ($arrGroups === null)
         {
             return implode(" ", $this->getCategoryValues($this->styles[ $identifier ]));
         }
 
         // return parts of category (groups)
-        if(is_array($arrGroups))
+        if (is_array($arrGroups))
         {
             $collection = array();
 
-            if(null !== $this->exclGroups)
+            if (null !== $this->exclGroups)
             {
                 $this->removeExcludedGroups($arrGroups);
             }
 
             foreach ($arrGroups as $groupAlias)
             {
-                if($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ] ?? null))
+                if ($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ] ?? null))
                 {
                     $collection[] = $value;
                 }
@@ -80,7 +80,7 @@ class Styles
     /**
      * Prepare css classes
      */
-    public function prepare($identifier, $arrGroups=null): Styles
+    public function prepare(string|int $identifier, array|null $arrGroups = null): Styles
     {
         $this->currIdentifier = $identifier;
         $this->currGroups     = $arrGroups;
@@ -92,7 +92,7 @@ class Styles
     /**
      * Exclude css classes
      */
-    public function exclude(?array $exclGroups=null): Styles
+    public function exclude(array|null $exclGroups = null): Styles
     {
         $this->exclGroups = $exclGroups;
 
@@ -100,26 +100,26 @@ class Styles
     }
 
     /**
-     * Return formatted css classes
+     * Return formatted CSS classes
      */
     public function format(string $format, string $method=''): string
     {
-        if(!$format || $this->styles === null || !is_array(($this->styles[ $this->currIdentifier ] ?? null)))
+        if (!$format || $this->styles === null || !is_array(($this->styles[ $this->currIdentifier ] ?? null)))
         {
             return '';
         }
 
-        switch($method)
+        switch ($method)
         {
             case 'json':
                 $arrValues = null;
 
-                // return full collection
-                if($this->currGroups === null)
+                // return the full collection
+                if ($this->currGroups === null)
                 {
                     foreach ($this->styles[ $this->currIdentifier ] as $alias => $arrVariable)
                     {
-                        if(($value = $this->getGroupValue($arrVariable)) !== '')
+                        if (($value = $this->getGroupValue($arrVariable)) !== '')
                         {
                             $arrValues[ $alias ] = $this->parseValueType($value);
                         }
@@ -130,19 +130,19 @@ class Styles
                 {
                     foreach ($this->currGroups as $alias)
                     {
-                        if(($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ] ?? null)) !== '')
+                        if (($value = $this->getGroupValue($this->styles[ $this->currIdentifier ][ $alias ] ?? null)) !== '')
                         {
                             $arrValues[ $alias ] = $this->parseValueType($value);
                         }
                     }
                 }
 
-                if(null !== $this->exclGroups)
+                if (null !== $this->exclGroups)
                 {
                     $arrValues = array_diff($arrValues ?? [], $this->exclGroups);
                 }
 
-                if($arrValues !== null && $jsonValue = json_encode($arrValues))
+                if ($arrValues !== null && $jsonValue = json_encode($arrValues))
                 {
                     return sprintf($format, $jsonValue);
                 }
@@ -159,7 +159,7 @@ class Styles
                     }
                 }
 
-                if($value = $this->get($this->currIdentifier, $this->currGroups))
+                if ($value = $this->get($this->currIdentifier, $this->currGroups))
                 {
                     return sprintf($format, $value);
                 }
@@ -171,11 +171,11 @@ class Styles
     /**
      * Return all values of a category
      */
-    private function getCategoryValues($arrVariables): array
+    private function getCategoryValues(mixed $arrVariables): array
     {
         $arrValues = [];
 
-        if(null !== $this->exclGroups)
+        if (null !== $this->exclGroups)
         {
             $this->removeExcludedGroups($arrVariables);
         }
@@ -191,7 +191,7 @@ class Styles
     /**
      * Return the value of a group
      */
-    private function getGroupValue($arrVariable)
+    private function getGroupValue(mixed $arrVariable)
     {
         return $arrVariable['value'] ?? null;
     }
@@ -199,7 +199,7 @@ class Styles
     /**
      * Return the value as correct type
      */
-    private function parseValueType($strValue)
+    private function parseValueType(mixed $strValue)
     {
         if (is_numeric($strValue))
         {

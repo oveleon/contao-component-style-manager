@@ -28,7 +28,7 @@ class StyleManagerExtension extends AbstractExtension
     public function createContext(array $data): Styles
     {
         // ToDo: Enable when contao ships fe_page as a twig template
-        /*if($GLOBALS['TL_PTY'][$data['type']] ?? false)
+        /*if ($GLOBALS['TL_PTY'][$data['type']] ?? false)
         {
             global $objPage;
 

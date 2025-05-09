@@ -12,6 +12,8 @@ namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\Backend;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\DataContainer;
 use Contao\StringUtil;
 use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Event\AddStyleManagerPaletteEvent;
@@ -32,73 +34,44 @@ class StyleManager
         'attributes' => 2
     ];
 
-    /**
-     * Load callback for the CSS-Classes DCA-Field
-     *
-     * @param $varValue
-     * @param $dc
-     *
-     * @return mixed
-     */
-    public function onLoad($varValue, $dc)
+    public static function isMultipleField(string $strField): bool
     {
-        return self::clearClasses($varValue, $dc);
+        return self::$validCssClassFields[ $strField ] > 1;
     }
 
     /**
-     * Save callback for the CSS-Classes DCA-Field
-     *
-     * @param $varValue
-     * @param $dc
-     *
-     * @return mixed
+     * Generate a unique alias based on the archive identifier and the group alias
      */
-    public function onSave($varValue, $dc)
+    public static function generateAlias(mixed $identifier, mixed $alias): string
     {
-        return self::updateClasses($varValue, $dc);
+        return $identifier . '_' . $alias;
     }
 
     /**
-     * Adding the StyleManager fields and palette to a dca
-     *
-     * @param $dc
+     * Restore the default value of the StyleManager Widget (without the __vars__ node)
      */
-    public function addPalette($dc): void
+    public static function deserializeValues(mixed $arrValue): mixed
     {
-        $eventDispatcher = System::getContainer()->get('event_dispatcher');
-
-        $pm = PaletteManipulator::create()
-            ->addLegend('style_manager_legend', 'expert_legend', PaletteManipulator::POSITION_BEFORE)
-            ->addField(['styleManager'], 'style_manager_legend', PaletteManipulator::POSITION_APPEND)
-        ;
-
-        foreach ($GLOBALS['TL_DCA'][ $dc->table ]['palettes'] as $palette => $value)
+        if (isset($arrValue[ StyleManager::VARS_KEY ]))
         {
-            $event = new AddStyleManagerPaletteEvent($dc, $palette);
-            $eventDispatcher->dispatch($event);
-
-            $palette = $event->getPalette();
-
-            if ($palette === '__selector__' || $palette === '__skip__')
+            foreach ($arrValue[ StyleManager::VARS_KEY ] as $archiveAlias => $values)
             {
-                continue;
+                foreach ($values as $alias => $arrItem)
+                {
+                    $strId = self::generateAlias($archiveAlias, $alias);
+                    $arrValue[$strId] = html_entity_decode((string) $arrItem['value']);
+                }
             }
 
-            $pm->applyToPalette($palette, $dc->table);
+            unset($arrValue[ StyleManager::VARS_KEY ]);
         }
+
+        return $arrValue;
     }
 
-    /**
-     * Clear StyleManager classes from css class field
-     *
-     * @param mixed $varValue
-     * @param $dc
-     *
-     * @return mixed
-     */
-    public static function clearClasses(mixed $varValue, $dc)
+    public static function clearClasses(mixed $varValue, DataContainer $dc): mixed
     {
-        if(self::isMultipleField($dc->field))
+        if (self::isMultipleField($dc->field))
         {
             $cssID = StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1] ?? '';
@@ -110,7 +83,7 @@ class StyleManager
         // remove non-exiting values
         self::cleanupClasses($arrValues, $dc->table);
 
-        if(count($arrValues))
+        if (count($arrValues))
         {
             foreach ($arrValues as $k => $v)
             {
@@ -123,7 +96,7 @@ class StyleManager
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
         }
 
-        if(self::isMultipleField($dc->field))
+        if (self::isMultipleField($dc->field))
         {
             $varValue = serialize(array(($cssID[0] ?? ''), $varValue));
         }
@@ -131,17 +104,10 @@ class StyleManager
         return $varValue;
     }
 
-    /**
-     * Update StyleManager classes
-     *
-     * @param mixed $varValue
-     * @param $dc
-     *
-     * @return mixed
-     */
-    public static function updateClasses(mixed $varValue, $dc)
+
+    public static function updateClasses(mixed $varValue, DataContainer $dc): mixed
     {
-        if(self::isMultipleField($dc->field))
+        if (self::isMultipleField($dc->field))
         {
             $cssID = StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1] ?? '';
@@ -150,7 +116,7 @@ class StyleManager
         $varValues = StringUtil::deserialize($dc->activeRecord->styleManager, true);
 
         // remove vars node
-        if(isset($varValues[StyleManager::VARS_KEY]))
+        if (isset($varValues[StyleManager::VARS_KEY]))
         {
             unset($varValues[StyleManager::VARS_KEY]);
         }
@@ -159,7 +125,7 @@ class StyleManager
         $varValue .= ($varValue ? ' ' : '') . (count($varValues) ? implode(' ', $varValues) : '');
         $varValue  = trim($varValue);
 
-        if(self::isMultipleField($dc->field))
+        if (self::isMultipleField($dc->field))
         {
             $varValue = serialize(array(($cssID[0] ?? ''), $varValue));
         }
@@ -167,18 +133,9 @@ class StyleManager
         return $varValue;
     }
 
-    /**
-     * Reset all StyleManager classes from css class field
-     *
-     * @param mixed $varValue
-     * @param $dc
-     * @param $strTable
-     *
-     * @return mixed
-     */
-    public static function resetClasses(mixed $varValue, $dc, $strTable)
+    public static function resetClasses(mixed $varValue, DataContainer $dc, string $strTable): mixed
     {
-        if(self::isMultipleField($dc->field))
+        if (self::isMultipleField($dc->field))
         {
             $cssID = StringUtil::deserialize($varValue, true);
             $varValue = $cssID[1] ?? '';
@@ -187,9 +144,9 @@ class StyleManager
         $objStyles = StyleManagerModel::findByTableAndConfiguration($strTable);
         $arrStyles = array();
 
-        if($objStyles !== null)
+        if ($objStyles !== null)
         {
-            foreach($objStyles as $objStyle)
+            foreach ($objStyles as $objStyle)
             {
                 $arrGroup = StringUtil::deserialize($objStyle->cssClasses, true);
 
@@ -202,7 +159,7 @@ class StyleManager
             $arrStyles = array_filter($arrStyles);
         }
 
-        if(count($arrStyles))
+        if (count($arrStyles))
         {
             $varValue  = ' ' . $varValue . ' ';
 
@@ -210,7 +167,7 @@ class StyleManager
             $varValue = trim((string) preg_replace('#\s+#', ' ', $varValue));
         }
 
-        if(self::isMultipleField($dc->field))
+        if (self::isMultipleField($dc->field))
         {
             $varValue = serialize(array(($cssID[0] ?? ''), $varValue));
         }
@@ -218,19 +175,14 @@ class StyleManager
         return $varValue;
     }
 
-    /**
-     * Checks the passed array and removes non-existent values
-     *
-     * @param $arrValues
-     * @param $strTable
-     */
-    public static function cleanupClasses(&$arrValues, $strTable): void
+
+    public static function cleanupClasses(mixed &$arrValues, string $strTable): void
     {
-        if(is_array($arrValues))
+        if (is_array($arrValues))
         {
             $objStyles = StyleManagerModel::findByTableAndConfiguration($strTable);
 
-            if($objStyles !== null)
+            if ($objStyles !== null)
             {
                 $arrExistingKeys = array();
                 $arrExistingValues = array();
@@ -239,12 +191,12 @@ class StyleManager
                 $objStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration();
 
                 // Prepare archives identifier
-                foreach($objStyleArchives as $objStyleArchive)
+                foreach ($objStyleArchives as $objStyleArchive)
                 {
                     $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
                 }
 
-                foreach($objStyles as $objStyle)
+                foreach ($objStyles as $objStyle)
                 {
                     $arrExistingKeys[] = self::generateAlias($arrArchives[ $objStyle->pid ] ?? '', $objStyle->alias);
 
@@ -258,13 +210,13 @@ class StyleManager
 
                 foreach ($arrValues as $key => $value)
                 {
-                    if(!in_array($key, $arrExistingKeys))
+                    if (!in_array($key, $arrExistingKeys))
                     {
                         unset($arrValues[$key]);
                         continue;
                     }
 
-                    if(!in_array($value, $arrExistingValues))
+                    if (!in_array($value, $arrExistingValues))
                     {
                         unset($arrValues[$key]);
                     }
@@ -277,20 +229,13 @@ class StyleManager
         }
     }
 
-    /**
-     * Return the field name of css classes by table
-     *
-     * @param $strTable
-     *
-     * @return mixed
-     */
-    public static function getClassFieldNameByTable($strTable)
+    public static function getClassFieldNameByTable(string $strTable): mixed
     {
         Backend::loadDataContainer($strTable);
 
         foreach (self::$validCssClassFields as $field => $size)
         {
-            if(isset($GLOBALS['TL_DCA'][ $strTable ]['fields'][ $field ]))
+            if (isset($GLOBALS['TL_DCA'][ $strTable ]['fields'][ $field ]))
             {
                 return $field;
             }
@@ -300,30 +245,13 @@ class StyleManager
     }
 
     /**
-     * Checks whether a field is multiple
-     *
-     * @param $strField
-     *
-     * @return bool
-     */
-    public static function isMultipleField($strField)
-    {
-        return self::$validCssClassFields[ $strField ] > 1;
-    }
-
-    /**
      * Moves classes which should be passed to the template to the "vars" node
-     *
-     * @param $varValue
-     * @param $strTable
-     *
-     * @return array|bool
      */
-    public static function serializeValues($varValue, $strTable)
+    public static function serializeValues(mixed $varValue, string $strTable): bool|array
     {
         $objStyleGroups = StyleManagerModel::findByTableAndConfiguration($strTable);
 
-        if($objStyleGroups === null)
+        if ($objStyleGroups === null)
         {
             return false;
         }
@@ -332,7 +260,7 @@ class StyleManager
         $objStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration();
 
         // Prepare archives identifier
-        foreach($objStyleArchives as $objStyleArchive)
+        foreach ($objStyleArchives as $objStyleArchive)
         {
             $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
         }
@@ -372,45 +300,11 @@ class StyleManager
     }
 
     /**
-     * Restore the default value of the StyleManager Widget (without vars node)
-     *
-     * @param $arrValue
-     *
-     * @return mixed
-     */
-    public static function deserializeValues($arrValue)
-    {
-        if(isset($arrValue[ StyleManager::VARS_KEY ]))
-        {
-            foreach ($arrValue[ StyleManager::VARS_KEY ] as $archiveAlias => $values)
-            {
-                foreach ($values as $alias => $arrItem)
-                {
-                    $strId = self::generateAlias($archiveAlias, $alias);
-                    $arrValue[$strId] = html_entity_decode((string) $arrItem['value']);
-                }
-            }
-
-            unset($arrValue[ StyleManager::VARS_KEY ]);
-        }
-
-        return $arrValue;
-    }
-
-    /**
-     * Generate a unique alias based on the archive identifier and the group alias
-     */
-    public static function generateAlias($identifier, $alias): string
-    {
-        return $identifier . '_' . $alias;
-    }
-
-    /**
-     * Check whether an element is visible in style manager widget
+     * Check whether an element is visible in the style manager widget
      */
     public static function isVisibleGroup(StyleManagerModel $objGroup, string $strTable): bool
     {
-        if(
+        if (
             'tl_layout' === $strTable && !!$objGroup->extendLayout ||
             'tl_page' === $strTable && !!$objGroup->extendPage ||
             'tl_module' === $strTable && !!$objGroup->extendModule ||
@@ -434,14 +328,70 @@ class StyleManager
         return false;
     }
 
-    /**
-     * Add the type of input field
-     *
-     * @param array $arrRow
-     *
-     * @return string
-     */
-    public function listFormFields($arrRow)
+    #[AsCallback(table: 'tl_content', target: 'fields.cssID.load')]
+    #[AsCallback(table: 'tl_module', target: 'fields.cssID.load')]
+    #[AsCallback(table: 'tl_article', target: 'fields.cssID.load')]
+    #[AsCallback(table: 'tl_layout', target: 'fields.cssClass.load')]
+    #[AsCallback(table: 'tl_page', target: 'fields.cssClass.load')]
+    #[AsCallback(table: 'tl_news', target: 'fields.cssClass.load')]
+    #[AsCallback(table: 'tl_calendar_events', target: 'fields.cssClass.load')]
+    #[AsCallback(table: 'tl_form', target: 'fields.attributes.load')]
+    #[AsCallback(table: 'tl_form_field', target: 'fields.class.load')]
+    public function onLoad(mixed $varValue, DataContainer $dc): mixed
+    {
+        return self::clearClasses($varValue, $dc);
+    }
+
+    #[AsCallback(table: 'tl_content', target: 'fields.cssID.save')]
+    #[AsCallback(table: 'tl_module', target: 'fields.cssID.save')]
+    #[AsCallback(table: 'tl_article', target: 'fields.cssID.save')]
+    #[AsCallback(table: 'tl_layout', target: 'fields.cssClass.save')]
+    #[AsCallback(table: 'tl_page', target: 'fields.cssClass.save')]
+    #[AsCallback(table: 'tl_news', target: 'fields.cssClass.save')]
+    #[AsCallback(table: 'tl_calendar_events', target: 'fields.cssClass.save')]
+    #[AsCallback(table: 'tl_form', target: 'fields.attributes.save')]
+    #[AsCallback(table: 'tl_form_field', target: 'fields.class.save')]
+    public function onSave(mixed $varValue, DataContainer $dc): mixed
+    {
+        return self::updateClasses($varValue, $dc);
+    }
+
+    #[AsCallback(table: 'tl_content', target: 'config.onload')]
+    #[AsCallback(table: 'tl_module', target: 'config.onload')]
+    #[AsCallback(table: 'tl_article', target: 'config.onload')]
+    #[AsCallback(table: 'tl_layout', target: 'config.onload')]
+    #[AsCallback(table: 'tl_page', target: 'config.onload')]
+    #[AsCallback(table: 'tl_news', target: 'config.onload')]
+    #[AsCallback(table: 'tl_calendar_events', target: 'config.onload')]
+    #[AsCallback(table: 'tl_form', target: 'config.onload')]
+    #[AsCallback(table: 'tl_form_field', target: 'config.onload')]
+    public function addPalette(DataContainer $dc): void
+    {
+        $eventDispatcher = System::getContainer()->get('event_dispatcher');
+
+        $pm = PaletteManipulator::create()
+            ->addLegend('style_manager_legend', 'expert_legend', PaletteManipulator::POSITION_BEFORE)
+            ->addField(['styleManager'], 'style_manager_legend', PaletteManipulator::POSITION_APPEND)
+        ;
+
+        foreach ($GLOBALS['TL_DCA'][ $dc->table ]['palettes'] as $palette => $value)
+        {
+            $event = new AddStyleManagerPaletteEvent($dc, $palette);
+            $eventDispatcher->dispatch($event);
+
+            $palette = $event->getPalette();
+
+            if ($palette === '__selector__' || $palette === '__skip__')
+            {
+                continue;
+            }
+
+            $pm->applyToPalette($palette, $dc->table);
+        }
+    }
+
+    #[AsCallback(table: 'tl_form_field', target: 'list.sorting.child_record')]
+    public function listFormFields(array $arrRow): string
     {
         $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
         $arrRow['styleManager'] = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);

@@ -14,16 +14,20 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\StringUtil;
-use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\RouterInterface;
 
-class StyleManagerArchiveListener
+readonly class StyleManagerArchiveListener
 {
-    public function __construct(private readonly RouterInterface $router)
-    {
+    public function __construct(
+        private RouterInterface $router,
+
+        #[Autowire(param: 'contao_component_style_manager.use_bundle_config')]
+        private string $bundleConfig,
+    ) {
     }
 
     #[AsCallback(table: 'tl_style_manager_archive', target: 'config.onload')]
@@ -31,7 +35,7 @@ class StyleManagerArchiveListener
     {
         $objArchive = StyleManagerArchiveModel::findById($dc->id);
 
-        if(null !== $objArchive && $objArchive->identifier)
+        if (null !== $objArchive && $objArchive->identifier)
         {
             $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['mandatory'] = false;
             $GLOBALS['TL_DCA']['tl_style_manager_archive']['fields']['identifier']['eval']['disabled'] = true;
@@ -41,7 +45,7 @@ class StyleManagerArchiveListener
     #[AsCallback(table: 'tl_style_manager_archive', target: 'list.label.label')]
     public function addIdentifierInfo($row, $label)
     {
-        if($row['identifier'])
+        if ($row['identifier'])
         {
             $label .= sprintf('<span style="color:#999;padding-left:3px">[%s]</span>', $row['identifier']);
         }
@@ -50,14 +54,11 @@ class StyleManagerArchiveListener
     }
 
     #[AsCallback(table: 'tl_style_manager_archive', target: 'list.global_operations.import.button')]
-    public function importConfigButton(?string $href, string $label, string $title, string $class, string $attributes): string
+    public function importConfigButton(string|null $href, string $label, string $title, string $class, string $attributes): string
     {
-        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        if ($this->bundleConfig && ($arrFiles = Config::getBundleConfigurationFiles()))
         {
-            if($arrFiles = Config::getBundleConfigurationFiles())
-            {
-                $label .= sprintf(' <sup><small>(%s)</small></sup>', count($arrFiles));
-            }
+            $label .= sprintf(' <sup><small>(%s)</small></sup>', count($arrFiles));
         }
 
         return vsprintf('<a href="%s" class="%s" title="%s" %s>%s</a> ', [
@@ -70,27 +71,27 @@ class StyleManagerArchiveListener
     }
 
     #[AsCallback(table: 'tl_style_manager_archive', target: 'list.global_operations.config.button')]
-    public function bundleConfigButton(?string $href, string $label, string $title, string $class, string $attributes): string
+    public function bundleConfigButton(string|null $href, string $label, string $title, string $class, string $attributes): string
     {
-        if(System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        if (!$this->bundleConfig)
         {
-            $count = 0;
-
-            if($arrFiles = Config::getBundleConfigurationFiles())
-            {
-                $count = count($arrFiles);
-            }
-
-            return vsprintf('<a href="%s" class="%s" %s>%s: %s</a>', [
-                $this->router->generate(ImportController::class),
-                $class,
-                $attributes,
-                $label,
-                $count
-            ]);
+            return '';
         }
 
-        return '';
+        $count = 0;
+
+        if ($arrFiles = Config::getBundleConfigurationFiles())
+        {
+            $count = count($arrFiles);
+        }
+
+        return vsprintf('<a href="%s" class="%s" %s>%s: %s</a>', [
+            $this->router->generate(ImportController::class),
+            $class,
+            $attributes,
+            $label,
+            $count
+        ]);
     }
 
     #[AsCallback(table: 'tl_style_manager_archive', target: 'fields.identifier.save')]

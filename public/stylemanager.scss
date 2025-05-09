@@ -66,38 +66,51 @@ html[data-color-scheme=dark] {
       font-size: .75rem;
     }
 
-    .tab-container {
+    .sm-tab-container {
       position: relative;
       margin-bottom: 15px;
-
-      > label {
-        display: inline-block;
-        position: relative;
-        cursor: pointer;
-        z-index: 1;
-        padding: 8px 10px;
-        margin-right: 4px;
-        background: var(--sm-content-bg);
-        border: solid var(--sm-border);
-        border-width: 1px 1px 0 1px;
-        border-radius: 3px 3px 0 0;
-        opacity: .8;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
 
       &:last-child {
         margin-bottom: 0;
       }
     }
 
+    .tab-btn {
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      z-index: 1;
+      padding: 8px 10px;
+      margin-right: 1px;
+      background: var(--sm-content-bg);
+      border: solid var(--sm-border);
+      border-width: 1px 1px 0 1px;
+      border-radius: 3px 3px 0 0;
+      opacity: .8;
+      vertical-align: middle;
+
+      &[aria-expanded="true"] {
+        top: 1px;
+        padding-bottom: 9px;
+        border-top-color: var(--sm-orange);
+        background: var(--sm-tab-bg);
+        opacity: 1;
+        cursor: default;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
     .tab-content {
-      display: none;
       border: 1px solid var(--sm-border);
       background: var(--sm-tab-bg);
       padding: 5px 5px 15px 5px;
+
+      &:not(.active) {
+        display: none;
+      }
 
       > hr {
         display: none;
@@ -214,34 +227,6 @@ html[data-color-scheme=dark] {
       &:last-of-type {
         border-bottom: none;
       }
-    }
-  }
-}
-
-// Visibility
-%content-visible {
-  display: block;
-}
-
-.stylemanager {
-
-  .tab-nav {
-    display: none;
-  }
-
-  .tab-nav[id^="nav-"]:checked + label {
-    top: 1px;
-    padding-bottom: 9px;
-    border-top-color: var(--sm-orange);
-    background: var(--sm-tab-bg);
-    opacity: 1;
-    cursor: default;
-  }
-
-  @for $i from 0 through 39 {
-    // Toggle visibility
-    .tab-nav[id^="nav-#{$i}"]:checked ~ [id^="tab-#{$i}"] {
-      @extend %content-visible;
     }
   }
 }

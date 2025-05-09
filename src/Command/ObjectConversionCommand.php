@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoComponentStyleManager\Command;
 
+use Doctrine\DBAL\Exception;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -36,6 +37,9 @@ class ObjectConversionCommand extends Command
         ;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -43,12 +47,12 @@ class ObjectConversionCommand extends Command
         $strTable = $input->getArgument('table');
         $blnForce = $input->getOption('force');
 
-        if(null === $strTable)
+        if (null === $strTable)
         {
             throw new InvalidArgumentException('Please enter an existing table');
         }
 
-        if($this->sync->shouldRunObjectConversion($strTable) || $blnForce)
+        if ($this->sync->shouldRunObjectConversion($strTable) || $blnForce)
         {
             $io->writeln(sprintf('Start converting table %s', $strTable));
 

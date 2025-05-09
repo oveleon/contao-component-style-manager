@@ -11,7 +11,6 @@
       <trans-unit id="tl_style_manager_import.bundleConfigInactive">
         <source>The bundle configuration has been disabled for this project. To have configurations of other bundles imported, you have to activate them first.</source>
       </trans-unit>
-
       <trans-unit id="tl_style_manager_import.files">
         <source>Files</source>
       </trans-unit>

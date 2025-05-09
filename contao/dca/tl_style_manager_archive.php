@@ -1,11 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
  * (c) https://www.oveleon.de/
-*/
+ */
 
-use Contao\CoreBundle\ContaoCoreBundle;
+use Contao\DataContainer;
 use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
@@ -26,7 +29,7 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
     // List
     'list' => [
         'sorting' => [
-            'mode'                    => 1,
+            'mode'                    => DataContainer::MODE_SORTED,
             'fields'                  => ['groupAlias', 'sorting'],
             'panelLayout'             => 'filter;search,limit'
         ],
@@ -44,39 +47,17 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
                 'class'               => 'header_style_manager_export',
                 'icon'                => 'theme_export.svg'
             ],
-            'all' => [
-                'href'                => 'act=select',
-                'class'               => 'header_edit_all',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            ],
+            'all',
             'config' => [
                 'class'               => 'header_style_manager_config'
             ]
         ],
         'operations' => [
-            'edit' => [
-                'href'                => 'act=edit',
-                'icon'                => 'edit.svg',
-                'primary'             => true
-            ],
-            'children' => [
-                'href'                => 'table=tl_style_manager',
-                'icon'                => 'children.svg',
-                'primary'             => true
-            ],
-            'copy' => [
-                'href'                => 'act=copy',
-                'icon'                => 'copy.svg'
-            ],
-            'delete' => [
-                'href'                => 'act=delete',
-                'icon'                => 'delete.svg',
-                'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
-            ],
-            'show' => [
-                'href'                => 'act=show',
-                'icon'                => 'show.svg'
-            ]
+            'edit',
+            'children',
+            'copy',
+            'delete',
+            'show',
         ]
     ],
 
@@ -129,25 +110,7 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
         ],
         'bundleConfig' => [
             'reference'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['bundleConfig'],
-            'eval'                    => array('helpwizard'=>true),
+            'eval'                    => ['helpwizard'=>true],
         ]
     ]
 ];
-
-// Backwards compatibility for old icons and position
-$version = ContaoCoreBundle::getVersion();
-
-if (version_compare($version, '5', '<'))
-{
-    $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['edit']['icon'] = 'header.svg';
-    $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['children']['icon'] = 'edit.svg';
-
-    // Swap places for Backwards compatibility
-    [
-        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['children'],
-        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['edit']
-    ] = [
-        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['edit'],
-        $GLOBALS['TL_DCA']['tl_style_manager_archive']['list']['operations']['children']
-    ];
-}

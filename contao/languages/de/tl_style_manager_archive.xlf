@@ -10,7 +10,6 @@
         <source>Config</source>
         <target>Konfiguration</target>
       </trans-unit>
-
       <trans-unit id="tl_style_manager_archive.new.0">
         <source>Add category</source>
         <target>Neue Kategorie</target>
@@ -77,11 +76,11 @@
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.show.0">
         <source>Show category info</source>
-        <target>Kategorieinformatinoen anzeigen</target>
+        <target>Kategorie-Informationen anzeigen</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.show.1">
         <source>Show category info</source>
-        <target>Kategorieinformatinoen anzeigen</target>
+        <target>Kategorie-Informationen anzeigen</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.title.0">
         <source>Title</source>
@@ -104,8 +103,8 @@
         <target>Kennung</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.identifier.1">
-        <source>The identifier is used to receive the group classes if they is passed to the template. (e.g. $this->styleManager->get('myCategoryIdentifier')</source>
-        <target>Die Kennung dient zum Entgegennehmen der Gruppenklassen, sofern diese an das Template übergeben werden. (Bspw. $this->styleManager->get('meineKategorieKennung')</target>
+        <source>The identifier is used to receive the group classes if they are passed to the template. (e.g., $this->styleManager->get('myCategoryIdentifier')</source>
+        <target>Die Kennung dient zum Entgegennehmen der Gruppenklassen, sofern diese an das Template übergeben werden. (Bsp. $this->styleManager->get('meineKategorieKennung')</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.groupAlias.0">
         <source>Group-Identifier</source>
@@ -113,7 +112,7 @@
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.groupAlias.1">
         <source>The group identifier is used to group categories together. Categories with identical group identifier are displayed in the backend as one section with several tabs.</source>
-        <target>Die Gruppenkennung dient zum zusammenfassen von Kategorien. Kategorien mit identischer Gruppenkennung werden im Backend als einen Abschntt mit mehreren Tabs dargestellt.</target>
+        <target>Die Gruppenkennung dient zum Zusammenfassen von Kategorien. Kategorien mit identischer Gruppenkennung werden im Backend als einen Abschnitt mit mehreren Tabs dargestellt.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.sorting.0">
         <source>Sort-Index</source>
@@ -130,7 +129,7 @@
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.bundleConfig.0.1">
         <source>Bundle configurations are used to automatically consume and use StyleManager properties from other bundles.</source>
-        <target>Bundle-Konfigurationen dienen dazu, automatisiert StyleManager-Eigentschaften aus anderen Bundles zu konsumieren und verwenden zu können.</target>
+        <target>Bundle-Konfigurationen dienen dazu, automatisiert StyleManager-Eigenschaften aus anderen Bundles zu konsumieren und verwenden zu können.</target>
       </trans-unit>
       <trans-unit id="tl_style_manager_archive.bundleConfig.1.0">
         <source>Overwrite configuration</source>

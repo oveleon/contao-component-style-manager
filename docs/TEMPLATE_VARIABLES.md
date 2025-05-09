@@ -91,7 +91,7 @@ $this->styleManager->prepare('myCategoryIdentifier', ['alias1'])->format("data-s
 Returns a JSON object using the alias and value (e.g. `{"alias1":"my-class-1","alias2":"my-class-2"}`)
 
 ### Create your own methods
-To add your own methods you can use the `styleManagerFormatMethod` hook:
+To add your own methods, you can use the `styleManagerFormatMethod` hook:
 
 ```php
 function customFormatMethod(string $format, string $method, Styles $context): string

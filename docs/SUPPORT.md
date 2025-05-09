@@ -27,6 +27,8 @@ As in Contao itself, the DCA must contain a field where the CSS classes can be s
 Adding the StyleManager widget in your own DCA. As an example we use the DCA name `tl_mydca` and the Field `attribute` (storage for CSS-Classes).
 
 ```php
+// contao/config.php
+
 use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 
 // Extend the StyleManager field
@@ -60,7 +62,8 @@ $GLOBALS['TL_DCA']['tl_style_manager']['fields']['extendMyDca'] = [
 // Extend the default palette
 PaletteManipulator::create()
     ->addField(['extendMyDca'], 'publish_legend', PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_style_manager');
+    ->applyToPalette('default', 'tl_style_manager')
+;
 ```
 
 ## Step 3: Make your DCA known to the StyleManager widget
@@ -68,17 +71,13 @@ PaletteManipulator::create()
 To get the selected CSS groups for the new DCA and to provide them in the StyleManager widget, it is necessary to provide the StyleManager with the new DCA. In order to make this possible the `styleManagerFindByTable` hook is prepared.
 
 ```php
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
-/**
- * Find css groups using their table
- * 
- * @Hook("styleManagerFindByTable")
- */
+#[AsHook('styleManagerFindByTable')]
 public function onFindByTable(string $table, array $options = [])
 {
-    if('tl_mydca' === $table)
+    if ('tl_mydca' === $table)
     {
         return StyleManagerModel::findBy(['extendMyDca=1'], null, $options);
     }
@@ -89,20 +88,16 @@ public function onFindByTable(string $table, array $options = [])
 
 ## Step 4: Provide the StyleManager your new groups
 
-To check if the CSS groups is allowed for the current component, we need to include a check function via the hook `styleManagerIsVisibleGroup`.
+To check if the CSS groups are allowed for the current component, we need to include a check function via the hook `styleManagerIsVisibleGroup`.
 
 ```php
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Oveleon\ContaoComponentStyleManager\StyleManagerModel;
 
-/**
- * Check whether an element is visible for my dca in style manager widget
- * 
- * @Hook("styleManagerIsVisibleGroup")
- */
+#[AsHook('styleManagerIsVisibleGroup')]
 public function isVisibleGroup(StyleManagerModel $group, string $table): bool
 {
-    if('tl_mydca' === $table && !!$group->extendMyDca)
+    if ('tl_mydca' === $table && !!$group->extendMyDca)
     {
         return true;
     }
@@ -118,15 +113,11 @@ public function isVisibleGroup(StyleManagerModel $group, string $table): bool
 If the DCA provides several types, which can be selected individually under the CSS groups, a further check has to take place to display them only for certain types.
 
 ```php
-use Contao\Widget;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\StringUtil;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\Widget;
 
-/**
- * Skip non-valid fields
- *
- * @Hook("styleManagerSkipField")
- */
+#[AsHook('styleManagerSkipField')]
 public function onSkipField(StyleManagerModel $styleGroups, Widget $widget)
 {
     if(!!$styleGroups->extendMyDca && 'tl_mydca' === $widget->strTable)
@@ -148,14 +139,14 @@ public function onSkipField(StyleManagerModel $styleGroups, Widget $widget)
 ```php
 <?php
 
-namespace App/Support;
+namespace App/EventListener;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\StringUtil;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Widget;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
-class StyleManagerSupport
+class StyleManagerListener
 {
     /**
      * Name of the DCA to be supported
@@ -167,14 +158,10 @@ class StyleManagerSupport
      */
     const SM_FIELD_NAME = 'extendMyDca';
 
-    /**
-     * Find css groups using their table (Step 3)
-     *
-     * @Hook("styleManagerFindByTable")
-     */
-    public function onFindByTable(string $table, array $options = [])
+    #[AsHook('styleManagerFindByTable')]
+    public function onFindByTable(string $table, array $options = []): StyleManagerModel|Collection|array|null
     {
-        if(self::DCA_NAME === $table)
+        if (self::DCA_NAME === $table)
         {
             return StyleManagerModel::findBy([self::SM_FIELD_NAME . '=1'], null, $options);
         }
@@ -182,14 +169,10 @@ class StyleManagerSupport
         return null;
     }
 
-    /**
-     * Check whether an element is visible for my dca in style manager widget (Step 4)
-     *
-     * @Hook("styleManagerIsVisibleGroup")
-     */
+    #[AsHook('styleManagerIsVisibleGroup')]
     public function isVisibleGroup(StyleManagerModel $group, string $table): bool
     {
-        if(self::DCA_NAME === $table && !!$group->{self::SM_FIELD_NAME})
+        if (self::DCA_NAME === $table && !!$group->{self::SM_FIELD_NAME})
         {
             return true;
         }
@@ -197,12 +180,8 @@ class StyleManagerSupport
         return false;
     }
 
-    /**
-     * Skip non-valid fields (Step 5)
-     *
-     * @Hook("styleManagerSkipField")
-     */
-    public function onSkipField(StyleManagerModel $styleGroups, Widget $widget)
+    #[AsHook('styleManagerSkipField')]
+    public function onSkipField(StyleManagerModel $styleGroups, Widget $widget): bool
     {
         if(!!$styleGroups->{self::SM_FIELD_NAME} && self::DCA_NAME === $widget->strTable)
         {

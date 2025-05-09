@@ -22,6 +22,7 @@ use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Twig\Environment;
 
 /**
  * Provide methods to handle select menus for style manager.
@@ -46,11 +47,13 @@ class ComponentStyleSelect extends Widget
      */
     protected $strTemplate = 'be_widget';
 
-    private readonly ?ContaoCsrfTokenManager $tokenManager;
+    private readonly ContaoCsrfTokenManager|null $tokenManager;
 
-    private readonly ?InsertTagParser $insertTagParser;
+    private readonly InsertTagParser|null $insertTagParser;
 
-    private readonly ?RequestStack $requestStack;
+    private readonly RequestStack|null $requestStack;
+
+    private readonly Environment|null $twig;
 
     private readonly bool $showGroupTitle;
 
@@ -63,6 +66,7 @@ class ComponentStyleSelect extends Widget
         $this->tokenManager = $container->get('contao.csrf.token_manager');
         $this->insertTagParser = $container->get('contao.insert_tag.parser');
         $this->requestStack = $container->get('request_stack');
+        $this->twig = $container->get('twig');
 
         $this->showGroupTitle = (bool) $container->getParameter('contao_component_style_manager.show_group_title');
     }
@@ -74,29 +78,29 @@ class ComponentStyleSelect extends Widget
      */
     public function generate()
     {
-        $arrObjStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration(array('order'=>'sorting'));
-        $arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, array('order'=>'pid,sorting'));
+        $arrObjStyleArchives = StyleManagerArchiveModel::findAllWithConfiguration(['order'=>'sorting']);
+        $arrObjStyleGroups   = StyleManagerModel::findByTableAndConfiguration($this->strTable, ['order'=>'pid,sorting']);
 
-        if($arrObjStyleGroups === null || $arrObjStyleArchives === null)
+        if ($arrObjStyleGroups === null || $arrObjStyleArchives === null)
         {
             return $this->renderEmptyMessage();
         }
 
         $isEmpty       = true;
-        $arrCollection = array();
-        $arrArchives   = array();
-        $arrOrder      = array();
+        $arrCollection = [];
+        $arrArchives   = [];
+        $arrOrder      = [];
 
         // Prepare archives
-        foreach($arrObjStyleArchives as $objStyleArchive)
+        foreach ($arrObjStyleArchives as $objStyleArchive)
         {
-            $arrArchives[ $objStyleArchive->id ] = array(
+            $arrArchives[ $objStyleArchive->id ] = [
                 'title'      => $objStyleArchive->title,
                 'identifier' => $objStyleArchive->identifier,
                 'desc'       => $objStyleArchive->desc,
                 'group'      => $objStyleArchive->groupAlias,
                 'model'      => $objStyleArchive
-            );
+            ];
 
             $arrOrder[] = $objStyleArchive->identifier;
         }
@@ -105,47 +109,47 @@ class ComponentStyleSelect extends Widget
         $this->varValue = StyleManager::deserializeValues($this->varValue);
 
         // Prepare group fields
-        foreach($arrObjStyleGroups as $objStyleGroup)
+        foreach ($arrObjStyleGroups as $objStyleGroup)
         {
-            $arrOptions      = array();
+            $arrOptions      = [];
             $strClass        = 'tl_select';
-            $arrFieldOptions = array();
+            $arrFieldOptions = [];
 
             // set blank option
-            if(!!$objStyleGroup->blankOption)
+            if (!!$objStyleGroup->blankOption)
             {
-                $arrFieldOptions[] = array('value'=>'', 'label'=>'-');
+                $arrFieldOptions[] = ['value'=>'', 'label'=>'-'];
             }
 
             // skip specific content elements
-            if(!!$objStyleGroup->extendContentElement && $this->strTable === 'tl_content')
+            if (!!$objStyleGroup->extendContentElement && $this->strTable === 'tl_content')
             {
                 /** @var array $arrContentElements */
                 $arrContentElements = StringUtil::deserialize($objStyleGroup->contentElements, true);
 
-                if($arrContentElements !== null && !in_array($this->activeRecord->type, $arrContentElements))
+                if ($arrContentElements !== null && !\in_array($this->activeRecord->type, $arrContentElements))
                 {
                     continue;
                 }
             }
 
             // skip specific form fields
-            if(!!$objStyleGroup->extendFormFields && $this->strTable === 'tl_form_field')
+            if (!!$objStyleGroup->extendFormFields && $this->strTable === 'tl_form_field')
             {
                 $arrFormFields = StringUtil::deserialize($objStyleGroup->formFields);
 
-                if($arrFormFields !== null && !in_array($this->activeRecord->type, $arrFormFields))
+                if ($arrFormFields !== null && !\in_array($this->activeRecord->type, $arrFormFields))
                 {
                     continue;
                 }
             }
 
             // skip specific modules
-            if(!!$objStyleGroup->extendModule && $this->strTable === 'tl_module')
+            if (!!$objStyleGroup->extendModule && $this->strTable === 'tl_module')
             {
                 $arrModules = StringUtil::deserialize($objStyleGroup->modules);
 
-                if($arrModules !== null && !in_array($this->activeRecord->type, $arrModules))
+                if ($arrModules !== null && !\in_array($this->activeRecord->type, $arrModules))
                 {
                     continue;
                 }
@@ -156,7 +160,7 @@ class ComponentStyleSelect extends Widget
             {
                 foreach ($GLOBALS['TL_HOOKS']['styleManagerSkipField'] as $callback)
                 {
-                    if(System::importStatic($callback[0])->{$callback[1]}($objStyleGroup, $this))
+                    if (System::importStatic($callback[0])->{$callback[1]}($objStyleGroup, $this))
                     {
                         continue 2;
                     }
@@ -165,11 +169,12 @@ class ComponentStyleSelect extends Widget
 
             $opts = StringUtil::deserialize($objStyleGroup->cssClasses);
 
-            foreach ($opts as $opt) {
-                $arrFieldOptions[] = array(
+            foreach ($opts as $opt)
+            {
+                $arrFieldOptions[] = [
                     'label' => $opt['value'] ?: $opt['key'],
                     'value' => $opt['key']
-                );
+                ];
             }
 
             // dynamically change or expand group options
@@ -177,7 +182,7 @@ class ComponentStyleSelect extends Widget
             {
                 foreach ($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions'] as $callback)
                 {
-                    if($optionCallback = System::importStatic($callback[0])->{$callback[1]}($arrFieldOptions, $objStyleGroup, $this))
+                    if ($optionCallback = System::importStatic($callback[0])->{$callback[1]}($arrFieldOptions, $objStyleGroup, $this))
                     {
                         $arrFieldOptions = $optionCallback;
                     }
@@ -199,43 +204,43 @@ class ComponentStyleSelect extends Widget
                 }
                 else
                 {
-                    $arrOptgroups = array();
+                    $arrOptGroups = [];
 
                     foreach ($arrOption as $arrOptgroup)
                     {
-                        $arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
+                        $arrOptGroups[] = sprintf('<option value="%s"%s>%s</option>',
                             StringUtil::specialchars($arrOptgroup['value']),
                             static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
                             $arrOptgroup['label']);
                     }
 
-                    $arrOptions[] = sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', StringUtil::specialchars($strKey), implode('', $arrOptgroups));
+                    $arrOptions[] = sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', StringUtil::specialchars($strKey), implode('', $arrOptGroups));
                 }
             }
 
             // add chosen
-            if(!!$objStyleGroup->chosen)
+            if (!!$objStyleGroup->chosen)
             {
                 $strClass .= ' tl_chosen';
                 $this->arrAttributes['data-controller'] = 'contao--choices';
             }
 
-            // create collection
+            // create a collection
             $groupAlias      = ($arrArchives[ $objStyleGroup->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroup->pid ]['identifier']) . '-' . $this->id;
             $collectionAlias = $arrArchives[ $objStyleGroup->pid ]['identifier'];
 
-            if(!in_array($collectionAlias, array_keys($arrCollection)))
+            if (!\in_array($collectionAlias, array_keys($arrCollection)))
             {
-                $arrCollection[ $collectionAlias ] = array(
+                $arrCollection[ $collectionAlias ] = [
                     'label'      => $arrArchives[ $objStyleGroup->pid ]['title'],
                     'desc'       => $arrArchives[ $objStyleGroup->pid ]['desc'],
                     'group'      => $groupAlias,
                     'groupTitle' => $arrArchives[ $objStyleGroup->pid ]['group'] ?? null,
-                    'fields'     => array()
-                );
+                    'fields'     => []
+                ];
             }
 
-            $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s%s',
+            $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s data-action="focus->contao--scroll-offset#store">%s</select>%s%s',
                 ($objStyleGroup->cssClass === 'seperator' || $objStyleGroup->cssClass === 'separator' ? '<hr>' : '') . '<div' . ($objStyleGroup->cssClass ? ' class="' . $objStyleGroup->cssClass . '"' : '').'><h3><label>' . $objStyleGroup->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
@@ -250,7 +255,7 @@ class ComponentStyleSelect extends Widget
             $isEmpty = false;
         }
 
-        if($isEmpty)
+        if ($isEmpty)
         {
             return $this->renderEmptyMessage();
         }
@@ -258,8 +263,7 @@ class ComponentStyleSelect extends Widget
         $objSession = $this->requestStack?->getSession()->getBag('contao_backend');
         $arrSession = $objSession?->get('stylemanager_section_states');
 
-        $arrGroups   = array();
-        $arrSections = array();
+        $arrGroups   = [];
 
         // sort collection by sort-index
         uksort($arrCollection, function($key1, $key2) use ($arrOrder) {
@@ -272,71 +276,19 @@ class ComponentStyleSelect extends Widget
             $arrGroups[ $collection['group'] ][ $alias ] = $collection;
         }
 
-        // create group tabs and content
-        foreach ($arrGroups as $groupAlias => $groups)
-        {
-            $arrNavigation = array();
-            $arrContent = array();
-            $groupTitle = null;
-
-            $i = 0;
-
-            foreach ($groups as $key => $group)
-            {
-                $identifier = sprintf('%s-%s-%s', $i, $key, $this->id);
-                $sessionAlias = $arrSession[ $groupAlias ] ?? null;
-                $isSelected = !isset($sessionAlias) && $i===0 ? 'checked' : ($sessionAlias === $identifier ? 'checked' : '');
-                $index      = $isSelected ?: $i;
-
-                $onClick = sprintf('onclick="Backend.getScrollOffset(); new Request.Contao().post({\'action\':\'selectStyleManagerSection\', \'id\':\'%s\', \'groupAlias\':\'%s\', \'identifier\':\'%s\', \'REQUEST_TOKEN\':\'%s\'});"',
-                    $this->id,
-                    $groupAlias,
-                    $identifier,
-                    $this->tokenManager?->getDefaultTokenValue()
-                );
-
-                $arrNavigation[ $index ] = sprintf('<input type="radio" id="nav-%s" class="tab-nav" name="nav-%s" %s><label for="nav-%s" %s>%s</label>',
-                    $identifier,
-                    $groupAlias,
-                    $isSelected,
-                    $identifier,
-                    $onClick,
-                    $group['label'] ?? ''
-                );
-
-                $arrContent[ $index ] = sprintf('<div id="tab-%s" class="tab-content">%s%s</div>',
-                    $identifier,
-                    (trim($group['desc'] ?? '') ? '<div class="long desc">' . $this->insertTagParser?->replaceInline(nl2br($group['desc'])) . '</div>' : ''),
-                    implode("", $group['fields'])
-                );
-
-                // Set group title if it exists
-                if ($this->showGroupTitle && null !== $group['groupTitle'])
-                {
-                    $groupTitle = '<h4 class="sm-groupTitle">' . $group['groupTitle'] . '</h4>';
-                }
-
-                $i++;
-            }
-
-            // if no entry is selected, the first one must be selected
-            if(!array_key_exists('checked', $arrNavigation))
-            {
-                $arrNavigation[0] = str_replace("><label", "checked><label", $arrNavigation[0]);
-            }
-
-            $arrSections[] = '<div class="tab-container" id="' . $groupAlias . '">' . $groupTitle . implode("", $arrNavigation) . implode("", $arrContent) . '</div>';
-        }
-
-        return implode("", $arrSections);
+        return $this->twig?->render('@Contao/backend/widget/stylemanager.html.twig', [
+            'id'             => $this->id,
+            'groups'         => $arrGroups,
+            'showGroupTitle' => $this->showGroupTitle,
+            'requestToken'   => $this->tokenManager?->getDefaultTokenValue(),
+            'session'        => $arrSession,
+        ]);
     }
 
     /**
      * Return the empty message
-     *
-     * @return string
      */
-    private function renderEmptyMessage()
+    private function renderEmptyMessage(): string
     {
         System::loadLanguageFile('tl_style_manager');
         return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
@@ -349,12 +301,12 @@ class ComponentStyleSelect extends Widget
     {
         $this->varValue = $this->getPost($this->strName);
 
-        if($this->varValue === null)
+        if ($this->varValue === null)
         {
             return;
         }
 
-        if($arrValue = StyleManager::serializeValues($this->varValue, $this->strTable))
+        if ($arrValue = StyleManager::serializeValues($this->varValue, $this->strTable))
         {
             $this->varValue = $arrValue;
         }
@@ -362,7 +314,7 @@ class ComponentStyleSelect extends Widget
         $field   = StyleManager::getClassFieldNameByTable($this->strTable);
         $objUser = BackendUser::getInstance();
 
-        // Update css class fields in case of multiple editing or if a user has no rights for the field
+        // Update CSS class fields in case of multiple editing, or if a user has no rights for the field
         if ($field && (Input::get('act') === 'editAll' || !$objUser->hasAccess($this->strTable . '::' . $field, 'alexf')))
         {
             $stdClass = new \stdClass();
@@ -375,7 +327,7 @@ class ComponentStyleSelect extends Widget
             $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
             $value = StyleManager::updateClasses($value, $stdClass);
 
-            // Update css class field
+            // Update CSS class field
             Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
                 ->execute($value, $this->activeRecord->id);
         }

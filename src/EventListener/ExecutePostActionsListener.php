@@ -14,16 +14,19 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Exception\NoContentResponseException;
 use Contao\DataContainer;
 use Contao\Input;
-use Contao\System;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
 #[AsHook('executePostActions')]
-class ExecutePostActionsListener
+readonly class ExecutePostActionsListener
 {
+    public function __construct(private RequestStack $requestStack)
+    {}
+
     /**
      * Saves the status of selected tabs
      */
-    public function __invoke($strAction, DataContainer $dc)
+    public function __invoke(string $strAction, DataContainer $dc): void
     {
         if ($strAction !== 'selectStyleManagerSection')
         {
@@ -31,7 +34,7 @@ class ExecutePostActionsListener
         }
 
         /** @var AttributeBagInterface $objSessionBag */
-        $objSessionBag = System::getContainer()->get('request_stack')->getSession()->getBag('contao_backend');
+        $objSessionBag = $this->requestStack->getSession()->getBag('contao_backend');
 
         $fs = $objSessionBag->get('stylemanager_section_states');
         $fs[Input::post('groupAlias')] = Input::post('identifier');

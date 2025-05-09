@@ -1,10 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of ContaoComponentStyleManager.
  *
  * (c) https://www.oveleon.de/
-*/
+ */
 
+use Contao\DataContainer;
 use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_style_manager'] = [
@@ -26,43 +30,19 @@ $GLOBALS['TL_DCA']['tl_style_manager'] = [
     // List
     'list' => [
         'sorting' => [
-            'mode'               => 4,
+            'mode'               => DataContainer::MODE_PARENT,
             'fields'             => ['sorting'],
             'headerFields'       => ['title', 'identifier'],
             'panelLayout'        => 'filter;sort,search,limit',
             'disableGrouping'    => true,
             'child_record_class' => 'no_padding'
         ],
-        'global_operations' => [
-            'all' => [
-                'href'          => 'act=select',
-                'class'         => 'header_edit_all',
-                'attributes'    => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            ]
-        ],
         'operations' => [
-            'edit' => [
-                'href'          => 'act=edit',
-                'icon'          => 'edit.svg',
-                'primary'       => true
-            ],
-            'copy' => [
-                'href'          => 'act=paste&mode=copy',
-                'icon'          => 'copy.svg'
-            ],
-            'cut' => [
-                'href'          => 'act=paste&amp;mode=cut',
-                'icon'          => 'cut.svg'
-            ],
-            'delete' => [
-                'href'          => 'act=delete',
-                'icon'          => 'delete.svg',
-                'attributes'    => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
-            ],
-            'show' => [
-                'href'          => 'act=show',
-                'icon'          => 'show.svg'
-            ]
+            'edit',
+            'copy',
+            'cut',
+            'delete',
+            'show',
         ]
     ],
 
