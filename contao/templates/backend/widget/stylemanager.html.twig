@@ -5,12 +5,16 @@
             {% if showGroupTitle and collections|first.groupTitle %}
                 <h4 class="sm-groupTitle">{{ collections|first.groupTitle }}</h4>
             {% endif %}
+            {% set existingIdentifiers = [] %}
             {% set sessionAlias = session[group_alias] ?? null %}
+            {% for alias, collection in collections %}
+                {% set existingIdentifiers = existingIdentifiers|merge([loop.index0 ~ '-' ~ alias ~ '-' ~ id]) %}
+            {% endfor %}
 
             <div class="tab-nav">
                 {% for alias, collection in collections %}
                     {% set identifier = (loop.index - 1) ~ '-' ~ alias ~ '-' ~ id %}
-                    {% set isSelected = sessionAlias is not defined and loop.first or sessionAlias == identifier %}
+                    {% set isSelected = sessionAlias == identifier or loop.first and sessionAlias not in existingIdentifiers %}
                     {% set buttonAttributes = attrs()
                         .set('type', 'button')
                         .addClass('tab-btn')
@@ -26,7 +30,7 @@
             <div class="tab-content-container">
                 {% for alias, collection in collections %}
                     {% set identifier =  (loop.index - 1) ~ '-' ~ alias ~ '-' ~ id %}
-                    {% set isSelected = sessionAlias is not defined and loop.first or sessionAlias == identifier %}
+                    {% set isSelected = sessionAlias == identifier or loop.first and sessionAlias not in existingIdentifiers %}
 
                     <div id="{{ identifier }}" class="tab-content{{ isSelected ? ' active' : '' }}">
                         {% if collection.desc is not empty %}
