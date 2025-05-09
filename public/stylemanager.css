@@ -49,34 +49,45 @@ html[data-color-scheme=dark] {
 .widget.stylemanager .tl_help {
   font-size: 0.75rem;
 }
-.widget.stylemanager .tab-container {
+.widget.stylemanager .sm-tab-container {
   position: relative;
   margin-bottom: 15px;
 }
-.widget.stylemanager .tab-container > label {
+.widget.stylemanager .sm-tab-container:last-child {
+  margin-bottom: 0;
+}
+.widget.stylemanager .tab-btn {
   display: inline-block;
   position: relative;
   cursor: pointer;
   z-index: 1;
   padding: 8px 10px;
-  margin-right: 4px;
+  margin-right: 1px;
   background: var(--sm-content-bg);
   border: solid var(--sm-border);
   border-width: 1px 1px 0 1px;
   border-radius: 3px 3px 0 0;
   opacity: 0.8;
+  vertical-align: middle;
 }
-.widget.stylemanager .tab-container > label:hover {
+.widget.stylemanager .tab-btn[aria-expanded=true] {
+  top: 1px;
+  padding-bottom: 9px;
+  border-top-color: var(--sm-orange);
+  background: var(--sm-tab-bg);
+  opacity: 1;
+  cursor: default;
+}
+.widget.stylemanager .tab-btn:hover {
   opacity: 1;
 }
-.widget.stylemanager .tab-container:last-child {
-  margin-bottom: 0;
-}
 .widget.stylemanager .tab-content {
-  display: none;
   border: 1px solid var(--sm-border);
   background: var(--sm-tab-bg);
   padding: 5px 5px 15px 5px;
+}
+.widget.stylemanager .tab-content:not(.active) {
+  display: none;
 }
 .widget.stylemanager .tab-content > hr {
   display: none;
@@ -169,21 +180,6 @@ html[data-color-scheme=dark] {
   border-bottom: none;
 }
 
-.stylemanager .tab-nav[id^=nav-39]:checked ~ [id^=tab-39], .stylemanager .tab-nav[id^=nav-38]:checked ~ [id^=tab-38], .stylemanager .tab-nav[id^=nav-37]:checked ~ [id^=tab-37], .stylemanager .tab-nav[id^=nav-36]:checked ~ [id^=tab-36], .stylemanager .tab-nav[id^=nav-35]:checked ~ [id^=tab-35], .stylemanager .tab-nav[id^=nav-34]:checked ~ [id^=tab-34], .stylemanager .tab-nav[id^=nav-33]:checked ~ [id^=tab-33], .stylemanager .tab-nav[id^=nav-32]:checked ~ [id^=tab-32], .stylemanager .tab-nav[id^=nav-31]:checked ~ [id^=tab-31], .stylemanager .tab-nav[id^=nav-30]:checked ~ [id^=tab-30], .stylemanager .tab-nav[id^=nav-29]:checked ~ [id^=tab-29], .stylemanager .tab-nav[id^=nav-28]:checked ~ [id^=tab-28], .stylemanager .tab-nav[id^=nav-27]:checked ~ [id^=tab-27], .stylemanager .tab-nav[id^=nav-26]:checked ~ [id^=tab-26], .stylemanager .tab-nav[id^=nav-25]:checked ~ [id^=tab-25], .stylemanager .tab-nav[id^=nav-24]:checked ~ [id^=tab-24], .stylemanager .tab-nav[id^=nav-23]:checked ~ [id^=tab-23], .stylemanager .tab-nav[id^=nav-22]:checked ~ [id^=tab-22], .stylemanager .tab-nav[id^=nav-21]:checked ~ [id^=tab-21], .stylemanager .tab-nav[id^=nav-20]:checked ~ [id^=tab-20], .stylemanager .tab-nav[id^=nav-19]:checked ~ [id^=tab-19], .stylemanager .tab-nav[id^=nav-18]:checked ~ [id^=tab-18], .stylemanager .tab-nav[id^=nav-17]:checked ~ [id^=tab-17], .stylemanager .tab-nav[id^=nav-16]:checked ~ [id^=tab-16], .stylemanager .tab-nav[id^=nav-15]:checked ~ [id^=tab-15], .stylemanager .tab-nav[id^=nav-14]:checked ~ [id^=tab-14], .stylemanager .tab-nav[id^=nav-13]:checked ~ [id^=tab-13], .stylemanager .tab-nav[id^=nav-12]:checked ~ [id^=tab-12], .stylemanager .tab-nav[id^=nav-11]:checked ~ [id^=tab-11], .stylemanager .tab-nav[id^=nav-10]:checked ~ [id^=tab-10], .stylemanager .tab-nav[id^=nav-9]:checked ~ [id^=tab-9], .stylemanager .tab-nav[id^=nav-8]:checked ~ [id^=tab-8], .stylemanager .tab-nav[id^=nav-7]:checked ~ [id^=tab-7], .stylemanager .tab-nav[id^=nav-6]:checked ~ [id^=tab-6], .stylemanager .tab-nav[id^=nav-5]:checked ~ [id^=tab-5], .stylemanager .tab-nav[id^=nav-4]:checked ~ [id^=tab-4], .stylemanager .tab-nav[id^=nav-3]:checked ~ [id^=tab-3], .stylemanager .tab-nav[id^=nav-2]:checked ~ [id^=tab-2], .stylemanager .tab-nav[id^=nav-1]:checked ~ [id^=tab-1], .stylemanager .tab-nav[id^=nav-0]:checked ~ [id^=tab-0] {
-  display: block;
-}
-
-.stylemanager .tab-nav {
-  display: none;
-}
-.stylemanager .tab-nav[id^=nav-]:checked + label {
-  top: 1px;
-  padding-bottom: 9px;
-  border-top-color: var(--sm-orange);
-  background: var(--sm-tab-bg);
-  opacity: 1;
-  cursor: default;
-}
 #tl_listing .sm_list_token {
   display: inline-block;
   font-size: 0.8em;
