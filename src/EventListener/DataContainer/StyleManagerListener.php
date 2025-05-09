@@ -41,7 +41,7 @@ class StyleManagerListener
         $arrExtends = null;
         $label = $row['title'];
 
-        if($row['passToTemplate'])
+        if ($row['passToTemplate'])
         {
             $parent = StyleManagerArchiveModel::findById($row['pid']);
 
@@ -58,13 +58,13 @@ class StyleManagerListener
 
         foreach ($row as $field => $value)
         {
-            if(strpos($field, 'extend') === 0 && !!$value)
+            if (str_starts_with($field, 'extend') && !!$value)
             {
                 $arrExtends[] = &$GLOBALS['TL_LANG']['tl_style_manager'][ $field ][0];
             }
         }
 
-        if($arrExtends !== null)
+        if ($arrExtends !== null)
         {
             $label .= sprintf('<span style="color:#999;padding-left:3px">[%s]</span>', implode(", ", $arrExtends));
         }
@@ -127,7 +127,7 @@ class StyleManagerListener
     {
         $groups = [];
 
-        foreach ($GLOBALS['TL_CTE'] as $k=>$v)
+        foreach ($GLOBALS['TL_CTE'] as $k => $v)
         {
             foreach (array_keys($v) as $kk)
             {
@@ -143,7 +143,7 @@ class StyleManagerListener
     {
         $groups = [];
 
-        foreach ($GLOBALS['FE_MOD'] as $k=>$v)
+        foreach ($GLOBALS['FE_MOD'] as $k => $v)
         {
             foreach (array_keys($v) as $kk)
             {

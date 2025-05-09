@@ -37,7 +37,7 @@ class ParseTemplateListener
         }
 
         // Build Styles object and assign it to the template
-        if(!($template->styleManager instanceof Styles))
+        if (!($template->styleManager instanceof Styles))
         {
             $arrStyles = StringUtil::deserialize($template->styleManager);
             $template->styleManager = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
