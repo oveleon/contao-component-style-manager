@@ -24,7 +24,7 @@ class Config
     /**
      * Object instance (Singleton)
      */
-    protected static ?Config $objInstance = null;
+    protected static Config|null $objInstance = null;
 
     /**
      * Group data
@@ -37,31 +37,31 @@ class Config
     protected static array $arrArchive = [];
 
     /**
-     * Return all archives as array
+     * Return all archives as an array
      */
-    public static function getArchives(): ?array
+    public static function getArchives(): array|null
     {
         return static::$arrArchive;
     }
 
     /**
-     * Return all Groups as array
+     * Return all groups as an array
      */
-    public static function getGroups(?string $table=null): ?array
+    public static function getGroups(string|null $table = null): array|null
     {
-        if(null === $table)
+        if (null === $table)
         {
             return static::$arrGroups;
         }
 
         $arrObjStyleGroups = null;
 
-        if(static::$arrGroups)
+        if (static::$arrGroups)
         {
             foreach (static::$arrGroups as $combinedAlias => $objStyleGroup)
             {
                 // Skip if the group is not allowed for the current table
-                if(StyleManager::isVisibleGroup($objStyleGroup, $table))
+                if (StyleManager::isVisibleGroup($objStyleGroup, $table))
                 {
                     $arrObjStyleGroups[ $combinedAlias ] = $objStyleGroup;
                 }
@@ -74,9 +74,8 @@ class Config
     /**
      * Return all configuration files from third-party bundles
      */
-    public static function getBundleConfigurationFiles(): ?array
+    public static function getBundleConfigurationFiles(): array|null
     {
-
         /** @var string $projectDir */
         $projectDir = System::getContainer()->getParameter('kernel.project_dir');
         $arrFiles = System::getContainer()->get('contao.resource_finder')?->findIn('templates')?->files()?->name('style-manager-*.xml');
@@ -118,7 +117,7 @@ class Config
             }
         }
 
-        if($arrBundleConfigs)
+        if ($arrBundleConfigs)
         {
             return $arrBundleConfigs;
         }
@@ -127,7 +126,7 @@ class Config
     }
 
     /**
-     * Load configuration files from third-party bundles and return them as array
+     * Load configuration files from third-party bundles and return them as an array
      */
     protected function loadBundleConfiguration(): array
     {
@@ -161,10 +160,8 @@ class Config
 
     /**
      * Instantiate the config object
-     *
-     * @return Config The object instance
      */
-    public static function getInstance()
+    public static function getInstance(): Config|null
     {
         if (static::$objInstance === null)
         {

@@ -29,12 +29,6 @@ Join us in making a difference, and thank you for your support! - [Oveleon](http
 
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/oveleon)
 
----
-
-> Working with **Contao 4.13** and **Contao ^5.1** (PHP ^8.1)
-
----
-
 ## Description
 
 Allows you to easily manage your own CSS classes as groups provided in layouts, pages, articles, modules, news, events,
@@ -48,12 +42,12 @@ layouts.
 + [Overview](#overview)
 + [Installation](#installation)
 + [Documentation](#documentation)
-  + [Configuration](docs/CONFIGURATION.md)
-  + [Use template variables](docs/TEMPLATE_VARIABLES.md)
-  + [Support own extensions](docs/SUPPORT.md)
-  + [Import / Export](docs/IMPORT_EXPORT.md)
-  + [Bundle-Configurations](docs/BUNDLE_CONFIG.md)
-  + [Migration](docs/MIGRATE.md)
+    + [Configuration](docs/CONFIGURATION.md)
+    + [Use template variables](docs/TEMPLATE_VARIABLES.md)
+    + [Support own extensions](docs/SUPPORT.md)
+    + [Import / Export](docs/IMPORT_EXPORT.md)
+    + [Bundle-Configurations](docs/BUNDLE_CONFIG.md)
+    + [Migration](docs/MIGRATE.md)
 + [Bugs and feature requests](#bugs-and-feature-requests)
 
 ## Overview
@@ -65,8 +59,8 @@ layouts.
 - Passing variables to the template
     - Formatting output using predefined methods or your own
 - Import / Export
-    - Automatic import of configurations from third-party bundles (Bundle configurations) [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
-    - Partial import [![new](https://img.shields.io/badge/-new-brightgreen?style=flat-square)](#contao-component-style-manager)
+    - Automatic import of configurations from third-party bundles (Bundle configurations)
+    - Partial import
 - Available for
     - Layouts
     - Pages
@@ -79,7 +73,7 @@ layouts.
     - Events
     - Third-Party DCA
 - Third-Party plugin support
-    - Rocksolid Custom Elements
+    - [RockSolid Custom Elements](https://github.com/madeyourday/contao-rocksolid-custom-elements)
 
 <br/>
 

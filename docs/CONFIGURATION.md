@@ -46,7 +46,7 @@ A special feature is that CSS groups can also be used as template variables via 
 # Hide group titles
 Since version 3.1, the group titles will be shown above the StyleManager widget
 
-To disabled showing the group title, you can use the following configuration:
+To disable showing the group title, you can use the following configuration:
 ```yaml
 # config.yaml
 contao_component_style_manager:

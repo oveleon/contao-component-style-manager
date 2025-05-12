@@ -23,26 +23,23 @@ html[data-color-scheme=dark] {
   --sm-header-color: #fff;
 }
 
-// Contao 4.13 only
-#pal_style_manager_legend {
+.tab-content-container {
+  container-name: sm-widget;
+  container-type: inline-size;
+}
 
-  .widget {
+:not(.widget-group) {
 
-    &.stylemanager {
-
-      > h3 {
-        display: none;
-      }
-    }
+  > .widget.stylemanager {
+    margin-left: 15px;
+    margin-right: 15px;
+    clear: both;
   }
 }
 
 .widget {
 
   &.stylemanager {
-    margin-left: 15px;
-    margin-right: 15px;
-    clear: both;
 
     > h3 {
       margin-bottom: 15px;
@@ -66,53 +63,66 @@ html[data-color-scheme=dark] {
       font-size: .75rem;
     }
 
-    .tab-container {
+    .sm-tab-container {
       position: relative;
       margin-bottom: 15px;
-
-      > label {
-        display: inline-block;
-        position: relative;
-        cursor: pointer;
-        z-index: 1;
-        padding: 8px 10px;
-        margin-right: 4px;
-        background: var(--sm-content-bg);
-        border: solid var(--sm-border);
-        border-width: 1px 1px 0 1px;
-        border-radius: 3px 3px 0 0;
-        opacity: .8;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
 
       &:last-child {
         margin-bottom: 0;
       }
     }
 
+    .tab-btn {
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      z-index: 1;
+      padding: 8px 10px;
+      margin-right: 1px;
+      background: var(--sm-content-bg);
+      border: solid var(--sm-border);
+      border-width: 1px 1px 0 1px;
+      border-radius: 3px 3px 0 0;
+      opacity: .8;
+      vertical-align: bottom;
+
+      &[aria-expanded="true"] {
+        top: 1px;
+        padding-bottom: 9px;
+        border-top-color: var(--sm-orange);
+        background: var(--sm-tab-bg);
+        opacity: 1;
+        cursor: default;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
     .tab-content {
-      display: none;
       border: 1px solid var(--sm-border);
       background: var(--sm-tab-bg);
-      padding: 5px 5px 15px 5px;
+      padding: 5px 8px 15px;
+
+      &:not(.active) {
+        display: none;
+      }
 
       > hr {
         display: none;
         float: left;
         clear: both;
-        width: calc(100% - 30px);
-        margin: 22px 15px 6px;
+        width: calc(100% - 12px);
+        margin: 22px 7px 6px;
         background: var(--sm-border);
       }
 
       > div {
-        margin-left: 15px;
-        margin-right: 15px;
+        margin-left: 6px;
+        margin-right: 6px;
         min-height: 80px;
-        width: calc((100% / var(--sm-i, 1)) - 30px);
+        width: calc((100% / var(--sm-i, 1)) - 12px);
         float: left;
 
         &.long {
@@ -123,7 +133,6 @@ html[data-color-scheme=dark] {
           display: block;
         }
 
-        &.seperator,
         &.separator {
           clear: both;
 
@@ -150,6 +159,17 @@ html[data-color-scheme=dark] {
         clear: both;
       }
     }
+  }
+}
+
+@container sm-widget (width > 1120px) {
+
+  .widget.stylemanager {
+    .w16  { --sm-i: 6 }
+    .w25  { --sm-i: 4 }
+    .w33  { --sm-i: 3 }
+    .w50  { --sm-i: 2 }
+    .w100 { --sm-i: 1 }
   }
 }
 
@@ -214,34 +234,6 @@ html[data-color-scheme=dark] {
       &:last-of-type {
         border-bottom: none;
       }
-    }
-  }
-}
-
-// Visibility
-%content-visible {
-  display: block;
-}
-
-.stylemanager {
-
-  .tab-nav {
-    display: none;
-  }
-
-  .tab-nav[id^="nav-"]:checked + label {
-    top: 1px;
-    padding-bottom: 9px;
-    border-top-color: var(--sm-orange);
-    background: var(--sm-tab-bg);
-    opacity: 1;
-    cursor: default;
-  }
-
-  @for $i from 0 through 39 {
-    // Toggle visibility
-    .tab-nav[id^="nav-#{$i}"]:checked ~ [id^="tab-#{$i}"] {
-      @extend %content-visible;
     }
   }
 }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\Model;
 
 use Contao\Model;
+use Contao\Model\Collection;
 use Contao\System;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
@@ -57,24 +58,24 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
  * @method static StyleManagerModel|null findOneByExtendNews($col, $val, $opt=array())
  * @method static StyleManagerModel|null findOneByExtendEvents($col, $val, $opt=array())
  *
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findMultipleByIds($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByPids($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByTstamp($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByTitle($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByCssClasses($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByCategory($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendLayout($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendPage($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendModule($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendArticle($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendForm($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendFormFields($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendContentElement($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByContentElements($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendNews($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendEvents($val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findBy($col, $val, array $opt=array())
- * @method static \Model\Collection|StyleManagerModel[]|StyleManagerModel|null findAll(array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findMultipleByIds($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByPids($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByTstamp($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByTitle($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByCssClasses($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByCategory($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendLayout($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendPage($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendModule($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendArticle($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendForm($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendFormFields($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendContentElement($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByContentElements($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendNews($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findByExtendEvents($val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findBy($col, $val, array $opt=array())
+ * @method static Collection|StyleManagerModel[]|StyleManagerModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())
  * @method static integer countByPid($id, array $opt=array())
@@ -104,14 +105,9 @@ class StyleManagerModel extends Model
     protected static $strTable = 'tl_style_manager';
 
     /**
-     * Find published css groups using their table
-     *
-     * @param $strTable
-     * @param array $arrOptions An optional options array
-     *
-     * @return \Model\Collection|StyleManagerModel[]|StyleManagerModel|null A collection of models or null if there are no css groups
+     * Find published CSS groups using their table
      */
-    public static function findByTable($strTable, array $arrOptions=array())
+    public static function findByTable(string $strTable, array $arrOptions=array()): Collection|StyleManagerModel|array|null
     {
         switch ($strTable)
         {
@@ -151,31 +147,26 @@ class StyleManagerModel extends Model
     }
 
     /**
-     * Find configuration and published css groups using their table
-     *
-     * @param $strTable
-     * @param array $arrOptions An optional options array
-     *
-     * @return \Model\Collection|StyleManagerModel[]|StyleManagerModel|null An array of models or null if there are no css groups
+     * Find configuration and published CSS groups using their table
      */
-    public static function findByTableAndConfiguration($strTable, array $arrOptions=array())
+    public static function findByTableAndConfiguration(string $strTable, array $arrOptions=array()): Collection|StyleManagerModel|array|null
     {
         $objContainer = System::getContainer();
         $objGroups = static::findByTable($strTable, $arrOptions);
 
         // Load and merge bundle configurations
-        if($objContainer->getParameter('contao_component_style_manager.use_bundle_config'))
+        if ($objContainer->getParameter('contao_component_style_manager.use_bundle_config'))
         {
             $arrObjStyleGroups = null;
 
             $bundleConfig = Config::getInstance();
             $arrGroups = $bundleConfig::getGroups($strTable);
 
-            if(null !== $arrGroups)
+            if (null !== $arrGroups)
             {
                 $arrArchiveIdentifier = [];
 
-                if(null !== ($objArchives = StyleManagerArchiveModel::findAll()))
+                if (null !== ($objArchives = StyleManagerArchiveModel::findAll()))
                 {
                     $arrArchiveIdentifier = array_combine(
                         $objArchives->fetchEach('id'),
@@ -183,7 +174,7 @@ class StyleManagerModel extends Model
                     );
                 }
 
-                if(null !== $objGroups)
+                if (null !== $objGroups)
                 {
                     foreach ($objGroups as $objGroup)
                     {
@@ -202,16 +193,16 @@ class StyleManagerModel extends Model
                     $blnStrict = $objContainer->getParameter('contao_component_style_manager.strict');
 
                     // Skip if the alias already exists in the backend configuration
-                    if($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
+                    if ($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
                     {
                         $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
                     }
-                    elseif(!$blnStrict)
+                    elseif (!$blnStrict)
                     {
                         // Merge if the alias already exists in the backend configuration
-                        if($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
+                        if ($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
                         {
-                            // Overwrite with merged object
+                            // Overwrite with a merged object
                             $arrObjStyleGroups[ $combinedAlias ] = Sync::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
                         }
                         else
@@ -222,7 +213,7 @@ class StyleManagerModel extends Model
                 }
             }
 
-            if($arrObjStyleGroups)
+            if ($arrObjStyleGroups)
             {
                 // Sort by sorting
                 usort($arrObjStyleGroups, function($a, $b) {
@@ -238,14 +229,8 @@ class StyleManagerModel extends Model
 
     /**
      * Find one item by alias by their parent ID
-     *
-     * @param $alias
-     * @param $pid
-     * @param array $arrOptions
-     *
-     * @return StyleManagerModel|null
      */
-    public static function findByAliasAndPid($alias, $pid, $arrOptions=array())
+    public static function findByAliasAndPid(string $alias, int|string $pid, array $arrOptions=array()): StyleManagerModel|null
     {
         $t = static::$strTable;
 

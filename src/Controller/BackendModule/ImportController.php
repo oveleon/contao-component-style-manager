@@ -18,14 +18,15 @@ use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\Database;
 use Contao\File;
 use Contao\FileUpload;
+use Contao\Image;
 use Contao\Message;
 use Contao\StringUtil;
-use Contao\System;
 use DOMDocument;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config as BundleConfig;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,6 +41,12 @@ class ImportController extends AbstractBackendController
         protected RequestStack $requestStack,
         protected TranslatorInterface $translator,
         private readonly ContaoCsrfTokenManager $tokenManager,
+
+        #[Autowire(param: 'kernel.project_dir')]
+        private readonly string $projectDir,
+
+        #[Autowire(param: 'contao_component_style_manager.use_bundle_config')]
+        private readonly string $bundleConfig,
     ) {
     }
 
@@ -70,7 +77,7 @@ class ImportController extends AbstractBackendController
                 break;
 
             case 'style_manager_import_bundle':
-                if(!$files = $request->get('bundleFiles'))
+                if (!$files = $request->get('bundleFiles'))
                 {
                     Message::addError($this->translator->trans('ERR.all_fields', [], 'contao_default'));
 
@@ -81,15 +88,15 @@ class ImportController extends AbstractBackendController
                 $configs = $this->importBundleConfigFiles($files, $partial);
         }
 
-        if($configs !== null)
+        if ($configs !== null)
         {
             $configs = $this->createImportTree(...$configs);
         }
 
-        return $this->render('@Contao/import.html.twig', [
+        return $this->render('@Contao/backend/import.html.twig', [
             'headline'        => $partial ? $this->translator->trans('tl_style_manager_import.importPartial', [], 'contao_default') : 'Import',
             'messages'        => Message::generate(),
-            'useBundleConfig' => System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'),
+            'useBundleConfig' => $this->bundleConfig,
             'bundleFiles'     => BundleConfig::getBundleConfigurationFiles() ?? [],
             'partial'         => $partial,
             'configs'         => $configs,
@@ -101,6 +108,9 @@ class ImportController extends AbstractBackendController
             ],
             'action'          => [
                 'back'                 => str_replace('/' . self::ROUTE, '', $this->generateUrl('contao_backend')) . '?do=style_manager',
+            ],
+            'img'             => [
+                'help'                 => Image::getHtml('help.svg', 'Import help')
             ],
             'label'           => [
                 'back'                 => $this->translator->trans('MSC.backBT', [], 'contao_default'),
@@ -131,14 +141,14 @@ class ImportController extends AbstractBackendController
 
         $_groups = $groups;
 
-        // Check if archive exists
+        // Check if the archive exists
         $getGroups = function (int $pid) use (&$_groups): array
         {
             $collection = [];
 
             foreach ($_groups ?? [] as $alias => &$group)
             {
-                if($pid === $group->pid)
+                if ($pid === $group->pid)
                 {
                     $collection[ $alias ] = $group;
 
@@ -166,7 +176,7 @@ class ImportController extends AbstractBackendController
     /**
      * Partial import
      */
-    private function importPartial(array $files, array $archives, array $groups): ?array
+    private function importPartial(array $files, array $archives, array $groups): array|null
     {
         return $this->importFiles($files, true, $archives, $groups);
     }
@@ -174,15 +184,16 @@ class ImportController extends AbstractBackendController
     /**
      * Import based on bundle configurations
      */
-    public function importBundleConfigFiles(array $files, bool $partial = false): ?array
+    public function importBundleConfigFiles(array $files, bool $partial = false): array|null
     {
         return $this->importFiles(array_map(fn($n) => html_entity_decode($n), $files), !$partial);
     }
 
     /**
      * Import using a FileUploader
+     * @throws \Exception
      */
-    public function importByFileUploader(FileUpload $objUploader, bool $partial = false): ?array
+    public function importByFileUploader(FileUpload $objUploader, bool $partial = false): array|null
     {
         Controller::loadLanguageFile('default');
 
@@ -192,16 +203,12 @@ class ImportController extends AbstractBackendController
         // Upload files
         $uploaded = $objUploader->uploadTo('system/tmp');
 
-        // Get root dir
-        /** @var string $rootDir */
-        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-
         if (empty($uploaded))
         {
             Message::addError($this->translator->trans('ERR.all_fields', [], 'contao_default'));
 
             // Reload page
-            throw new RedirectResponseException($request->getUri(), 303);
+            throw new RedirectResponseException($request->getUri());
         }
 
         $arrFiles = [];
@@ -209,7 +216,7 @@ class ImportController extends AbstractBackendController
         foreach ($uploaded as $file)
         {
             // Skip folders
-            if (is_dir($rootDir . '/' . $file))
+            if (is_dir($this->projectDir . '/' . $file))
             {
                 Message::addError(sprintf($this->translator->trans('ERR.importFolder', [], 'contao_default'), basename($file)));
                 continue;
@@ -238,7 +245,7 @@ class ImportController extends AbstractBackendController
 
         $data = $this->importFiles($arrFiles, !$partial);
 
-        if($partial)
+        if ($partial)
         {
             return $data;
         }
@@ -250,7 +257,7 @@ class ImportController extends AbstractBackendController
     /**
      * Import config files
      */
-    public static function importFiles(array $files, bool $blnSave = true, ?array $allowedArchives = null, ?array $allowedGroups = null): ?array
+    public static function importFiles(array $files, bool $blnSave = true, array|null $allowedArchives = null, array|null $allowedGroups = null): array|null
     {
         $arrStyleArchives = [];
         $arrStyleGroups = [];
@@ -299,7 +306,7 @@ class ImportController extends AbstractBackendController
             // Get archives node
             $archives = $xml->getElementsByTagName('archives');
 
-            if($archives->count()){
+            if ($archives->count()){
                 // Skip archives node
                 $archives = $archives->item(0)->childNodes;
             }else return null;
@@ -317,15 +324,15 @@ class ImportController extends AbstractBackendController
                 Controller::loadDataContainer($table);
             }
 
-            if($blnSave)
+            if ($blnSave)
             {
                 $database->lockTables($arrLocks);
             }
 
-            // Check if archive exists
+            // Check if the archive exists
             $archiveExists = function (string $identifier) use ($database, $blnSave, $arrStyleArchives) : bool
             {
-                if(!$blnSave)
+                if (!$blnSave)
                 {
                     return array_key_exists($identifier, $arrStyleArchives);
                 }
@@ -336,7 +343,7 @@ class ImportController extends AbstractBackendController
             // Check if children exist
             $childrenExists = function (string $alias, int $pid) use($database, $blnSave, $arrStyleGroups) : bool
             {
-                if(!$blnSave)
+                if (!$blnSave)
                 {
                     return array_key_exists($alias, $arrStyleGroups);
                 }
@@ -350,14 +357,14 @@ class ImportController extends AbstractBackendController
                 $archive = $archives->item($i)->childNodes;
                 $identifier = $archives->item($i)->getAttribute('identifier');
 
-                if(null !== $allowedArchives && !in_array($identifier, $allowedArchives))
+                if (null !== $allowedArchives && !in_array($identifier, $allowedArchives))
                 {
                     continue;
                 }
 
-                if(!$blnSave || !$archiveExists($identifier))
+                if (!$blnSave || !$archiveExists($identifier))
                 {
-                    if(!$blnSave && $archiveExists($identifier))
+                    if (!$blnSave && $archiveExists($identifier))
                     {
                         $objArchive = $arrStyleArchives[$identifier];
                     }
@@ -373,24 +380,24 @@ class ImportController extends AbstractBackendController
                     $objArchive = StyleManagerArchiveModel::findByIdentifier($identifier);
                 }
 
-                // Loop through the archives fields
+                // Loop through the archive fields
                 for ($a=0; $a<$archive->length; $a++)
                 {
                     $strField = $archive->item($a)->nodeName;
 
-                    if($strField === 'field')
+                    if ($strField === 'field')
                     {
                         $strName  = $archive->item($a)->getAttribute('title');
                         $strValue = $archive->item($a)->nodeValue ?? '';
 
-                        if($strName === 'id' || strtolower($strValue) === 'null')
+                        if ($strName === 'id' || strtolower($strValue) === 'null')
                         {
                             continue;
                         }
 
                         $objArchive->{$strName} = $strValue;
                     }
-                    elseif($strField === 'children')
+                    elseif ($strField === 'children')
                     {
                         $children = $archive->item($a)->childNodes;
 
@@ -402,14 +409,14 @@ class ImportController extends AbstractBackendController
 
                             $strChildAlias = Sync::combineAliases($objArchive->identifier, $alias);
 
-                            if(null !== $allowedGroups && !in_array($strChildAlias, $allowedGroups))
+                            if (null !== $allowedGroups && !in_array($strChildAlias, $allowedGroups))
                             {
                                 continue;
                             }
 
-                            if(!$blnSave || !$childrenExists($strChildAlias, $objArchive->id))
+                            if (!$blnSave || !$childrenExists($strChildAlias, $objArchive->id))
                             {
-                                if(!$blnSave && $childrenExists($strChildAlias, $objArchive->id))
+                                if (!$blnSave && $childrenExists($strChildAlias, $objArchive->id))
                                 {
                                     $objChildren = $arrStyleGroups[$strChildAlias];
                                 }
@@ -431,18 +438,18 @@ class ImportController extends AbstractBackendController
                                 $strName = $fields->item($f)->getAttribute('title');
                                 $strValue = $fields->item($f)->nodeValue;
 
-                                if($strName === 'id' || !$strValue || strtolower($strValue) === 'null')
+                                if ($strName === 'id' || !$strValue || strtolower($strValue) === 'null')
                                 {
                                     continue;
                                 }
 
-                                switch($strName)
+                                switch ($strName)
                                 {
                                     case 'pid':
                                         $strValue = $objArchive->id;
                                         break;
                                     case 'cssClasses':
-                                        if($objChildren->{$strName})
+                                        if ($objChildren->{$strName})
                                         {
                                             /** @var array<array<int|string>> $arrClasses */
                                             $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
@@ -451,9 +458,9 @@ class ImportController extends AbstractBackendController
                                             /** @var array<array<int|string>> $arrValues */
                                             $arrValues = StringUtil::deserialize($strValue, true);
 
-                                            foreach($arrValues as $cssClass)
+                                            foreach ($arrValues as $cssClass)
                                             {
-                                                if(array_key_exists($cssClass['key'], $arrExists))
+                                                if (array_key_exists($cssClass['key'], $arrExists))
                                                 {
                                                     continue;
                                                 }
@@ -471,16 +478,16 @@ class ImportController extends AbstractBackendController
                                     default:
                                         $dcaField = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$strName];
 
-                                        if(isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
+                                        if (isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
                                         {
                                             /** @var array<array<int|string>> $arrElements */
                                             $arrElements = StringUtil::deserialize($objChildren->{$strName}, true);
                                             /** @var array<array<int|string>> $arrValues */
                                             $arrValues   = StringUtil::deserialize($strValue, true);
 
-                                            foreach($arrValues as $element)
+                                            foreach ($arrValues as $element)
                                             {
-                                                if(in_array($element, $arrElements))
+                                                if (in_array($element, $arrElements))
                                                 {
                                                     continue;
                                                 }
@@ -496,7 +503,7 @@ class ImportController extends AbstractBackendController
                             }
 
                             // Save children data
-                            if($blnSave)
+                            if ($blnSave)
                             {
                                 $objChildren->save();
                             }
@@ -510,7 +517,7 @@ class ImportController extends AbstractBackendController
                 }
 
                 // Save archive data
-                if($blnSave)
+                if ($blnSave)
                 {
                     $objArchive->save();
                 }
@@ -521,7 +528,7 @@ class ImportController extends AbstractBackendController
             }
 
             // Unlock the tables
-            if($blnSave)
+            if ($blnSave)
             {
                 $database->unlockTables();
                 Message::addConfirmation($translator->trans('MSC.styleManagerConfigImported', [basename($filePath)], 'contao_default'));

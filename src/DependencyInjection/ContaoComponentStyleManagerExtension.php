@@ -17,6 +17,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class ContaoComponentStyleManagerExtension extends Extension
 {
+    /**
+     * @throws \Exception
+     */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);

@@ -33,7 +33,7 @@ class Sync
     public function __construct(
         protected ContaoFramework $framework,
         protected Connection $connection,
-        private readonly ?LoggerInterface $logger = null
+        private readonly LoggerInterface|null $logger = null
     ) {
     }
 
@@ -46,12 +46,9 @@ class Sync
     {
         $this->framework->initialize();
 
-        $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
-            $this->connection->createSchemaManager() :
-            $this->connection->getSchemaManager()
-        ;
+        $schemaManager = $this->connection->createSchemaManager();
 
-        if(null === $table || !$schemaManager->tablesExist([$table]))
+        if (null === $table || !$schemaManager->tablesExist([$table]))
         {
             return false;
         }
@@ -67,18 +64,18 @@ class Sync
         $objConfig = $this->connection->fetchFirstColumn("SELECT styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
         $archives = StyleManagerArchiveModel::countAll();
 
-        if(count($objConfig) && $archives > 0 && $arrConfig = StringUtil::deserialize($objConfig[0]))
+        if (count($objConfig) && $archives > 0 && $arrConfig = StringUtil::deserialize($objConfig[0]))
         {
             $key = array_key_first($arrConfig);
 
-            if($key === StyleManager::VARS_KEY && count($arrConfig) > 1)
+            if ($key === StyleManager::VARS_KEY && count($arrConfig) > 1)
             {
                 $key = array_keys($arrConfig)[1];
             }
 
             if (is_numeric($key) && empty(StyleManagerModel::findById($key)))
             {
-                // Skip if the configuration was already converted or can not be found anymore as the PK does not exist
+                // Skip if the configuration was already converted or cannot be found anymore as the PK does not exist
                 $this->logger->error('Style Manager conversion for table "'.$table.'" and id "'.$key.'" has been skipped due to primary key not existing anymore.');
                 return false;
             }
@@ -98,24 +95,21 @@ class Sync
     {
         $this->framework->initialize();
 
-        $schemaManager = method_exists($this->connection, 'createSchemaManager') ?
-            $this->connection->createSchemaManager() :
-            $this->connection->getSchemaManager()
-        ;
+        $schemaManager = $this->connection->createSchemaManager();
 
-        if(null === $table || !$schemaManager->tablesExist([$table]))
+        if (null === $table || !$schemaManager->tablesExist([$table]))
         {
             return;
         }
 
         $objRows = $this->connection->fetchAllAssociative("SELECT id, styleManager FROM " . $table . " WHERE styleManager IS NOT NULL");
 
-        if(!empty($objRows))
+        if (!empty($objRows))
         {
             $objArchives = StyleManagerArchiveModel::findAll();
             $arrArchives = [];
 
-            if(null === $objArchives)
+            if (null === $objArchives)
             {
                 return;
             }
@@ -129,7 +123,7 @@ class Sync
 
             foreach ($objRows as $rows)
             {
-                if($arrConfig = StringUtil::deserialize($rows['styleManager']))
+                if ($arrConfig = StringUtil::deserialize($rows['styleManager']))
                 {
                     $arrIds = array_merge($arrIds, array_keys($arrConfig));
                 }
@@ -138,7 +132,7 @@ class Sync
             $objGroups = StyleManagerModel::findMultipleByIds(array_unique($arrIds));
             $arrGroups = [];
 
-            if(null !== $objGroups)
+            if (null !== $objGroups)
             {
                 foreach ($objGroups as $objGroup)
                 {
@@ -151,13 +145,13 @@ class Sync
 
                     $key = array_key_first($config);
 
-                    if($key === StyleManager::VARS_KEY && count($config) > 1)
+                    if ($key === StyleManager::VARS_KEY && count($config) > 1)
                     {
                         $key = array_keys($config)[1];
                     }
 
-                    // Skip is config already converted
-                    if(!is_numeric($key))
+                    // Skip if the configuration was already converted
+                    if (!is_numeric($key))
                     {
                         continue;
                     }
@@ -184,9 +178,9 @@ class Sync
     /**
      * Merge group objects
      */
-    public static function mergeGroupObjects(?StyleManagerModel $objOriginal, ?StyleManagerModel $objMerge, ?array $skipFields = null, bool $skipEmpty = true, $forceOverwrite = true): ?StyleManagerModel
+    public static function mergeGroupObjects(StyleManagerModel|null $objOriginal = null, StyleManagerModel|null $objMerge = null, array|null $skipFields = null, bool $skipEmpty = true, $forceOverwrite = true): StyleManagerModel|null
     {
-        if(null === $objOriginal || null === $objMerge)
+        if (null === $objOriginal || null === $objMerge)
         {
             return $objOriginal;
         }
@@ -195,18 +189,18 @@ class Sync
 
         foreach ($objMerge->row() as $field => $value)
         {
-            if(
+            if (
                 ($skipEmpty && (!$value || strtolower((string) $value) === 'null'))
                 || (null !== $skipFields && in_array($field, $skipFields))
             ) {
                 continue;
             }
 
-            switch($field)
+            switch ($field)
             {
                 // Merge and manipulation of existing classes
                 case 'cssClasses':
-                    if($objOriginal->{$field})
+                    if ($objOriginal->{$field})
                     {
                         /** @var array $arrClasses */
                         $arrClasses = StringUtil::deserialize($objOriginal->{$field}, true);
@@ -215,11 +209,11 @@ class Sync
                         /** @var array $arrValues */
                         $arrValues = StringUtil::deserialize($value, true);
 
-                        foreach($arrValues as $cssClass)
+                        foreach ($arrValues as $cssClass)
                         {
-                            if(array_key_exists($cssClass['key'], $arrExists))
+                            if (array_key_exists($cssClass['key'], $arrExists))
                             {
-                                if(!$forceOverwrite)
+                                if (!$forceOverwrite)
                                 {
                                     continue;
                                 }
@@ -250,7 +244,7 @@ class Sync
                 default:
                     $fieldOptions = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$field];
 
-                    if(isset($fieldOptions['eval']['multiple']) && !!$fieldOptions['eval']['multiple'] && $fieldOptions['inputType'] === 'checkbox')
+                    if (isset($fieldOptions['eval']['multiple']) && !!$fieldOptions['eval']['multiple'] && $fieldOptions['inputType'] === 'checkbox')
                     {
                         /** @var array $arrElements */
                         $arrElements = StringUtil::deserialize($objOriginal->{$field}, true);
@@ -258,11 +252,11 @@ class Sync
                         /** @var array $arrValues */
                         $arrValues = StringUtil::deserialize($value, true);
 
-                        foreach($arrValues as $element)
+                        foreach ($arrValues as $element)
                         {
-                            if(in_array($element, $arrElements))
+                            if (in_array($element, $arrElements))
                             {
-                                if(!$forceOverwrite)
+                                if (!$forceOverwrite)
                                 {
                                     continue;
                                 }
@@ -289,8 +283,9 @@ class Sync
 
     /**
      * Export StyleManager records
+     * @throws \Exception
      */
-    public function export(?DataContainer $dc, $objArchives = null, bool $blnSendToBrowser = true)
+    public function export(DataContainer|null $dc = null, $objArchives = null, bool $blnSendToBrowser = true)
     {
         $this->framework->initialize();
 
@@ -299,7 +294,7 @@ class Sync
         $xml->formatOutput = true;
 
         // Archives
-        if(null === $objArchives)
+        if (null === $objArchives)
         {
             $objArchives = StyleManagerArchiveModel::findAll(['order' => 'groupAlias,sorting']);
         }
@@ -315,7 +310,7 @@ class Sync
         $archives = $xml->appendChild($archives);
 
         // Add the archives
-        while($objArchives->next())
+        while ($objArchives->next())
         {
             $this->addArchiveData($xml, $archives, $objArchives);
         }
@@ -323,12 +318,12 @@ class Sync
         // Generate temp name
         $strTmp = md5(uniqid((string) mt_rand(), true));
 
-        // Create file and open the "save as …" dialogue
+        // Create a file and open the "save as …" dialogue
         $objFile = new File('system/tmp/' . $strTmp);
         $objFile->write($xml->saveXML());
         $objFile->close();
 
-        if(!$blnSendToBrowser)
+        if (!$blnSendToBrowser)
         {
             return $objFile;
         }
@@ -338,6 +333,7 @@ class Sync
 
     /**
      * Add an archive data row to the XML document
+     * @throws \DOMException
      */
     protected function addArchiveData(DOMDocument $xml, DOMNode $archives, Collection $objArchive): void
     {
@@ -368,14 +364,14 @@ class Sync
 
         $objChildren = StyleManagerModel::findByPid($pid);
 
-        if($objChildren === null)
+        if ($objChildren === null)
         {
             return;
         }
 
         Controller::loadDataContainer('tl_style_manager');
 
-        while($objChildren->next())
+        while ($objChildren->next())
         {
             $row = $xml->createElement('child');
             $row->setAttribute('alias', $objChildren->alias);
@@ -412,20 +408,21 @@ class Sync
     /**
      * Flatten Key Value Array
      */
-    public static function flattenKeyValueArray($arr): array
+    public static function flattenKeyValueArray(array $array): array
     {
-        if(empty($arr))
+        if (empty($array))
         {
             return [];
         }
 
-        $arrTmp = array();
+        $arrTemp = [];
 
-        foreach ($arr as $item) {
-            $arrTmp[ $item['key'] ] = $item['value'];
+        foreach ($array as $item)
+        {
+            $arrTemp[ $item['key'] ] = $item['value'];
         }
 
-        return $arrTmp;
+        return $arrTemp;
     }
 
     public static function combineAliases(...$aliases): string
