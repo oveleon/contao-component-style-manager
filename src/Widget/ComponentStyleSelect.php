@@ -233,7 +233,7 @@ class ComponentStyleSelect extends Widget
             {
                 $arrCollection[ $collectionAlias ] = [
                     'label'      => $arrArchives[ $objStyleGroup->pid ]['title'],
-                    'desc'       => $arrArchives[ $objStyleGroup->pid ]['desc'],
+                    'desc'       => $this->insertTagParser?->replaceInline(nl2br($arrArchives[ $objStyleGroup->pid ]['desc'] ?? '')),
                     'group'      => $groupAlias,
                     'groupTitle' => $arrArchives[ $objStyleGroup->pid ]['group'] ?? null,
                     'fields'     => []
@@ -263,7 +263,7 @@ class ComponentStyleSelect extends Widget
         $objSession = $this->requestStack?->getSession()->getBag('contao_backend');
         $arrSession = $objSession?->get('stylemanager_section_states');
 
-        $arrGroups   = [];
+        $arrGroups = [];
 
         // sort collection by sort-index
         uksort($arrCollection, function($key1, $key2) use ($arrOrder) {

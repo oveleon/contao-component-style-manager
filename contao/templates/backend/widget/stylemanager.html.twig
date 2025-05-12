@@ -34,7 +34,7 @@
 
                     <div id="{{ identifier }}" class="tab-content{{ isSelected ? ' active' : '' }}">
                         {% if collection.desc is not empty %}
-                            <div class="long desc">{{ collection.desc|nl2br }}</div>
+                            <div class="long desc">{{ collection.desc }}</div>
                         {% endif %}
 
                         {% for html in collection.fields %}
