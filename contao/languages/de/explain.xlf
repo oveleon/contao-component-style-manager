@@ -33,6 +33,46 @@
         <source>Cancels all floats and breaks the element into the next line. Additionally, a line is added to create meaningful sections.</source>
         <target>Hebt alle floats auf und umbricht das Element in die nächste Zeile. Zusätzlich wird eine Linie hinzugefügt um sinnvolle Abschnitte erzeugen zu können.</target>
       </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.4.0">
+        <source>w16</source>
+        <target>w16</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.4.1">
+        <source>Sets the width of the element to 16 % on larger devices.</source>
+        <target>Setzt die Breite des Elements auf größeren Geräten auf 16 %.</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.5.0">
+        <source>w25</source>
+        <target>w25</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.5.1">
+        <source>Sets the width of the element to 25 % on larger devices.</source>
+        <target>Setzt die Breite des Elements auf größeren Geräten auf 25 %.</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.6.0">
+        <source>w33</source>
+        <target>w33</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.6.1">
+        <source>Sets the width of the element to 33 % on larger devices.</source>
+        <target>Setzt die Breite des Elements auf größeren Geräten auf 33 %.</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.7.0">
+        <source>w50</source>
+        <target>w50</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.7.1">
+        <source>Sets the width of the element to 100 % on larger devices.</source>
+        <target>Setzt die Breite des Elements auf größeren Geräten auf 50 %.</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.8.0">
+        <source>w50</source>
+        <target>w50</target>
+      </trans-unit>
+      <trans-unit id="XPL.styleManagerFieldClass.8.1">
+        <source>Sets the width of the element to 100 % on larger devices.</source>
+        <target>Setzt die Breite des Elements auf größeren Geräten auf 50 %.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
