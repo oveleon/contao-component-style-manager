@@ -18,6 +18,7 @@ use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\Database;
 use Contao\File;
 use Contao\FileUpload;
+use Contao\Image;
 use Contao\Message;
 use Contao\StringUtil;
 use DOMDocument;
@@ -92,7 +93,7 @@ class ImportController extends AbstractBackendController
             $configs = $this->createImportTree(...$configs);
         }
 
-        return $this->render('@Contao/import.html.twig', [
+        return $this->render('@Contao/backend/import.html.twig', [
             'headline'        => $partial ? $this->translator->trans('tl_style_manager_import.importPartial', [], 'contao_default') : 'Import',
             'messages'        => Message::generate(),
             'useBundleConfig' => $this->bundleConfig,
@@ -107,6 +108,9 @@ class ImportController extends AbstractBackendController
             ],
             'action'          => [
                 'back'                 => str_replace('/' . self::ROUTE, '', $this->generateUrl('contao_backend')) . '?do=style_manager',
+            ],
+            'img'             => [
+                'help'                 => Image::getHtml('help.svg', 'Import help')
             ],
             'label'           => [
                 'back'                 => $this->translator->trans('MSC.backBT', [], 'contao_default'),

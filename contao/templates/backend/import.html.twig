@@ -32,7 +32,7 @@
                                 <div id="group_{{ archiveAlias }}" class="tl_checkbox_container sm-container">
                                     <div class="sm-hl-container">
                                         <input type="checkbox" name="archives[]" id="{{ archiveAlias }}" class="tl_checkbox" value="{{ archiveAlias }}" onclick="Backend.toggleCheckboxGroup(this,'group_{{ archiveAlias }}')"/>
-                                        <label for="{{ archiveAlias }}" class="sm-groupHeadline">{{ archive.archive.title|raw }}
+                                        <label for="{{ archiveAlias }}" class="sm-groupHeadline">{{ archive.archive.title|default(archiveAlias)|raw }}
                                             {% if archive.archive.groupAlias is defined %}
                                                 <span class="sm-groupAlias">
                                                 {{ '(' ~ archive.archive.groupAlias|raw ~ ')' }}
@@ -89,8 +89,8 @@
                     <div class="widget">
                         <h3>
                             {{ label.bundleUpload }}
-                            <a href="/contao/help?table=tl_style_manager_archive&amp;field=bundleConfig" title="" onclick="Backend.openModalIframe({'title':'{{ label.bundleUpload }}','url':this.href});return false">
-                                <img src="/bundles/contaocomponentstylemanager/icons/about.svg" width="16" height="16">
+                            <a href="{{ path('contao_backend') }}/help?table=tl_style_manager_archive&amp;field=bundleConfig" title="" onclick="Backend.openModalIframe({'title':'{{ label.bundleUpload }}','url':this.href});return false">
+                                {{ img.help|default|raw }}
                             </a>
                         </h3>
                         {% if useBundleConfig %}
@@ -106,13 +106,13 @@
 
                                 <div style="margin-top: 20px; display: flex; align-items: center">
                                     <button type="submit" name="import" id="import_full" class="tl_submit" accesskey="s">{{ label.import }}</button>
-                                    <span class="widget" style="display: inline-block">
+                                    <div class="widget" style="display: inline-block">
                                         <span class="tl_checkbox_single_container">
                                             <input type="checkbox" name="import_partial" id="import_partial_bundle" value="1" />
                                             <label for="import_partial_bundle">{{ label.importPartial }}</label>
                                         </span>
                                         <p class="tl_help tl_tip" title="">{{ label.importPartialDesc }}</p>
-                                    </span>
+                                    </div>
                                 </div>
                             {% else %}
                                 <p>{{ label.bundleConfigEmpty }}</p>

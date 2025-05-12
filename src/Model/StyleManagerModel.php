@@ -147,7 +147,7 @@ class StyleManagerModel extends Model
     }
 
     /**
-     * Find configuration and published css groups using their table
+     * Find configuration and published CSS groups using their table
      */
     public static function findByTableAndConfiguration(string $strTable, array $arrOptions=array()): Collection|StyleManagerModel|array|null
     {
@@ -202,7 +202,7 @@ class StyleManagerModel extends Model
                         // Merge if the alias already exists in the backend configuration
                         if ($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
                         {
-                            // Overwrite with merged object
+                            // Overwrite with a merged object
                             $arrObjStyleGroups[ $combinedAlias ] = Sync::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
                         }
                         else
