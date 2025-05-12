@@ -241,7 +241,7 @@ class ComponentStyleSelect extends Widget
             }
 
             $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s data-action="focus->contao--scroll-offset#store">%s</select>%s%s',
-                ($objStyleGroup->cssClass === 'seperator' || $objStyleGroup->cssClass === 'separator' ? '<hr>' : '') . '<div' . ($objStyleGroup->cssClass ? ' class="' . $objStyleGroup->cssClass . '"' : '').'><h3><label>' . $objStyleGroup->title . '</label></h3>',
+                (str_contains($objStyleGroup->cssClass ?? '', 'separator') ? '<hr>' : '') . '<div' . ($objStyleGroup->cssClass ? ' class="' . $objStyleGroup->cssClass . '"' : '').'><h3><label>' . $objStyleGroup->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
                 $strClass,
