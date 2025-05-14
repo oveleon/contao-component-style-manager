@@ -14,6 +14,7 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Database;
+use Contao\DC_Table
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
@@ -317,15 +318,12 @@ class ComponentStyleSelect extends Widget
         // Update CSS class fields in case of multiple editing, or if a user has no rights for the field
         if ($field && (Input::get('act') === 'editAll' || !$objUser->hasAccess($this->strTable . '::' . $field, 'alexf')))
         {
-            $stdClass = new \stdClass();
-            $stdClass->field = $field;
-            $stdClass->table = $this->strTable;
-
-            $stdClass->activeRecord = new \stdClass();
-            $stdClass->activeRecord->styleManager = $this->varValue;
-
-            $value = StyleManager::resetClasses($this->activeRecord->{$field}, $stdClass, $this->strTable);
-            $value = StyleManager::updateClasses($value, $stdClass);
+            $dc = new DC_Table($this->strTable);
+            $dc->field = $field;
+            $dc->activeRecord = $this->activeRecord;
+            
+            $value = StyleManager::resetClasses($this->activeRecord->{$field}, $dc, $this->strTable);
+            $value = StyleManager::updateClasses($value, $dc);
 
             // Update CSS class field
             Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
