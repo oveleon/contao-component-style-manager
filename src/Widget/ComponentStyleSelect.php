@@ -14,7 +14,7 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Database;
-use Contao\DC_Table
+use Contao\DC_Table;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
