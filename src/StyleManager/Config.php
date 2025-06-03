@@ -19,7 +19,7 @@ use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportControlle
  *
  * @author Daniele Sciannimanica <https://github.com/doishub>
  */
-class Config
+final class Config
 {
     /**
      * Object instance (Singleton)
@@ -35,6 +35,37 @@ class Config
      * Archive data
      */
     protected static array $arrArchive = [];
+
+    /**
+     * Prevent direct instantiation (Singleton)
+     */
+    public function __construct()
+    {
+        [$arrStyleArchives, $arrStyleGroups] = static::loadBundleConfiguration();
+
+        self::$arrArchive = $arrStyleArchives;
+        self::$arrGroups = $arrStyleGroups;
+    }
+
+    /**
+     * Prevent cloning of the object (Singleton)
+     */
+    final public function __clone()
+    {
+    }
+
+    /**
+     * Instantiate the config object
+     */
+    public static function getInstance(): Config|null
+    {
+        if (static::$objInstance === null)
+        {
+            static::$objInstance = new static();
+        }
+
+        return static::$objInstance;
+    }
 
     /**
      * Return all archives as an array
@@ -138,36 +169,5 @@ class Config
         }
 
         return [[],[]];
-    }
-
-    /**
-     * Prevent direct instantiation (Singleton)
-     */
-    protected function __construct()
-    {
-        [$arrStyleArchives, $arrStyleGroups] = static::loadBundleConfiguration();
-
-        self::$arrArchive = $arrStyleArchives;
-        self::$arrGroups = $arrStyleGroups;
-    }
-
-    /**
-     * Prevent cloning of the object (Singleton)
-     */
-    final public function __clone()
-    {
-    }
-
-    /**
-     * Instantiate the config object
-     */
-    public static function getInstance(): Config|null
-    {
-        if (static::$objInstance === null)
-        {
-            static::$objInstance = new static();
-        }
-
-        return static::$objInstance;
     }
 }
