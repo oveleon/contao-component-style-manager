@@ -112,14 +112,6 @@ final class Config
         $arrFiles = System::getContainer()->get('contao.resource_finder')?->findIn('templates')?->files()?->name('style-manager-*.xml');
         $arrBundleConfigs = null;
 
-        if ($projectTemplates = array_merge((glob($projectDir . '/templates/style-manager-*.xml') ?: []), (glob($projectDir . '/templates/*/style-manager-*.xml') ?: [])))
-        {
-            foreach ($projectTemplates as $template)
-            {
-                $arrBundleConfigs[basename($template) . ' <b>(/'. dirname(StringUtil::striprootdir($template)) .')</b>'] = str_replace($projectDir, '', $template);
-            }
-        }
-
         if ($arrFiles->hasResults())
         {
             foreach ($arrFiles as $file)
@@ -145,6 +137,14 @@ final class Config
                 }
 
                 $arrBundleConfigs[basename($strRelPath) . ' <b>(' . $bundleName . ')</b>'] = str_replace($projectDir, '', $strRelPath);
+            }
+        }
+
+        if ($projectTemplates = array_merge((glob($projectDir . '/templates/style-manager-*.xml') ?: []), (glob($projectDir . '/templates/*/style-manager-*.xml') ?: [])))
+        {
+            foreach ($projectTemplates as $template)
+            {
+                $arrBundleConfigs[basename($template) . ' <b>(/'. dirname(StringUtil::striprootdir($template)) .')</b>'] = str_replace($projectDir, '', $template);
             }
         }
 
