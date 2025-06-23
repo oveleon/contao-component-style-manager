@@ -26,7 +26,7 @@
         "php": "^8.2",
         "ext-json": "*",
         "ext-dom": "*",
-        "contao/core-bundle": "^5.3",
+        "contao/core-bundle": "5.3.* || ^5.5.12",
         "doctrine/dbal": "^3.3",
         "psr/log": "^1.1 || 2.0 || ^3.0",
         "symfony/config": "^6.4 || ^7.2",
