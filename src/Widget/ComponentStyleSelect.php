@@ -241,8 +241,9 @@ class ComponentStyleSelect extends Widget
                 ];
             }
 
-            $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s<select name="%s" id="ctrl_%s" class="%s%s"%s data-action="focus->contao--scroll-offset#store">%s</select>%s%s',
-                (str_contains($objStyleGroup->cssClass ?? '', 'separator') ? '<hr>' : '') . '<div' . ($objStyleGroup->cssClass ? ' class="' . $objStyleGroup->cssClass . '"' : '').'><h3><label>' . $objStyleGroup->title . '</label></h3>',
+            $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s%s<select name="%s" id="ctrl_%s" class="%s%s"%s data-action="focus->contao--scroll-offset#store">%s</select>%s%s',
+                (str_contains($objStyleGroup->cssClass ?? '', 'separator') ? '<hr>' : '') . '<div' . ($objStyleGroup->cssClass ? ' class="' . $objStyleGroup->cssClass . '"' : '').'>',
+                '<h3><label for="ctrl_' . $strFieldId . '">' . $objStyleGroup->title . '</label></h3>',
                 $strFieldName,
                 $strFieldId,
                 $strClass,
@@ -321,7 +322,7 @@ class ComponentStyleSelect extends Widget
             $dc = new DC_Table($this->strTable);
             $dc->field = $field;
             $dc->activeRecord = $this->activeRecord;
-            
+
             $value = StyleManager::resetClasses($this->activeRecord->{$field}, $dc, $this->strTable);
             $value = StyleManager::updateClasses($value, $dc);
 
