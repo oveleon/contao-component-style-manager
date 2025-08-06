@@ -38,19 +38,22 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
             'format'                  => '%s'
         ],
         'global_operations' => [
+            'config' => [
+                'class'               => 'header_style_manager_config',
+                'primary'             => true,
+            ],
             'import' => [
                 'class'               => 'header_style_manager_import',
-                'icon'                => 'theme_import.svg'
+                'icon'                => 'theme_import.svg',
+                'primary'             => true,
             ],
             'export' => [
                 'href'                => 'key=export',
                 'class'               => 'header_style_manager_export',
-                'icon'                => 'theme_export.svg'
+                'icon'                => 'theme_export.svg',
+                'primary'             => true,
             ],
             'all',
-            'config' => [
-                'class'               => 'header_style_manager_config'
-            ]
         ],
         'operations' => [
             'edit',

@@ -5,6 +5,14 @@
         {{ messages|raw }}
     {% endif %}
 
+    {% if partial %}
+        <div data-controller="contao--jump-targets">
+            <div class="jump-targets">
+                <div class="inner" data-contao--jump-targets-target="navigation"></div>
+            </div>
+            <p class="tl_info">{{ label.importExplanation }}</p>
+    {% endif %}
+
     <div id="tl_buttons">
         <a href="{{ action.back }}" class="header_back" title="{{ label.backTitle }}" accesskey="b">{{ label.back }}</a>
     </div>
@@ -26,35 +34,42 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <p class="tl_info" style="margin-top: 15px; margin-bottom: 15px">{{ label.importExplanation }}</p>
+
                         <div class="sm-children">
                             {% for archiveAlias, archive in configs.collection %}
-                                <div id="group_{{ archiveAlias }}" class="tl_checkbox_container sm-container">
-                                    <div class="sm-hl-container">
+                                {% set fieldset_attributes = attrs()
+                                    .set('id', 'group_' ~ archiveAlias)
+                                    .addClass(['tl_checkbox_container', 'sm-container'])
+                                    .set('data-contao--jump-targets-target', 'section')
+                                    .set('data-contao--jump-targets-label-value', archive.archive.title|default(archiveAlias))
+                                %}
+                                <fieldset{{ fieldset_attributes }}>
+                                    <legend class="sm-hl-container">
                                         <input type="checkbox" name="archives[]" id="{{ archiveAlias }}" class="tl_checkbox" value="{{ archiveAlias }}" onclick="Backend.toggleCheckboxGroup(this,'group_{{ archiveAlias }}')"/>
                                         <label for="{{ archiveAlias }}" class="sm-groupHeadline">{{ archive.archive.title|default(archiveAlias)|raw }}
-                                            {% if archive.archive.groupAlias is defined %}
+                                            {%- if archive.archive.groupAlias is defined %}
                                                 <span class="sm-groupAlias">
-                                                {{ '(' ~ archive.archive.groupAlias|raw ~ ')' }}
-                                            </span>
-                                            {% endif %}
+                                                    {{ '(' ~ archive.archive.groupAlias|raw ~ ')' }}
+                                                </span>
+                                            {% endif -%}
                                         </label>
-                                    </div>
+                                    </legend>
                                     <div class="children">
                                         {% for groupAlias, child in archive.children %}
                                             <div class="child">
-                                                <input type="checkbox" name="groups[]" id="{{ groupAlias }}" class="tl_checkbox" value="{{ groupAlias }}" onclick="javascript:document.getElementById('{{ archiveAlias }}').checked = true;"/>
+                                                <input type="checkbox" name="groups[]" id="{{ groupAlias }}" class="tl_checkbox" value="{{ groupAlias }}" onclick="document.getElementById('{{ archiveAlias }}').checked = true;"/>
                                                 <label for="{{ groupAlias }}">{{ child.title|raw }} <span class="sm-childAlias">({{ child.alias|raw }})</span></label>
                                             </div>
                                         {% endfor %}
                                     </div>
-                                </div>
+                                </fieldset>
                             {% endfor %}
                         </div>
-
-                        <div style="margin-top: 12px">
-                            <button type="submit" name="save" id="save" class="tl_submit" accesskey="s">{{ label.import }}</button>
-                        </div>
+                    </div>
+                </div>
+                <div class="tl_formbody_submit">
+                    <div class="tl_submit_container">
+                        <button type="submit" name="save" id="save" class="tl_submit" accesskey="s">{{ label.import }}</button>
                     </div>
                 </div>
             </form>
@@ -125,4 +140,9 @@
             </form>
         {% endif %}
     </div>
+
+    {% if partial %}
+        </div>
+    {% endif %}
+
 {% endblock %}

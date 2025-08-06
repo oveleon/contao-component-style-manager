@@ -221,6 +221,9 @@ html[data-color-scheme=dark] {
   display: none !important;
 }
 
+#tl_buttons > li:has(.header_style_manager_config) {
+  margin-left: -15px;
+}
 #tl_buttons .header_style_manager_config {
   display: none;
 }
