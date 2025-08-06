@@ -269,6 +269,10 @@ html[data-color-scheme=dark] {
 
 #tl_buttons {
 
+  > li:has(.header_style_manager_config) {
+    margin-left: -15px;
+  }
+
   .header_style_manager_config {
     display: none;
   }
