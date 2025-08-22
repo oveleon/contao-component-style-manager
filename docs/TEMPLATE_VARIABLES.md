@@ -41,10 +41,10 @@ Within a Twig template:
 {# Return of all selected CSS classes in specific groups of a category #}
 {{ styleManager(data).get('myCategoryIdentifier', ['alias1', 'alias2']) }}
 ```
-You can also use the Twig addClass funktions to pass a StyleManager variable into a Twig variable:
+You can also use the `HtmlAttributes` with `addClass` to pass style manager classes:
 ```twig
 {# Adding the value of the 'headline-font-size' variable which is part of the category identifier 'general' to the 'headline' Twig variable within the _headline.html.twig template #}
-{% set headline = headline|merge({attributes: attrs()addClass(styleManager(data).get('general', ['headline-font-size'])).mergeWith(headline.attributes|default)}) %}
+{% set headline = headline|merge({attributes: attrs().addClass(styleManager(data).get('general', ['headline-font-size'])).mergeWith(headline.attributes|default)}) %}
 ```
 
 ### 🔹 `prepare` + `format`
