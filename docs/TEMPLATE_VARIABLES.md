@@ -35,15 +35,15 @@ $this->styleManager->get('myCategoryIdentifier', ['alias1', 'alias2']);
 ```
 Within a Twig template:
 ```twig
-// Return of all selected CSS classes of a category within a class attribute
+{# Return of all selected CSS classes of a category within a class attribute #}
 {{ styleManager(data).get('myCategoryIdentifier') }}
 
-// Return of all selected CSS classes in specific groups of a category
+{# Return of all selected CSS classes in specific groups of a category #}
 {{ styleManager(data).get('myCategoryIdentifier', ['alias1', 'alias2']) }}
 ```
 You can also use the Twig addClass funktions to pass a StyleManager variable into a Twig variable:
 ```twig
-// Adding the value of the 'headline-font-size' variable which is part of the category identifier 'general' to the 'headline' Twig variable within the _headline.html.twig template
+{# Adding the value of the 'headline-font-size' variable which is part of the category identifier 'general' to the 'headline' Twig variable within the _headline.html.twig template #}
 {% set headline = headline|merge({attributes: attrs()addClass(styleManager(data).get('general', ['headline-font-size'])).mergeWith(headline.attributes|default)}) %}
 ```
 
@@ -77,13 +77,13 @@ $this->styleManager->prepare('myCategoryIdentifier', ['alias1'])->format("data-s
 ```
 In Twig:
 ```twig
-// Return of all selected CSS classes of a category within a class attribute
+{# Return of all selected CSS classes of a category within a class attribute #}
 {{ styleManager(data).prepare('myCategoryIdentifier').format('class="%s"') }}
 
-// Additional classes are often appended to an existing class attribute. In this case, unnecessary if-else statements can be avoided by appending a space character if a value exists.
+{# Additional classes are often appended to an existing class attribute. In this case, unnecessary if-else statements can be avoided by appending a space character if a value exists. #}
 {{ styleManager(data).prepare('myCategoryIdentifier').format(' %s') }}
 
-// Return of all selected CSS classes in specific group of a category as json within a data attribute
+{# Return of all selected CSS classes in specific group of a category as json within a data attribute #}
 {{ styleManager(data).prepare('myCategoryIdentifier', ['alias1']).format("data-slider='%s'", 'json') }}
 ```
 
