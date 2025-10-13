@@ -13,6 +13,7 @@
 
 html[data-color-scheme=dark] {
   --sm-text: #cccccc;
+  --sm-orange: #0090ff;
   --sm-border: #414448;
   --sm-content-bg: #212429;
   --sm-content-border: #ccc;
@@ -47,8 +48,9 @@ html[data-color-scheme=dark] {
     }
 
     .sm-groupTitle {
-      margin-top: 1rem;
-      padding-bottom: .5rem;
+      margin: 0 6px 0;
+      padding: 1rem 0;
+      font-size: 18px;
     }
 
     .no_styles {
@@ -65,11 +67,23 @@ html[data-color-scheme=dark] {
 
     .sm-tab-container {
       position: relative;
-      margin-bottom: 15px;
+      margin: .5rem 0 2rem;
+      border: 1px solid var(--sm-border);
+      background: var(--sm-tab-bg);
+      padding: 0 8px 20px;
+      border-radius: 4px;
 
       &:last-child {
         margin-bottom: 0;
       }
+    }
+
+    .tab-nav {
+      margin: 0 -8px 2px;
+      border-bottom: solid 1px #414448;
+      display: flex;
+      overflow-x: scroll;
+      scrollbar-width: none;
     }
 
     .tab-btn {
@@ -77,22 +91,19 @@ html[data-color-scheme=dark] {
       position: relative;
       cursor: pointer;
       z-index: 1;
-      padding: 8px 10px;
-      margin-right: 1px;
-      background: var(--sm-content-bg);
-      border: solid var(--sm-border);
-      border-width: 1px 1px 0 1px;
-      border-radius: 3px 3px 0 0;
-      opacity: .8;
+      padding: 12px 15px;
+      border-width: 0;
+      background: var(--sm-tab-bg);
+      opacity: .7;
       vertical-align: bottom;
 
       &[aria-expanded="true"] {
-        top: 1px;
-        padding-bottom: 9px;
-        border-top-color: var(--sm-orange);
-        background: var(--sm-tab-bg);
         opacity: 1;
         cursor: default;
+        text-decoration: underline;
+        text-decoration-thickness: 3px;
+        text-decoration-color: var(--sm-orange);
+        text-underline-offset: 11px;
       }
 
       &:hover {
@@ -101,9 +112,6 @@ html[data-color-scheme=dark] {
     }
 
     .tab-content {
-      border: 1px solid var(--sm-border);
-      background: var(--sm-tab-bg);
-      padding: 5px 8px 15px;
 
       &:not(.active) {
         display: none;
@@ -278,14 +286,14 @@ html[data-color-scheme=dark] {
   }
 }
 
-@media (min-width: 600px) {
+@media (width >= 600px) {
 
   :root {
     --sm-i: 2;
   }
 }
 
-@media (min-width: 770px) {
+@media (width >= 768px) {
 
   #tl_buttons {
     position: relative;
@@ -309,9 +317,16 @@ html[data-color-scheme=dark] {
   }
 }
 
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
 
   :root {
     --sm-i: 3;
+  }
+}
+
+@media (width >= 1360px) {
+
+  :root {
+    --sm-i: 4;
   }
 }
