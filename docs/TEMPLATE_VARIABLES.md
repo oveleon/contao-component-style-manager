@@ -8,29 +8,6 @@
 
 ---
 
-### As Twig is not yet fully supported (Contao ^5.1), this feature will only work with Legacy-Templates)
-https://docs.contao.org/dev/framework/templates/legacy/
-
-> To use legacy-templates (html5) in contao ^5.1, you can force this by overwriting config.php in "/contao/config/config.php".
-```php
-<?php
-
-$GLOBALS['TL_CTE']['texts']['code']      = \Contao\ContentCode::class;
-$GLOBALS['TL_CTE']['texts']['headline']  = \Contao\ContentHeadline::class;
-$GLOBALS['TL_CTE']['texts']['html']      = \Contao\ContentHtml::class;
-$GLOBALS['TL_CTE']['texts']['list']      = \Contao\ContentList::class;
-$GLOBALS['TL_CTE']['texts']['text']      = \Contao\ContentText::class;
-$GLOBALS['TL_CTE']['texts']['table']     = \Contao\ContentTable::class;
-
-$GLOBALS['TL_CTE']['links']['hyperlink'] = \Contao\ContentHyperlink::class;
-$GLOBALS['TL_CTE']['links']['toplink']   = \Contao\ContentToplink::class;
-
-$GLOBALS['TL_CTE']['media']['image']     = \Contao\ContentImage::class;
-$GLOBALS['TL_CTE']['media']['gallery']   = \Contao\ContentGallery::class;
-$GLOBALS['TL_CTE']['media']['youtube']   = \Contao\ContentYouTube::class;
-$GLOBALS['TL_CTE']['media']['vimeo']     = \Contao\ContentVimeo::class;
-```
-
 # Passing css group variables to a template:
 If the checkbox `Use as template variable` is set, these are not automatically passed to the CSS class of the corresponding element but are available in the template.
 To access the variables, we can access the corresponding class collection via the `styleManager` object.
@@ -48,13 +25,26 @@ __Method arguments:__
 | identifier        | `string`       | Category identifier |
 | groups (Optional) | `null׀array`   | Group aliases       |
 
-__Example:__
+__Examples:__
 ```php
 // Return of all selected CSS classes of a category
 $this->styleManager->get('myCategoryIdentifier');
 
 // Return of all selected CSS classes in specific groups of a category
 $this->styleManager->get('myCategoryIdentifier', ['alias1', 'alias2']);
+```
+Within a Twig template:
+```twig
+{# Return of all selected CSS classes of a category within a class attribute #}
+{{ styleManager(data).get('myCategoryIdentifier') }}
+
+{# Return of all selected CSS classes in specific groups of a category #}
+{{ styleManager(data).get('myCategoryIdentifier', ['alias1', 'alias2']) }}
+```
+You can also use the `HtmlAttributes` with `addClass` to pass style manager classes:
+```twig
+{# Adding the value of the 'headline-font-size' variable which is part of the category identifier 'general' to the 'headline' Twig variable within the _headline.html.twig template #}
+{% set headline = headline|merge({attributes: attrs().addClass(styleManager(data).get('general', ['headline-font-size'])).mergeWith(headline.attributes|default)}) %}
 ```
 
 ### 🔹 `prepare` + `format`
@@ -74,7 +64,7 @@ __Arguments of the `format` method:__
 | format            | `string` | The format parameter must contain a format string valid for `sprintf` (PHP: [sprintf](https://www.php.net/manual/de/function.sprintf.php))) |
 | method (Optional) | `string` | A method name to manipulate the output                                                                                                      |
 
-__Example:__
+__Examples:__
 ```php
 // Return of all selected CSS classes of a category within a class attribute
 $this->styleManager->prepare('myCategoryIdentifier')->format('class="%s"');
@@ -85,6 +75,19 @@ $this->styleManager->prepare('myCategoryIdentifier')->format(' %s');
 // Return of all selected CSS classes in specific group of a category as json within a data attribute
 $this->styleManager->prepare('myCategoryIdentifier', ['alias1'])->format("data-slider='%s'", 'json');
 ```
+In Twig:
+```twig
+{# Return of all selected CSS classes of a category within a class attribute #}
+{{ styleManager(data).prepare('myCategoryIdentifier').format('class="%s"') }}
+
+{# Additional classes are often appended to an existing class attribute. In this case, unnecessary if-else statements can be avoided by appending a space character if a value exists. #}
+{{ styleManager(data).prepare('myCategoryIdentifier').format(' %s') }}
+
+{# Return of all selected CSS classes in specific group of a category as json within a data attribute #}
+{{ styleManager(data).prepare('myCategoryIdentifier', ['alias1']).format("data-slider='%s'", 'json') }}
+```
+
+
 
 ## Format methods
 ### 🔸 `json`
