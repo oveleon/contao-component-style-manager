@@ -33,6 +33,8 @@ use Twig\Environment;
  * @property bool  $multiple
  * @property array $options
  * @property bool  $chosen
+ *
+ * @internal
  */
 class ComponentStyleSelect extends Widget
 {
@@ -87,21 +89,21 @@ class ComponentStyleSelect extends Widget
             return $this->renderEmptyMessage();
         }
 
-        $isEmpty       = true;
-        $arrCollection = [];
-        $arrArchives   = [];
-        $arrOrder      = [];
+        $isEmpty = true;
+        $arrCollection = $arrArchives = $arrOrder = $arrParentMapping = [];
 
         // Prepare archives
         foreach ($arrObjStyleArchives as $objStyleArchive)
         {
-            $arrArchives[ $objStyleArchive->id ] = [
+            $arrArchives[ $objStyleArchive->identifier ] = [
                 'title'      => $objStyleArchive->title,
                 'identifier' => $objStyleArchive->identifier,
                 'desc'       => $objStyleArchive->desc,
                 'group'      => $objStyleArchive->groupAlias,
                 'model'      => $objStyleArchive
             ];
+
+            $arrParentMapping[$objStyleArchive->id ?? $objStyleArchive->identifier] = $objStyleArchive->identifier;
 
             $arrOrder[] = $objStyleArchive->identifier;
         }
@@ -190,7 +192,13 @@ class ComponentStyleSelect extends Widget
                 }
             }
 
-            $strId        = StyleManager::generateAlias($arrArchives[ $objStyleGroup->pid ]['identifier'], $objStyleGroup->alias);
+            if (!isset($arrParentMapping[$objStyleGroup->pid]))
+            {
+                continue;
+            }
+
+            $archiveIdent = $arrParentMapping[$objStyleGroup->pid];
+            $strId        = StyleManager::generateAlias($arrArchives[ $archiveIdent ]['identifier'], $objStyleGroup->alias);
             $strFieldId   = $this->strId . '_' . $strId;
             $strFieldName = $this->strName . '[' . $strId . ']';
 
@@ -226,16 +234,16 @@ class ComponentStyleSelect extends Widget
             }
 
             // create a collection
-            $groupAlias      = ($arrArchives[ $objStyleGroup->pid ]['group'] ?: 'group-' . $arrArchives[ $objStyleGroup->pid ]['identifier']) . '-' . $this->id;
-            $collectionAlias = $arrArchives[ $objStyleGroup->pid ]['identifier'];
+            $groupAlias      = ($arrArchives[ $archiveIdent ]['group'] ?: 'group-' . $arrArchives[ $archiveIdent ]['identifier']) . '-' . $this->id;
+            $collectionAlias = $arrArchives[ $archiveIdent ]['identifier'];
 
             if (!\in_array($collectionAlias, array_keys($arrCollection)))
             {
                 $arrCollection[ $collectionAlias ] = [
-                    'label'      => $arrArchives[ $objStyleGroup->pid ]['title'],
-                    'desc'       => $this->insertTagParser?->replaceInline(nl2br($arrArchives[ $objStyleGroup->pid ]['desc'] ?? '')),
+                    'label'      => $arrArchives[ $archiveIdent ]['title'],
+                    'desc'       => $this->insertTagParser?->replaceInline(nl2br($arrArchives[ $archiveIdent ]['desc'] ?? '')),
                     'group'      => $groupAlias,
-                    'groupTitle' => $arrArchives[ $objStyleGroup->pid ]['group'] ?? null,
+                    'groupTitle' => $arrArchives[ $archiveIdent ]['group'] ?? null,
                     'fields'     => []
                 ];
             }
