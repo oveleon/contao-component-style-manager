@@ -58,7 +58,7 @@ layouts.
     - Combine and output as tabs
 - Passing variables to the template
     - Formatting output using predefined methods or your own
-- Import / Export
+- Import / Export (Deprecated)
     - Automatic import of configurations from third-party bundles (Bundle configurations)
     - Partial import
 - Available for
