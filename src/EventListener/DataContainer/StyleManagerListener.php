@@ -17,6 +17,9 @@ use Contao\DataContainer;
 use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 
+/**
+ * @internal
+ */
 class StyleManagerListener
 {
     #[AsCallback(table: 'tl_style_manager', target: 'config.onload')]
