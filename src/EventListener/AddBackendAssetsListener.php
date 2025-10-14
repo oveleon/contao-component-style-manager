@@ -15,9 +15,9 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 #[AsEventListener]
-class AddBackendAssetsListener
+readonly class AddBackendAssetsListener
 {
-    public function __construct(private readonly ScopeMatcher $scopeMatcher)
+    public function __construct(private ScopeMatcher $scopeMatcher)
     {
     }
 
