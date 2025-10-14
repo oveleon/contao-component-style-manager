@@ -23,22 +23,22 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-json": "*",
         "ext-dom": "*",
         "contao/core-bundle": "5.3.* || ^5.5.12",
         "doctrine/dbal": "^3.3",
         "psr/log": "^1.1 || 2.0 || ^3.0",
-        "symfony/config": "^6.4 || ^7.2",
-        "symfony/console": "^6.4 || ^7.2",
-        "symfony/dependency-injection": "^6.4 || ^7.2",
-        "symfony/event-dispatcher": "^6.4 || ^7.2",
+        "symfony/config": "^6.4 || ^7.3",
+        "symfony/console": "^6.4 || ^7.3",
+        "symfony/dependency-injection": "^6.4 || ^7.3",
+        "symfony/event-dispatcher": "^6.4 || ^7.3",
         "symfony/event-dispatcher-contracts": "^2.0 || ^3.0",
-        "symfony/http-foundation": "^6.4 || ^7.2",
-        "symfony/http-kernel": "^6.4 || ^7.2",
-        "symfony/routing": "^6.4 || ^7.2",
+        "symfony/http-foundation": "^6.4 || ^7.3",
+        "symfony/http-kernel": "^6.4 || ^7.3",
+        "symfony/routing": "^6.4 || ^7.3",
         "symfony/translation-contracts": "^3.0",
-        "twig/twig": "^3.8"
+        "twig/twig": "^3.21"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.3.1"
@@ -53,20 +53,11 @@
     "autoload": {
         "psr-4": {
             "Oveleon\\ContaoComponentStyleManager\\": "src/"
-        },
-        "classmap": [
-            "contao/"
-        ],
-        "exclude-from-classmap": [
-            "contao/config/",
-            "contao/dca/",
-            "contao/languages/",
-            "contao/templates/"
-        ]
+        }
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.9.x-dev"
+            "dev-main": "3.11.x-dev"
         },
         "contao-manager-plugin": "Oveleon\\ContaoComponentStyleManager\\ContaoManager\\Plugin"
     },
