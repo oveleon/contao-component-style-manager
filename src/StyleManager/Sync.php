@@ -28,6 +28,11 @@ use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ *
+ * @deprecated since Version 3.11, to be removed in Version 4.
+ */
 class Sync
 {
     public function __construct(
