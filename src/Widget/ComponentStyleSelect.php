@@ -158,17 +158,7 @@ class ComponentStyleSelect extends Widget
                 }
             }
 
-            // skip third-party fields
-            if (isset($GLOBALS['TL_HOOKS']['styleManagerSkipField']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerSkipField']))
-            {
-                foreach ($GLOBALS['TL_HOOKS']['styleManagerSkipField'] as $callback)
-                {
-                    if (System::importStatic($callback[0])->{$callback[1]}($objStyleGroup, $this))
-                    {
-                        continue 2;
-                    }
-                }
-            }
+            // ToDo: Maybe add an event for the former styleManagerSkipField Hook?
 
             $opts = StringUtil::deserialize($objStyleGroup->cssClasses);
 
@@ -181,16 +171,7 @@ class ComponentStyleSelect extends Widget
             }
 
             // dynamically change or expand group options
-            if (isset($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions']))
-            {
-                foreach ($GLOBALS['TL_HOOKS']['styleManagerGroupFieldOptions'] as $callback)
-                {
-                    if ($optionCallback = System::importStatic($callback[0])->{$callback[1]}($arrFieldOptions, $objStyleGroup, $this))
-                    {
-                        $arrFieldOptions = $optionCallback;
-                    }
-                }
-            }
+            // ToDo: Add an event instead of the former Hook styleManagerGroupFieldOptionsEvent
 
             if (!isset($arrParentMapping[$objStyleGroup->pid]))
             {

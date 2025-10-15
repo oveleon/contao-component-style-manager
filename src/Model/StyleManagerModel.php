@@ -130,17 +130,7 @@ class StyleManagerModel extends Model
             case 'tl_calendar_events':
                 return static::findByExtendEvents(1, $arrOptions);
             default:
-                // HOOK: add support for third-party tables
-                if (isset($GLOBALS['TL_HOOKS']['styleManagerFindByTable']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerFindByTable']))
-                {
-                    foreach ($GLOBALS['TL_HOOKS']['styleManagerFindByTable'] as $callback)
-                    {
-                        if (null !== ($result = System::importStatic($callback[0])->{$callback[1]}($strTable, $arrOptions)))
-                        {
-                            return $result;
-                        }
-                    }
-                }
+                // ToDo: Maybe having an interface in the future would be better - The `styleManagerFindByTable` Hook has been removed
 
                 return null;
         }

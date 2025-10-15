@@ -319,14 +319,7 @@ class StyleManager
             'tl_calendar_events' === $strTable && !!$objGroup->extendEvents
         ){ return true; }
 
-        // Check is visible group for custom configurations
-        if (isset($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup']))
-        {
-            foreach ($GLOBALS['TL_HOOKS']['styleManagerIsVisibleGroup'] as $callback)
-            {
-                return System::importStatic($callback[0])->{$callback[1]}($objGroup, $strTable);
-            }
-        }
+        // ToDo: Event for `styleManagerIsVisibleGroup`
 
         return false;
     }
