@@ -276,7 +276,7 @@ final class Config
                                 {
                                     /** @var array<array<int|string>> $arrClasses */
                                     $arrClasses = StringUtil::deserialize($child->{$kk}, true);
-                                    $arrExists  = Sync::flattenKeyValueArray($arrClasses);
+                                    $arrExists  = self::flattenKeyValueArray($arrClasses);
 
                                     /** @var array<array<int|string>> $arrValues */
                                     $arrValues  = StringUtil::deserialize($vv, true);
@@ -340,5 +340,22 @@ final class Config
         }
 
         return $return;
+    }
+
+    private function flattenKeyValueArray(array $array): array
+    {
+        if (empty($array))
+        {
+            return [];
+        }
+
+        $arrTemp = [];
+
+        foreach ($array as $item)
+        {
+            $arrTemp[ $item['key'] ] = $item['value'];
+        }
+
+        return $arrTemp;
     }
 }

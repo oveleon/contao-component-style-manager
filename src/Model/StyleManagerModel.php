@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoComponentStyleManager\Model;
 
+use Contao\Controller;
 use Contao\Model;
 use Contao\Model\Collection;
+use Contao\StringUtil;
 use Contao\System;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
@@ -168,10 +170,7 @@ class StyleManagerModel extends Model
                 {
                     foreach ($objGroups as $objGroup)
                     {
-                        $alias = Sync::combineAliases(
-                            $arrArchiveIdentifier[$objGroup->pid],
-                            $objGroup->alias
-                        );
+                        $alias = $arrArchiveIdentifier[$objGroup->pid] . '_' . $objGroup->alias;
 
                         $arrObjStyleGroups[ $alias ] = $objGroup->current();
                     }
@@ -193,7 +192,7 @@ class StyleManagerModel extends Model
                         if ($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
                         {
                             // Overwrite with a merged object
-                            $arrObjStyleGroups[ $combinedAlias ] = Sync::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
+                            $arrObjStyleGroups[ $combinedAlias ] = self::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
                         }
                         else
                         {
@@ -235,5 +234,108 @@ class StyleManagerModel extends Model
         );
 
         return static::findOneBy($arrColumns, $arrValues, $arrOptions);
+    }
+
+    private static function mergeGroupObjects(StyleManagerModel|null $objOriginal = null, StyleManagerModel|null $objMerge = null, array|null $skipFields = null, bool $skipEmpty = true, $forceOverwrite = true): StyleManagerModel|null
+    {
+        if (null === $objOriginal || null === $objMerge)
+        {
+            return $objOriginal;
+        }
+
+        Controller::loadDataContainer('tl_style_manager');
+
+        foreach ($objMerge->row() as $field => $value)
+        {
+            if (
+                ($skipEmpty && (!$value || strtolower((string) $value) === 'null'))
+                || (null !== $skipFields && in_array($field, $skipFields))
+            ) {
+                continue;
+            }
+
+            switch ($field)
+            {
+                // Merge and manipulation of existing classes
+                case 'cssClasses':
+                    if ($objOriginal->{$field})
+                    {
+                        /** @var array $arrClasses */
+                        $arrClasses = StringUtil::deserialize($objOriginal->{$field}, true);
+                        $arrExists = self::flattenKeyValueArray($arrClasses);
+
+                        /** @var array $arrValues */
+                        $arrValues = StringUtil::deserialize($value, true);
+
+                        foreach ($arrValues as $cssClass)
+                        {
+                            if (array_key_exists($cssClass['key'], $arrExists))
+                            {
+                                if (!$forceOverwrite)
+                                {
+                                    continue;
+                                }
+
+                                // Overwrite existing value
+                                if (false !== ($key = array_search($cssClass['key'], array_column($arrClasses, 'key'))))
+                                {
+                                    $arrClasses[ $key ] = [
+                                        'key' => $cssClass['key'],
+                                        'value' => $cssClass['value']
+                                    ];
+                                }
+
+                                continue;
+                            }
+
+                            $arrClasses[] = [
+                                'key' => $cssClass['key'],
+                                'value' => $cssClass['value']
+                            ];
+                        }
+
+                        $value  = serialize($arrClasses);
+                    }
+
+                    break;
+                // Check for multiple fields like contentElement
+                default:
+                    $fieldOptions = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$field];
+
+                    if (isset($fieldOptions['eval']['multiple']) && !!$fieldOptions['eval']['multiple'] && $fieldOptions['inputType'] === 'checkbox')
+                    {
+                        /** @var array $arrElements */
+                        $arrElements = StringUtil::deserialize($objOriginal->{$field}, true);
+
+                        /** @var array $arrValues */
+                        $arrValues = StringUtil::deserialize($value, true);
+
+                        foreach ($arrValues as $element)
+                        {
+                            if (in_array($element, $arrElements))
+                            {
+                                if (!$forceOverwrite)
+                                {
+                                    continue;
+                                }
+
+                                $key = array_search($element, $arrElements);
+                                $arrElements[ $key ] = $element;
+
+                                continue;
+                            }
+
+                            $arrElements[] = $element;
+                        }
+
+                        $value  = serialize($arrElements);
+                    }
+            }
+
+            // Overwrite field values
+            $objOriginal->{$field} = $value;
+        }
+
+        return $objOriginal;
     }
 }
