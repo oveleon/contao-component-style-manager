@@ -12,6 +12,9 @@ namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\System;
 
+/**
+ * @internal
+ */
 class Styles
 {
     /**

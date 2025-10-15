@@ -17,9 +17,13 @@ use Contao\StringUtil;
 use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
+use Oveleon\ContaoComponentStyleManager\StyleManager\ConfigurationFileType;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @internal
+ */
 readonly class StyleManagerArchiveListener
 {
     public function __construct(
@@ -56,7 +60,7 @@ readonly class StyleManagerArchiveListener
     #[AsCallback(table: 'tl_style_manager_archive', target: 'list.global_operations.import.button')]
     public function importConfigButton(string|null $href, string $label, string $title, string $class, string $attributes): string
     {
-        if ($this->bundleConfig && ($arrFiles = Config::getBundleConfigurationFiles()))
+        if ($this->bundleConfig && ($arrFiles = Config::getBundleConfigurationFiles(ConfigurationFileType::XML)))
         {
             $label .= sprintf(' <sup><small>(%s)</small></sup>', count($arrFiles));
         }
@@ -80,7 +84,7 @@ readonly class StyleManagerArchiveListener
 
         $count = 0;
 
-        if ($arrFiles = Config::getBundleConfigurationFiles())
+        if ($arrFiles = Config::getBundleConfigurationFiles(ConfigurationFileType::XML))
         {
             $count = count($arrFiles);
         }

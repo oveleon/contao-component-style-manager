@@ -16,6 +16,9 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+/**
+ * @internal
+ */
 class StyleManagerExtension extends AbstractExtension
 {
     public function getFunctions(): array

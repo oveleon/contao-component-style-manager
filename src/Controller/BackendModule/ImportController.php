@@ -25,6 +25,7 @@ use DOMDocument;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config as BundleConfig;
+use Oveleon\ContaoComponentStyleManager\StyleManager\ConfigurationFileType;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -32,6 +33,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @internal
+ *
+ * @deprecated since Version 3.11, to be removed in Version 4.
+ *             Use the YAML configuration instead.
+ */
 #[Route(path: '%contao.backend.route_prefix%/style-manager-import', name: ImportController::class, defaults: ['_scope' => 'backend'])]
 class ImportController extends AbstractBackendController
 {
@@ -97,7 +104,7 @@ class ImportController extends AbstractBackendController
             'headline'        => $partial ? $this->translator->trans('tl_style_manager_import.importPartial', [], 'contao_default') : 'Import',
             'messages'        => Message::generate(),
             'useBundleConfig' => $this->bundleConfig,
-            'bundleFiles'     => BundleConfig::getBundleConfigurationFiles() ?? [],
+            'bundleFiles'     => BundleConfig::getBundleConfigurationFiles(ConfigurationFileType::XML) ?? [],
             'partial'         => $partial,
             'configs'         => $configs,
             'form'            => [
@@ -178,7 +185,7 @@ class ImportController extends AbstractBackendController
      */
     private function importPartial(array $files, array $archives, array $groups): array|null
     {
-        return $this->importFiles($files, true, $archives, $groups);
+        return $this->importXmlFiles($files, true, $archives, $groups);
     }
 
     /**
@@ -186,7 +193,7 @@ class ImportController extends AbstractBackendController
      */
     public function importBundleConfigFiles(array $files, bool $partial = false): array|null
     {
-        return $this->importFiles(array_map(fn($n) => html_entity_decode($n), $files), !$partial);
+        return $this->importXmlFiles(array_map(fn($n) => html_entity_decode($n), $files), !$partial);
     }
 
     /**
@@ -243,7 +250,7 @@ class ImportController extends AbstractBackendController
             throw new RedirectResponseException($request->getUri(), 303);
         }
 
-        $data = $this->importFiles($arrFiles, !$partial);
+        $data = $this->importXmlFiles($arrFiles, !$partial);
 
         if ($partial)
         {
@@ -257,7 +264,7 @@ class ImportController extends AbstractBackendController
     /**
      * Import config files
      */
-    public static function importFiles(array $files, bool $blnSave = true, array|null $allowedArchives = null, array|null $allowedGroups = null): array|null
+    public static function importXmlFiles(array $files, bool $blnSave = true, array|null $allowedArchives = null, array|null $allowedGroups = null): array|null
     {
         $arrStyleArchives = [];
         $arrStyleGroups = [];
@@ -465,10 +472,10 @@ class ImportController extends AbstractBackendController
                                                     continue;
                                                 }
 
-                                                $arrClasses[] = array(
+                                                $arrClasses[] = [
                                                     'key' => $cssClass['key'],
                                                     'value' => $cssClass['value']
-                                                );
+                                                ];
                                             }
 
                                             $strValue  = serialize($arrClasses);

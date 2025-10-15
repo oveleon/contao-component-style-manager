@@ -20,6 +20,9 @@ use Oveleon\ContaoComponentStyleManager\Event\AddStyleManagerPaletteEvent;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 
+/**
+ * @internal
+ */
 class StyleManager
 {
     public const VARS_KEY = '__vars__';
