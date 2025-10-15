@@ -19,9 +19,8 @@ ArrayUtil::arrayInsert($GLOBALS['BE_MOD'], count($GLOBALS['BE_MOD']['design']), 
     'design' => [
         'style_manager' => [
             'tables'  => ['tl_style_manager_archive', 'tl_style_manager'],
-            'export'  => [Sync::class, 'export']
-        ]
-    ]
+        ],
+    ],
 ]);
 
 // Back end form fields
