@@ -147,7 +147,7 @@ final class Config
             }
         }
 
-        if ($projectTemplates = array_merge((glob($projectDir . '/templates/style-manager-*.xml') ?: []), (glob($projectDir . '/templates/*/style-manager-*.xml') ?: [])))
+        if ($projectTemplates = array_merge((glob($projectDir . '/templates/style-manager-*' . $type->value) ?: []), (glob($projectDir . '/templates/*/style-manager-*' . $type->value) ?: [])))
         {
             foreach ($projectTemplates as $template)
             {
@@ -190,10 +190,14 @@ final class Config
      */
     private function parseYamlConfiguration(array $files, array $configuration): array
     {
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+
         [$styleArchives, $styleGroups] = $configuration;
 
         foreach ($files as $filePath)
         {
+            $filePath = $rootDir . '/' . $filePath;
+
             if (
                 !is_file($filePath)
                 || !is_readable($filePath)
