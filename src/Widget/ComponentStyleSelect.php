@@ -192,7 +192,7 @@ class ComponentStyleSelect extends Widget
                 }
             }
 
-            if (!isset($arrParentMapping[$objStyleGroup->pid]))
+            if (false === StyleManager::styleGroupMappableToArchives($objStyleGroup, $arrParentMapping))
             {
                 continue;
             }

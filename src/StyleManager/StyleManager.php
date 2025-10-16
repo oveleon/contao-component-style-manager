@@ -265,7 +265,7 @@ class StyleManager
         // Prepare archives identifier
         foreach ($objStyleArchives as $objStyleArchive)
         {
-            $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
+            $arrArchives[ $objStyleArchive->id ?? $objStyleArchive->identifier ] = $objStyleArchive->identifier;
         }
 
         // Remove unused classes
@@ -276,9 +276,9 @@ class StyleManager
         // Rebuild the array for template variables
         foreach ($objStyleGroups as $objStyleGroup)
         {
-            if (!isset($arrArchives[ $objStyleGroup->pid ]))
+            if (false === self::styleGroupMappableToArchives($objStyleGroup, $arrArchives))
             {
-                continue;
+               continue;
             }
 
             $strId = self::generateAlias($arrArchives[ $objStyleGroup->pid ], $objStyleGroup->alias);
@@ -300,6 +300,27 @@ class StyleManager
         }
 
         return $arrValue;
+    }
+
+    /**
+     * Checks whether a style group is mappable to any existing archives
+     */
+    public static function styleGroupMappableToArchives(StyleManagerModel $styleGroup, array $archives): bool
+    {
+        if (isset($archives[$styleGroup->pid]))
+        {
+            return true;
+        }
+
+        if (!is_int($key = array_search($styleGroup->pid, $archives, true)))
+        {
+            return false;
+        }
+
+        // merge e.g. yaml configuration without any pid into existing groups if they exist
+        $styleGroup->pid = $key;
+
+        return true;
     }
 
     /**
