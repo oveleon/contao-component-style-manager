@@ -83,7 +83,7 @@ class StyleManager
         $arrValues = StringUtil::deserialize($dc->activeRecord->styleManager, true);
         $arrValues = self::deserializeValues($arrValues);
 
-        // remove non-exiting values
+        // remove non-existing values
         self::cleanupClasses($arrValues, $dc->table);
 
         if (count($arrValues))
@@ -93,7 +93,7 @@ class StyleManager
                 $arrValues[ $k ] = ' ' . $v . ' ';
             }
 
-            // Might need a strict type check for varvalue in the future as all following operations won't work with id or null
+            // Might need a strict type check for varValue in the future as all following operations won't work with id or null
             $varValue = ' ' . $varValue . ' ';
             $varValue = str_replace($arrValues, '  ', $varValue);
             $varValue = trim(preg_replace('#\s+#', ' ', $varValue));
@@ -312,12 +312,12 @@ class StyleManager
             return true;
         }
 
-        if (!is_int($key = array_search($styleGroup->pid, $archives, true)))
+        if (false === ($key = array_search($styleGroup->originalRow()['pid'] ?? null, $archives, true)))
         {
             return false;
         }
 
-        // merge e.g. yaml configuration without any pid into existing groups if they exist
+        // Allow configurations without database identifiers to be merged into existing groups if they exist
         $styleGroup->pid = $key;
 
         return true;
