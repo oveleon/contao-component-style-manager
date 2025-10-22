@@ -196,7 +196,7 @@ class StyleManager
                 // Prepare archives identifier
                 foreach ($objStyleArchives as $objStyleArchive)
                 {
-                    $arrArchives[ $objStyleArchive->id ] =  $objStyleArchive->identifier;
+                    $arrArchives[ $objStyleArchive->id ?? $objStyleArchive->identifier ] =  $objStyleArchive->identifier;
                 }
 
                 foreach ($objStyles as $objStyle)
