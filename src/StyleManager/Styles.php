@@ -41,43 +41,30 @@ class Styles
     }
 
     /**
-     * Return the CSS class collection of an identifier
+     * Return the CSS class collection of an identifier or a group of identifiers
      */
-    public function get(string|int $identifier, $arrGroups = null): string
+    public function get(array|string|int $identifier, $arrGroups = null): string
     {
-        if ($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
+        if (!is_array($identifier))
         {
-            return '';
+            return $this->getByIdent($identifier, $arrGroups);
         }
 
-        // return the full collection
-        if ($arrGroups === null)
-        {
-            return implode(" ", $this->getCategoryValues($this->styles[ $identifier ]));
-        }
+        $collection = [];
 
-        // return parts of category (groups)
-        if (is_array($arrGroups))
+        foreach ($identifier as $k => $v)
         {
-            $collection = array();
-
-            if (null !== $this->exclGroups)
+            if (is_int($k))
             {
-                $this->removeExcludedGroups($arrGroups);
+                $collection[] = $this->getByIdent($v);
             }
-
-            foreach ($arrGroups as $groupAlias)
+            else
             {
-                if ($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ] ?? null))
-                {
-                    $collection[] = $value;
-                }
+                $collection[] = $this->getByIdent($k, $v);
             }
-
-            return  implode(" ", $collection);
         }
 
-        return '';
+        return implode(" ", $collection);
     }
 
     /**
@@ -161,6 +148,43 @@ class Styles
         }
 
         return '';
+    }
+
+    private function getByIdent(string|int $identifier, array|null $arrGroups = null): string
+    {
+        if ($this->styles === null || !is_array(($this->styles[ $identifier ] ?? null)))
+        {
+            return '';
+        }
+
+        // return the full collection
+        if ($arrGroups === null)
+        {
+            return implode(" ", $this->getCategoryValues($this->styles[ $identifier ]));
+        }
+
+        // return parts of category (groups)
+        if (!is_array($arrGroups))
+        {
+            return '';
+        }
+
+        $collection = array();
+
+        if (null !== $this->exclGroups)
+        {
+            $this->removeExcludedGroups($arrGroups);
+        }
+
+        foreach ($arrGroups as $groupAlias)
+        {
+            if ($value = $this->getGroupValue($this->styles[ $identifier ][ $groupAlias ] ?? null))
+            {
+                $collection[] = $value;
+            }
+        }
+
+        return implode(" ", $collection);
     }
 
     /**

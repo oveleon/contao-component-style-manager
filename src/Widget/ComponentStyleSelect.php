@@ -173,7 +173,7 @@ class ComponentStyleSelect extends Widget
             // dynamically change or expand group options
             // ToDo: Add an event instead of the former Hook styleManagerGroupFieldOptionsEvent
 
-            if (!isset($arrParentMapping[$objStyleGroup->pid]))
+            if (false === StyleManager::styleGroupMappableToArchives($objStyleGroup, $arrParentMapping))
             {
                 continue;
             }
