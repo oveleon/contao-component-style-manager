@@ -12,8 +12,9 @@ namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\StringUtil;
 use Contao\System;
-use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Entity\StyleGroup;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Entity\StyleArchive;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -247,12 +248,12 @@ final class Config
 
                 if ($archiveExists($archiveIdent))
                 {
+                    /** @var StyleArchive $objArchive */
                     $objArchive = $styleArchives[$archiveIdent];
                 }
                 else
                 {
-                    $objArchive = new StyleManagerArchiveModel();
-                    $objArchive->identifier = $archiveIdent;
+                    $objArchive = new StyleArchive($archiveIdent);
                 }
 
                 // Loop through the archive fields
@@ -265,7 +266,7 @@ final class Config
                         $strName  = $archive->item($a)->getAttribute('title');
                         $strValue = $archive->item($a)->nodeValue ?? '';
 
-                        if ($strName === 'id' || strtolower($strValue) === 'null')
+                        if (in_array($strName, ['id', 'identifier'], true) || strtolower($strValue) === 'null')
                         {
                             continue;
                         }
@@ -286,15 +287,12 @@ final class Config
 
                             if ($childrenExists($strChildAlias))
                             {
-                                $objChildren = $styleGroups[$strChildAlias];
+                                /** @var StyleGroup $objChild */
+                                $objChild = $styleGroups[$strChildAlias];
                             }
                             else
                             {
-                                $objChildren = new StyleManagerModel();
-                                $objChildren->alias = $alias;
-
-                                // Fake the pid for the ComponentStyleSelect Widget
-                                $objChildren->pid = $archiveIdent;
+                                $objChild = new StyleGroup($alias, $archiveIdent);
                             }
 
                             // Loop through the children fields
@@ -303,7 +301,7 @@ final class Config
                                 $strName = $fields->item($f)->getAttribute('title');
                                 $strValue = $fields->item($f)->nodeValue;
 
-                                if ($strName === 'id' || !$strValue || strtolower($strValue) === 'null')
+                                if (in_array($strName, ['id', 'alias'], true) || !$strValue || strtolower($strValue) === 'null')
                                 {
                                     continue;
                                 }
@@ -311,13 +309,13 @@ final class Config
                                 switch ($strName)
                                 {
                                     case 'pid':
-                                        $strValue = $objArchive->id;
+                                        $strValue = $objArchive->id ?? $objArchive->identifier;
                                         break;
                                     case 'cssClasses':
-                                        if ($objChildren->{$strName})
+                                        if ($objChild->{$strName})
                                         {
                                             /** @var array<array<int|string>> $arrClasses */
-                                            $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
+                                            $arrClasses = StringUtil::deserialize($objChild->{$strName}, true);
                                             $arrExists  = self::flattenKeyValueArray($arrClasses);
 
                                             /** @var array<array<int|string>> $arrValues */
@@ -346,7 +344,7 @@ final class Config
                                         if (isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
                                         {
                                             /** @var array<array<int|string>> $arrElements */
-                                            $arrElements = StringUtil::deserialize($objChildren->{$strName}, true);
+                                            $arrElements = StringUtil::deserialize($objChild->{$strName}, true);
                                             /** @var array<array<int|string>> $arrValues */
                                             $arrValues   = StringUtil::deserialize($strValue, true);
 
@@ -364,16 +362,17 @@ final class Config
                                         }
                                 }
 
-                                $objChildren->{$strName} = $strValue;
+                                $objChild->{$strName} = $strValue;
                             }
 
-                            $strKey = StyleManager::generateAlias($objArchive->identifier, $objChildren->alias);
-                            $styleGroups[ $strKey ] = $objChildren->current();
+                            $strKey = StyleManager::generateAlias($objArchive->identifier, $objChild->alias);
+
+                            $styleGroups[ $strKey ] = $objChild;
                         }
                     }
                 }
 
-                $styleArchives[ $objArchive->identifier ] = $objArchive->current();
+                $styleArchives[ $objArchive->identifier ] = $objArchive;
             }
         }
 
@@ -408,12 +407,12 @@ final class Config
             {
                 if (isset($styleArchives[$archiveIdent]))
                 {
+                    /** @var StyleArchive $archive */
                     $archive = $styleArchives[$archiveIdent];
                 }
                 else
                 {
-                    $archive = new StyleManagerArchiveModel();
-                    $archive->identifier = $archiveIdent;
+                    $archive = new StyleArchive($archiveIdent);
                 }
 
                 foreach ($data as $k => $v)
@@ -439,15 +438,12 @@ final class Config
 
                     if (isset($styleGroups[$styleIdent]))
                     {
+                        /** @var StyleGroup $child */
                         $child = $styleGroups[$styleIdent];
                     }
                     else
                     {
-                        $child = new StyleManagerModel();
-                        $child->alias = $childAlias;
-
-                        // Fake the pid for the ComponentStyleSelect Widget
-                        $child->pid = $archiveIdent;
+                        $child = new StyleGroup($childAlias, $archiveIdent);
                     }
 
                     foreach ($childData as $kk => $vv)
@@ -497,7 +493,7 @@ final class Config
         return $arrTemp;
     }
 
-    private function convertChildFieldValue(StyleManagerModel $child, string $key, mixed $value): mixed
+    private function convertChildFieldValue(StyleGroup|StyleManagerModel $child, string $key, mixed $value): mixed
     {
         switch ($key)
         {

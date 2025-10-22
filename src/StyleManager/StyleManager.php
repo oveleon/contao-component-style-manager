@@ -19,6 +19,7 @@ use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Event\AddStyleManagerPaletteEvent;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Oveleon\ContaoComponentStyleManager\StyleManager\Entity\StyleGroup;
 
 /**
  * @internal
@@ -305,14 +306,16 @@ class StyleManager
     /**
      * Checks whether a style group is mappable to any existing archives
      */
-    public static function styleGroupMappableToArchives(StyleManagerModel $styleGroup, array $archives): bool
+    public static function styleGroupMappableToArchives(StyleGroup|StyleManagerModel $styleGroup, array $archives): bool
     {
         if (isset($archives[$styleGroup->pid]))
         {
             return true;
         }
 
-        if (false === ($key = array_search($styleGroup->originalRow()['pid'] ?? null, $archives, true)))
+        $pid = $styleGroup instanceof StyleManagerModel ? $styleGroup->originalRow()['pid'] : $styleGroup->pid;
+
+        if (false === ($key = array_search($pid ?? null, $archives, true)))
         {
             return false;
         }
@@ -326,7 +329,7 @@ class StyleManager
     /**
      * Check whether an element is visible in the style manager widget
      */
-    public static function isVisibleGroup(StyleManagerModel $objGroup, string $strTable): bool
+    public static function isVisibleGroup(StyleGroup|StyleManagerModel $objGroup, string $strTable): bool
     {
         if (
             'tl_layout' === $strTable && !!$objGroup->extendLayout ||
