@@ -14,7 +14,7 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\StringUtil;
-use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
+//use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
 use Oveleon\ContaoComponentStyleManager\StyleManager\ConfigurationFileType;
@@ -57,7 +57,7 @@ readonly class StyleManagerArchiveListener
         return $label;
     }
 
-    #[AsCallback(table: 'tl_style_manager_archive', target: 'list.global_operations.import.button')]
+    /*#[AsCallback(table: 'tl_style_manager_archive', target: 'list.global_operations.import.button')]
     public function importConfigButton(string|null $href, string $label, string $title, string $class, string $attributes): string
     {
         if ($this->bundleConfig && ($arrFiles = Config::getBundleConfigurationFiles(ConfigurationFileType::XML)))
@@ -72,9 +72,9 @@ readonly class StyleManagerArchiveListener
             $attributes,
             $label
         ]);
-    }
+    }*/
 
-    #[AsCallback(table: 'tl_style_manager_archive', target: 'list.global_operations.config.button')]
+    /*#[AsCallback(table: 'tl_style_manager_archive', target: 'list.global_operations.config.button')]
     public function bundleConfigButton(string|null $href, string $label, string $title, string $class, string $attributes): string
     {
         if (!$this->bundleConfig)
@@ -96,7 +96,7 @@ readonly class StyleManagerArchiveListener
             $label,
             $count
         ]);
-    }
+    }*/
 
     #[AsCallback(table: 'tl_style_manager_archive', target: 'fields.identifier.save')]
     public function generateIdentifier($varValue, DataContainer $dc): string

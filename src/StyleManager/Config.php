@@ -12,7 +12,6 @@ namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\StringUtil;
 use Contao\System;
-use Oveleon\ContaoComponentStyleManager\Controller\BackendModule\ImportController;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Symfony\Component\Yaml\Yaml;
@@ -170,11 +169,9 @@ final class Config
     {
         $configuration = [[],[]];
 
-        if (
-            ($xmlFiles = $this->getBundleConfigurationFiles(ConfigurationFileType::XML))
-            && (is_array($xmlBundleConfig = ImportController::importXmlFiles($xmlFiles, false)))
-        ) {
-            $configuration = $xmlBundleConfig;
+        if ($xmlFiles = $this->getBundleConfigurationFiles(ConfigurationFileType::XML))
+        {
+            $configuration = self::parseXmlConfiguration($xmlFiles, $configuration);
         }
 
         if ($yamlFiles = $this->getBundleConfigurationFiles(ConfigurationFileType::YAML))
@@ -183,6 +180,204 @@ final class Config
         }
 
         return $configuration;
+    }
+
+    /**
+     * Import config files
+     */
+    public function parseXmlConfiguration(array $files, array $configuration): array|null
+    {
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+
+        [$styleArchives, $styleGroups] = $configuration;
+
+        foreach ($files as $filePath)
+        {
+            if (!is_file($filePath))
+            {
+                $filePath = $rootDir . '/' . $filePath;
+            }
+
+            if (
+                !is_file($filePath)
+                || !is_readable($filePath)
+                || false === ($content = file_get_contents($filePath))
+            ) {
+                continue;
+            }
+
+            $xml = new \DOMDocument();
+            $xml->preserveWhiteSpace = false;
+
+            if (!$xml->loadXML($content))
+            {
+                continue;
+            }
+
+            // Get archives node
+            $archives = $xml->getElementsByTagName('archives');
+
+            if (0 === $archives->count())
+            {
+                return null;
+            }
+            else
+            {
+                // Skip archives node
+                $archives = $archives->item(0)->childNodes;
+            }
+
+            // Check if the archive exists
+            $archiveExists = function (string $identifier) use ($styleArchives) : bool
+            {
+                return array_key_exists($identifier, $styleArchives);
+            };
+
+            // Check if children exist
+            $childrenExists = function (string $alias) use($styleGroups) : bool
+            {
+                return array_key_exists($alias, $styleGroups);
+            };
+
+            // Loop through the archives
+            for ($i = 0; $i < $archives->length; $i++)
+            {
+                $archive = $archives->item($i)->childNodes;
+                $archiveIdent = $archives->item($i)->getAttribute('identifier');
+
+                if ($archiveExists($archiveIdent))
+                {
+                    $objArchive = $styleArchives[$archiveIdent];
+                }
+                else
+                {
+                    $objArchive = new StyleManagerArchiveModel();
+                    $objArchive->identifier = $archiveIdent;
+                }
+
+                // Loop through the archive fields
+                for ($a=0; $a<$archive->length; $a++)
+                {
+                    $strField = $archive->item($a)->nodeName;
+
+                    if ($strField === 'field')
+                    {
+                        $strName  = $archive->item($a)->getAttribute('title');
+                        $strValue = $archive->item($a)->nodeValue ?? '';
+
+                        if ($strName === 'id' || strtolower($strValue) === 'null')
+                        {
+                            continue;
+                        }
+
+                        $objArchive->{$strName} = $strValue;
+                    }
+                    elseif ($strField === 'children')
+                    {
+                        $children = $archive->item($a)->childNodes;
+
+                        // Loop through the archives fields
+                        for ($c=0; $c<$children->length; $c++)
+                        {
+                            $alias = $children->item($c)->getAttribute('alias');
+                            $fields = $children->item($c)->childNodes;
+
+                            $strChildAlias = StyleManager::generateAlias($objArchive->identifier, $alias);
+
+                            if ($childrenExists($strChildAlias))
+                            {
+                                $objChildren = $styleGroups[$strChildAlias];
+                            }
+                            else
+                            {
+                                $objChildren = new StyleManagerModel();
+                                $objChildren->alias = $alias;
+
+                                // Fake the pid for the ComponentStyleSelect Widget
+                                $objChildren->pid = $archiveIdent;
+                            }
+
+                            // Loop through the children fields
+                            for ($f=0; $f<$fields->length; $f++)
+                            {
+                                $strName = $fields->item($f)->getAttribute('title');
+                                $strValue = $fields->item($f)->nodeValue;
+
+                                if ($strName === 'id' || !$strValue || strtolower($strValue) === 'null')
+                                {
+                                    continue;
+                                }
+
+                                switch ($strName)
+                                {
+                                    case 'pid':
+                                        $strValue = $objArchive->id;
+                                        break;
+                                    case 'cssClasses':
+                                        if ($objChildren->{$strName})
+                                        {
+                                            /** @var array<array<int|string>> $arrClasses */
+                                            $arrClasses = StringUtil::deserialize($objChildren->{$strName}, true);
+                                            $arrExists  = self::flattenKeyValueArray($arrClasses);
+
+                                            /** @var array<array<int|string>> $arrValues */
+                                            $arrValues = StringUtil::deserialize($strValue, true);
+
+                                            foreach ($arrValues as $cssClass)
+                                            {
+                                                if (array_key_exists($cssClass['key'], $arrExists))
+                                                {
+                                                    continue;
+                                                }
+
+                                                $arrClasses[] = [
+                                                    'key' => $cssClass['key'],
+                                                    'value' => $cssClass['value']
+                                                ];
+                                            }
+
+                                            $strValue  = serialize($arrClasses);
+                                        }
+
+                                        break;
+                                    default:
+                                        $dcaField = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$strName];
+
+                                        if (isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
+                                        {
+                                            /** @var array<array<int|string>> $arrElements */
+                                            $arrElements = StringUtil::deserialize($objChildren->{$strName}, true);
+                                            /** @var array<array<int|string>> $arrValues */
+                                            $arrValues   = StringUtil::deserialize($strValue, true);
+
+                                            foreach ($arrValues as $element)
+                                            {
+                                                if (in_array($element, $arrElements))
+                                                {
+                                                    continue;
+                                                }
+
+                                                $arrElements[] = $element;
+                                            }
+
+                                            $strValue  = serialize($arrElements);
+                                        }
+                                }
+
+                                $objChildren->{$strName} = $strValue;
+                            }
+
+                            $strKey = StyleManager::generateAlias($objArchive->identifier, $objChildren->alias);
+                            $styleGroups[ $strKey ] = $objChildren->current();
+                        }
+                    }
+                }
+
+                $styleArchives[ $objArchive->identifier ] = $objArchive->current();
+            }
+        }
+
+        return [$styleArchives, $styleGroups];
     }
 
     /**
@@ -252,7 +447,6 @@ final class Config
                         $child->pid = $archiveIdent;
                     }
 
-                    // ToDo: Generalize that in future with the part in the ImportController
                     foreach ($childData as $kk => $vv)
                     {
                         if ($kk === 'id' || !$vv || (!is_array($vv) && strtolower((string) $vv) === 'null'))
@@ -260,66 +454,7 @@ final class Config
                             continue;
                         }
 
-                        switch ($kk)
-                        {
-                            case 'pid':
-                                $vv = $child->pid;
-                                break;
-
-                            case 'cssClasses':
-                                if (is_array($vv))
-                                {
-                                    $vv = $this->convertCssClasses($vv);
-                                }
-
-                                if ($child->{$kk})
-                                {
-                                    /** @var array<array<int|string>> $arrClasses */
-                                    $arrClasses = StringUtil::deserialize($child->{$kk}, true);
-                                    $arrExists  = self::flattenKeyValueArray($arrClasses);
-
-                                    /** @var array<array<int|string>> $arrValues */
-                                    $arrValues  = StringUtil::deserialize($vv, true);
-
-                                    foreach ($arrValues as $cssClass)
-                                    {
-                                        if (!array_key_exists($cssClass['key'], $arrExists))
-                                        {
-                                            $arrClasses[] = [
-                                                'key'   => $cssClass['key'],
-                                                'value' => $cssClass['value']
-                                            ];
-                                        }
-                                    }
-
-                                    $vv = serialize($arrClasses);
-                                }
-                                break;
-
-                            default:
-                                $dcaField = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$kk] ?? null;
-
-                                if (isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
-                                {
-                                    /** @var array<array<int|string>> $arrElements */
-                                    $arrElements = StringUtil::deserialize($child->{$kk}, true);
-
-                                    /** @var array<array<int|string>> $arrValues */
-                                    $arrValues = StringUtil::deserialize($vv, true);
-
-                                    foreach ($arrValues as $element)
-                                    {
-                                        if (!in_array($element, $arrElements, true))
-                                        {
-                                            $arrElements[] = $element;
-                                        }
-                                    }
-
-                                    $vv = serialize($arrElements);
-                                }
-                        }
-
-                        $child->{$kk} = $vv;
+                        $child->{$kk} = self::convertChildFieldValue($child, $kk, $vv);
                     }
 
                     $styleGroups[$styleIdent] = $child;
@@ -357,5 +492,69 @@ final class Config
         }
 
         return $arrTemp;
+    }
+
+    private function convertChildFieldValue(StyleManagerModel $child, string $key, mixed $value): mixed
+    {
+        switch ($key)
+        {
+            case 'pid':
+                $value = $child->pid;
+                break;
+
+            case 'cssClasses':
+                if (is_array($value))
+                {
+                    $value = $this->convertCssClasses($value);
+                }
+
+                if ($child->{$key})
+                {
+                    /** @var array<array<int|string>> $classList */
+                    $classList = StringUtil::deserialize($child->{$key}, true);
+                    $existing = self::flattenKeyValueArray($classList);
+
+                    /** @var array<array<int|string>> $arrValues */
+                    $arrValues  = StringUtil::deserialize($value, true);
+
+                    foreach ($arrValues as $class)
+                    {
+                        if (!array_key_exists($class['key'], $existing))
+                        {
+                            $classList[] = [
+                                'key'   => $class['key'],
+                                'value' => $class['value']
+                            ];
+                        }
+                    }
+
+                    $value = serialize($classList);
+                }
+                break;
+
+            default:
+                $dcaField = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$key] ?? null;
+
+                if (isset($dcaField['eval']['multiple']) && !!$dcaField['eval']['multiple'] && $dcaField['inputType'] === 'checkbox')
+                {
+                    /** @var array<array<int|string>> $elements */
+                    $elements = StringUtil::deserialize($child->{$key}, true);
+
+                    /** @var array<array<int|string>> $values */
+                    $values = StringUtil::deserialize($key, true);
+
+                    foreach ($values as $element)
+                    {
+                        if (!in_array($element, $elements, true))
+                        {
+                            $elements[] = $element;
+                        }
+                    }
+
+                    $value = serialize($elements);
+                }
+        }
+
+        return $value;
     }
 }
