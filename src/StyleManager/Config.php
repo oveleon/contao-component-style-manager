@@ -391,7 +391,10 @@ final class Config
 
         foreach ($files as $filePath)
         {
-            $filePath = $rootDir . '/' . $filePath;
+            if (!is_file($filePath))
+            {
+                $filePath = $rootDir . '/' . $filePath;
+            }
 
             if (
                 !is_file($filePath)
