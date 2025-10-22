@@ -6,4 +6,4 @@ services:
 
     Oveleon\ContaoComponentStyleManager\:
         resource: '../src/'
-        exclude: '../src/{Model,DependencyInjection,Event}'
+        exclude: '../src/{Model,Event,ContaoComponentStyleManager.php}'
