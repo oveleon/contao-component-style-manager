@@ -63,28 +63,25 @@ class StyleManagerArchiveModel extends Model
     {
         $objArchives = static::findAll($arrOptions);
 
-        if (System::getContainer()->getParameter('contao_component_style_manager.use_bundle_config'))
+        $bundleConfig = Config::getInstance();
+        $arrArchives = $bundleConfig::getArchives();
+
+        if (null !== $arrArchives)
         {
-            $bundleConfig = Config::getInstance();
-            $arrArchives = $bundleConfig::getArchives();
-
-            if (null !== $arrArchives)
+            if (null !== $objArchives)
             {
-                if (null !== $objArchives)
-                {
-                    $arrArchives = array_merge(
-                        $objArchives->getModels(),
-                        $arrArchives
-                    );
-                }
-
-                // Sort by sorting
-                usort($arrArchives, function($a, $b) {
-                    return $a->sorting <=> $b->sorting;
-                });
-
-                return $arrArchives;
+                $arrArchives = array_merge(
+                    $objArchives->getModels(),
+                    $arrArchives
+                );
             }
+
+            // Sort by sorting
+            usort($arrArchives, function($a, $b) {
+                return $a->sorting <=> $b->sorting;
+            });
+
+            return $arrArchives;
         }
 
         return $objArchives;

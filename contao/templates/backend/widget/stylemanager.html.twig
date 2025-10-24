@@ -2,9 +2,7 @@
 
     {%- for group_alias, collections in groups %}
         <div class="sm-tab-container" id="{{ group_alias }}">
-            {% if showGroupTitle and collections|first.groupTitle %}
-                <h4 class="sm-groupTitle">{{ collections|first.groupTitle }}</h4>
-            {% endif %}
+            <h4 class="sm-groupTitle">{{ collections|first.groupTitle }}</h4>
             {% set existingIdentifiers = [] %}
             {% set sessionAlias = session[group_alias] ?? null %}
             {% for alias, collection in collections %}

@@ -147,71 +147,69 @@ class StyleManagerModel extends Model
         $objGroups = static::findByTable($strTable, $arrOptions);
 
         // Load and merge bundle configurations
-        if ($objContainer->getParameter('contao_component_style_manager.use_bundle_config'))
+        $arrObjStyleGroups = null;
+
+        $bundleConfig = Config::getInstance();
+        $arrGroups = $bundleConfig::getGroups($strTable);
+
+        if (null !== $arrGroups)
         {
-            $arrObjStyleGroups = null;
+            $arrArchiveIdentifier = [];
 
-            $bundleConfig = Config::getInstance();
-            $arrGroups = $bundleConfig::getGroups($strTable);
-
-            if (null !== $arrGroups)
+            if (null !== ($objArchives = StyleManagerArchiveModel::findAll()))
             {
-                $arrArchiveIdentifier = [];
+                $arrArchiveIdentifier = array_combine(
+                    $objArchives->fetchEach('id'),
+                    $objArchives->fetchEach('identifier')
+                );
+            }
 
-                if (null !== ($objArchives = StyleManagerArchiveModel::findAll()))
+            if (null !== $objGroups)
+            {
+                foreach ($objGroups as $objGroup)
                 {
-                    $arrArchiveIdentifier = array_combine(
-                        $objArchives->fetchEach('id'),
-                        $objArchives->fetchEach('identifier')
-                    );
+                    $alias = $arrArchiveIdentifier[$objGroup->pid] . '_' . $objGroup->alias;
+
+                    $arrObjStyleGroups[ $alias ] = $objGroup->current();
                 }
+            }
 
-                if (null !== $objGroups)
+            // Append bundle config groups
+            foreach ($arrGroups as $combinedAlias => $objGroup)
+            {
+                $blnStrict = $objContainer->getParameter('contao_component_style_manager.strict');
+
+                // Skip if the alias already exists in the backend configuration
+                if ($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
                 {
-                    foreach ($objGroups as $objGroup)
+                    $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
+                }
+                elseif (!$blnStrict)
+                {
+                    // Merge if the alias already exists in the backend configuration
+                    if ($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
                     {
-                        $alias = $arrArchiveIdentifier[$objGroup->pid] . '_' . $objGroup->alias;
-
-                        $arrObjStyleGroups[ $alias ] = $objGroup->current();
+                        // Overwrite with a merged object
+                        $arrObjStyleGroups[ $combinedAlias ] = self::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
                     }
-                }
-
-                // Append bundle config groups
-                foreach ($arrGroups as $combinedAlias => $objGroup)
-                {
-                    $blnStrict = $objContainer->getParameter('contao_component_style_manager.strict');
-
-                    // Skip if the alias already exists in the backend configuration
-                    if ($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
+                    else
                     {
                         $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
                     }
-                    elseif (!$blnStrict)
-                    {
-                        // Merge if the alias already exists in the backend configuration
-                        if ($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
-                        {
-                            // Overwrite with a merged object
-                            $arrObjStyleGroups[ $combinedAlias ] = self::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
-                        }
-                        else
-                        {
-                            $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
-                        }
-                    }
                 }
             }
-
-            if ($arrObjStyleGroups)
-            {
-                // Sort by sorting
-                usort($arrObjStyleGroups, function($a, $b) {
-                    return ($a->sorting <=> $b->sorting);
-                });
-
-                return $arrObjStyleGroups;
-            }
         }
+
+        if ($arrObjStyleGroups)
+        {
+            // Sort by sorting
+            usort($arrObjStyleGroups, function($a, $b) {
+                return ($a->sorting <=> $b->sorting);
+            });
+
+            return $arrObjStyleGroups;
+        }
+
 
         return $objGroups;
     }

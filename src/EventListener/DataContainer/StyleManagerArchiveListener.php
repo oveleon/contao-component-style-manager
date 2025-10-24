@@ -28,9 +28,6 @@ readonly class StyleManagerArchiveListener
 {
     public function __construct(
         private RouterInterface $router,
-
-        #[Autowire(param: 'contao_component_style_manager.use_bundle_config')]
-        private string $bundleConfig,
     ) {
     }
 

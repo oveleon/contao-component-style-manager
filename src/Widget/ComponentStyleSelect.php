@@ -58,8 +58,6 @@ class ComponentStyleSelect extends Widget
 
     private readonly Environment|null $twig;
 
-    private readonly bool $showGroupTitle;
-
     public function __construct($arrAttributes = null)
     {
         parent::__construct($arrAttributes);
@@ -70,8 +68,6 @@ class ComponentStyleSelect extends Widget
         $this->insertTagParser = $container->get('contao.insert_tag.parser');
         $this->requestStack = $container->get('request_stack');
         $this->twig = $container->get('twig');
-
-        $this->showGroupTitle = (bool) $container->getParameter('contao_component_style_manager.show_group_title');
     }
 
     /**
@@ -269,7 +265,6 @@ class ComponentStyleSelect extends Widget
         return $this->twig?->render('@Contao/backend/widget/stylemanager.html.twig', [
             'id'             => $this->id,
             'groups'         => $arrGroups,
-            'showGroupTitle' => $this->showGroupTitle,
             'requestToken'   => $this->tokenManager?->getDefaultTokenValue(),
             'session'        => $arrSession,
         ]);

@@ -92,31 +92,6 @@
       <trans-unit id="tl_style_manager_archive.sorting.1">
         <source>Enter a freely definable number here to define the sort index. This is used to determine the order of the categories in the backend.</source>
       </trans-unit>
-
-      <trans-unit id="tl_style_manager_archive.bundleConfig.0.0">
-        <source>About the bundle configuration</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.0.1">
-        <source>Bundle configurations are used to automatically consume and use StyleManager properties from other bundles.</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.1.0">
-        <source>Overwrite configuration</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.1.1">
-        <source>If you import the configurations into the system using the Import button, properties with the same identifiers (category) and aliases (CSS group) will be added / overwritten. If you delete these properties later, the original configuration will be used again.</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.2.0">
-        <source>Switch on / off</source>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.2.1">
-        <source>Automatic reading of bundle configurations can be switched off via config.yaml:
-          &lt;br/&gt;&lt;br/&gt;
-&lt;pre&gt;
-contao_component_style_manager:
-    use_bundle_config: false
-&lt;/pre&gt;
-        </source>
-      </trans-unit>
     </body>
   </file>
 </xliff>
