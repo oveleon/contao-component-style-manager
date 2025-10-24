@@ -11,14 +11,17 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\EventListener;
 
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 #[AsEventListener]
 readonly class AddBackendAssetsListener
 {
-    public function __construct(private ScopeMatcher $scopeMatcher)
-    {
+    public function __construct(
+        private ScopeMatcher $scopeMatcher,
+        private Packages $package,
+    ) {
     }
 
     public function __invoke(RequestEvent $event): void
@@ -28,6 +31,6 @@ readonly class AddBackendAssetsListener
             return;
         }
 
-        $GLOBALS['TL_CSS'][] = 'bundles/contaocomponentstylemanager/stylemanager.css|static';
+        $GLOBALS['TL_CSS'][] = $this->package->getUrl('stylemanager.css', 'contao_component_style_manager');
     }
 }

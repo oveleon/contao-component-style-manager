@@ -27,9 +27,8 @@ class Plugin implements BundlePluginInterface //, RoutingPluginInterface
     public function getBundles(ParserInterface $parser): array
     {
         return [
-            BundleConfig::create(ContaoComponentStyleManager::class)
-                ->setLoadAfter([ContaoCoreBundle::class, ContaoCalendarBundle::class, ContaoNewsBundle::class])
-                ->setReplace(['componentStyleManager']),
+            new BundleConfig(ContaoComponentStyleManager::class)
+                ->setLoadAfter([ContaoCoreBundle::class, ContaoCalendarBundle::class, ContaoNewsBundle::class]),
         ];
     }
 
