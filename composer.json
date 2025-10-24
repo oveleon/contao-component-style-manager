@@ -20,20 +20,30 @@
             "name": "Daniele Sciannimanica",
             "homepage": "https://github.com/doishub",
             "role": "Developer"
+        },
+        {
+            "name": "Sebastian Zoglowek",
+            "homepage": "https://github.com/zoglo",
+            "role": "Developer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/oveleon/contao-component-style-manager/issues",
+        "source": "https://github.com/oveleon/contao-component-style-manager",
+        "forum": "https://community.contao.org"
+    },
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-json": "*",
         "ext-dom": "*",
-        "contao/core-bundle": "5.3.* || ^5.5.12",
-        "doctrine/dbal": "^3.3",
+        "contao/core-bundle": "5.3.* || ^5.6",
+        "doctrine/dbal": "^3.7 || ^4.3",
         "psr/log": "^1.1 || 2.0 || ^3.0",
         "symfony/config": "^6.4 || ^7.3",
         "symfony/console": "^6.4 || ^7.3",
         "symfony/dependency-injection": "^6.4 || ^7.3",
         "symfony/event-dispatcher": "^6.4 || ^7.3",
-        "symfony/event-dispatcher-contracts": "^2.0 || ^3.0",
+        "symfony/event-dispatcher-contracts": "^3.0",
         "symfony/http-foundation": "^6.4 || ^7.3",
         "symfony/http-kernel": "^6.4 || ^7.3",
         "symfony/routing": "^6.4 || ^7.3",
@@ -41,7 +51,7 @@
         "twig/twig": "^3.21"
     },
     "require-dev": {
-        "contao/manager-plugin": "^2.3.1"
+        "contao/manager-plugin": "^2.0"
     },
     "suggest": {
         "contao-thememanager/core": "A lightweight forward-thinking CSS component-first-framework leveraging flexbox and custom properties"
@@ -57,7 +67,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.11.x-dev"
+            "dev-main": "4.x-dev"
         },
         "contao-manager-plugin": "Oveleon\\ContaoComponentStyleManager\\ContaoManager\\Plugin"
     },
