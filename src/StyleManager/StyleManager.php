@@ -19,14 +19,14 @@ use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Event\AddStyleManagerPaletteEvent;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Entity\StyleGroup;
+use Oveleon\ContaoComponentStyleManager\Style\StyleGroup;
 
 /**
  * @internal
  */
 class StyleManager
 {
-    public const VARS_KEY = '__vars__';
+    public const string VARS_KEY = '__vars__';
 
     /**
      * Valid CSS-Class fields [field => size]

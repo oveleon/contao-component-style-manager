@@ -8,7 +8,7 @@ declare(strict_types=1);
  * (c) https://www.oveleon.de/
  */
 
-namespace Oveleon\ContaoComponentStyleManager\StyleManager\Entity;
+namespace Oveleon\ContaoComponentStyleManager\Style;
 
 final class StyleArchive
 {

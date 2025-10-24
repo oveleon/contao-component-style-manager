@@ -13,8 +13,8 @@ namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 use Contao\StringUtil;
 use Contao\System;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Entity\StyleGroup;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Entity\StyleArchive;
+use Oveleon\ContaoComponentStyleManager\Style\StyleArchive;
+use Oveleon\ContaoComponentStyleManager\Style\StyleGroup;
 use Symfony\Component\Yaml\Yaml;
 
 /**
