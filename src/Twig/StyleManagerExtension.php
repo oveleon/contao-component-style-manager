@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\Twig;
 
 use Contao\StringUtil;
-use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
+use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

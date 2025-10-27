@@ -29,7 +29,7 @@ Adding the StyleManager widget in your own DCA. As an example we use the DCA nam
 ```php
 // contao/config.php
 
-use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
+use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
 
 // Extend the StyleManager field
 $GLOBALS['TL_DCA']['tl_mydca']['fields']['styleManager'] = [

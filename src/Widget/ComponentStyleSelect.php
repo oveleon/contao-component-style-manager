@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoComponentStyleManager\Widget;
 
+use Contao\Backend;
 use Contao\BackendUser;
 use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
@@ -21,7 +22,7 @@ use Contao\System;
 use Contao\Widget;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
-use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
+use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
@@ -296,7 +297,7 @@ class ComponentStyleSelect extends Widget
             $this->varValue = $arrValue;
         }
 
-        $field   = StyleManager::getClassFieldNameByTable($this->strTable);
+        $field   = self::getClassFieldNameByTable($this->strTable);
         $objUser = BackendUser::getInstance();
 
         // Update CSS class fields in case of multiple editing, or if a user has no rights for the field
@@ -306,6 +307,7 @@ class ComponentStyleSelect extends Widget
             $dc->field = $field;
             $dc->activeRecord = $this->activeRecord;
 
+            // ToDo:
             $value = StyleManager::resetClasses($this->activeRecord->{$field}, $dc, $this->strTable);
             $value = StyleManager::updateClasses($value, $dc);
 
@@ -313,5 +315,20 @@ class ComponentStyleSelect extends Widget
             Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
                 ->execute($value, $this->activeRecord->id);
         }
+    }
+
+    private function getClassFieldNameByTable(string $strTable): mixed
+    {
+        Backend::loadDataContainer($strTable);
+
+        foreach (StyleManager::$validCssClassFields as $field => $size)
+        {
+            if (isset($GLOBALS['TL_DCA'][$strTable]['fields'][$field]))
+            {
+                return $field;
+            }
+        }
+
+        return false;
     }
 }

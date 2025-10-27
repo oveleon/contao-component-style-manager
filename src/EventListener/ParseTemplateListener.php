@@ -13,8 +13,8 @@ namespace Oveleon\ContaoComponentStyleManager\EventListener;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\StringUtil;
 use Contao\Template;
-use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
+use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
 
 #[AsHook('parseTemplate')]
 class ParseTemplateListener

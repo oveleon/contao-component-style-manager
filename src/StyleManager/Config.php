@@ -12,16 +12,14 @@ namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
 use Contao\StringUtil;
 use Contao\System;
+use Oveleon\ContaoComponentStyleManager\Event\IsVisibleGroupEvent;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Oveleon\ContaoComponentStyleManager\Style\StyleArchive;
 use Oveleon\ContaoComponentStyleManager\Style\StyleGroup;
+use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * A static class to store config data
- *
- * @author Daniele Sciannimanica <https://github.com/doishub>
- *
  * @internal
  */
 final class Config
@@ -46,7 +44,7 @@ final class Config
      */
     public function __construct()
     {
-        [$arrStyleArchives, $arrStyleGroups] = static::loadBundleConfiguration();
+        [$arrStyleArchives, $arrStyleGroups] = Config::loadBundleConfiguration();
 
         self::$arrArchive = $arrStyleArchives;
         self::$arrGroups = $arrStyleGroups;
@@ -64,12 +62,12 @@ final class Config
      */
     public static function getInstance(): Config|null
     {
-        if (static::$objInstance === null)
+        if (Config::$objInstance === null)
         {
-            static::$objInstance = new static();
+            Config::$objInstance = new Config();
         }
 
-        return static::$objInstance;
+        return Config::$objInstance;
     }
 
     /**
@@ -77,7 +75,7 @@ final class Config
      */
     public static function getArchives(): array|null
     {
-        return static::$arrArchive;
+        return Config::$arrArchive;
     }
 
     /**
@@ -87,20 +85,22 @@ final class Config
     {
         if (null === $table)
         {
-            return static::$arrGroups;
+            return Config::$arrGroups;
         }
 
         $arrObjStyleGroups = null;
 
-        if (static::$arrGroups)
+        if ([] === Config::$arrGroups)
         {
-            foreach (static::$arrGroups as $combinedAlias => $objStyleGroup)
+            return null;
+        }
+
+        foreach (Config::$arrGroups as $combinedAlias => $objStyleGroup)
+        {
+            // Skip if the group is not allowed for the current table
+            if (self::isVisibleGroup($objStyleGroup, $table))
             {
-                // Skip if the group is not allowed for the current table
-                if (StyleManager::isVisibleGroup($objStyleGroup, $table))
-                {
-                    $arrObjStyleGroups[ $combinedAlias ] = $objStyleGroup;
-                }
+                $arrObjStyleGroups[$combinedAlias] = $objStyleGroup;
             }
         }
 
@@ -377,6 +377,36 @@ final class Config
         }
 
         return [$styleArchives, $styleGroups];
+    }
+
+    /**
+     * Check whether an element is visible in the style manager widget
+     */
+    private static function isVisibleGroup(StyleGroup|StyleManagerModel $objGroup, string $strTable): bool
+    {
+        $isVisible = match ($strTable) {
+            'tl_layout' => !!$objGroup->extendLayout,
+            'tl_page' => !!$objGroup->extendPage,
+            'tl_module' => !!$objGroup->extendModule,
+            'tl_article' => !!$objGroup->extendArticle,
+            'tl_form' => !!$objGroup->extendForm,
+            'tl_form_field' => !!$objGroup->extendFormFields,
+            'tl_content' => !!$objGroup->extendContentElement,
+            'tl_news' => !!$objGroup->extendNews,
+            'tl_calendar_events' => !!$objGroup->extendEvents,
+            default => false,
+        };
+
+        if ($isVisible) {
+            return true;
+        }
+
+        // ToDo: DI
+        $eventDispatcher = System::getContainer()->get('event_dispatcher');
+        $event = new IsVisibleGroupEvent($objGroup, $strTable);
+        $eventDispatcher->dispatch($event);
+
+        return $event->isVisible();
     }
 
     /**
