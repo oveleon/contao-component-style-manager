@@ -1,18 +1,20 @@
 ## Documentation
+
 - __[Configuration](CONFIGURATION.md)__
 - [Use template variables](TEMPLATE_VARIABLES.md)
 - [Support own extensions](SUPPORT.md)
-- [Import / Export](IMPORT_EXPORT.md)
 - [Bundle-Configurations](BUNDLE_CONFIG.md)
-- [Migration](docs/MIGRATE.md)
 
 ---
 
-After the installation, a new navigation item "StyleManager" is displayed in the backend to create and edit the dataset of categories and CSS groups.
+After the installation, a new navigation item "StyleManager" is displayed in the backend to create and edit the dataset
+of categories and CSS groups.
 
 # Categories:
 
-Categories can be considered as archives and form a logical separation of CSS groups. A special feature for the display in the backend, is the merging of these categories via the field `Group-Identifier`. This field can be filled freely to display categories with the same group identifier bundled as tab navigation in the widget.
+Categories can be considered as archives and form a logical separation of CSS groups. A special feature for the display
+in the backend, is the merging of these categories via the field `Group-Identifier`. This field can be filled freely to
+display categories with the same group identifier bundled as tab navigation in the widget.
 
 | Field              | Description                                                                                                                  |
 |--------------------|------------------------------------------------------------------------------------------------------------------------------|
@@ -22,15 +24,19 @@ Categories can be considered as archives and form a logical separation of CSS gr
 | `Sort-Index`       | This field is used to determine the order of the categories in the widget.                                                   |
 
 ### Example backend view of combined categories using `Group-Idenfifier`:
+
 ![Manage Categories: Image 3](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/combined-groups.png)
 
 <br/>
 
 # CSS-Groups:
 
-If a category has been created, any CSS groups can be created within it. A CSS group represents the actual selection of selectable options that are made available to the editor for the various areas (articles, content elements, ...).
+If a category has been created, any CSS groups can be created within it. A CSS group represents the actual selection of
+selectable options that are made available to the editor for the various areas (articles, content elements, ...).
 
-A special feature is that CSS groups can also be used as template variables via the `Use as template variable` field. In this case, the selected options are not automatically made available as a CSS class, but must be accepted manually in the template. [Learn more about template variables](TEMPLATE_VARIABLES.md).
+A special feature is that CSS groups can also be used as template variables via the `Use as template variable` field. In
+this case, the selected options are not automatically made available as a CSS class, but must be accepted manually in
+the template. [Learn more about template variables](TEMPLATE_VARIABLES.md).
 
 | Field                      | Description                                                                                                                                                                                            |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -41,4 +47,5 @@ A special feature is that CSS groups can also be used as template variables via 
 | `...`                      | All other fields should be self-explanatory                                                                                                                                                            |
 
 ### Example css group:
+
 ![Manage Groups: Image 1](https://www.oveleon.de/share/github-assets/contao-component-style-manager/2.0/groups-edit.png)

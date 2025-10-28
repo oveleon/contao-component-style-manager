@@ -16,3 +16,5 @@
 * The config option `show_group_title` has been removed. Use Twig instead.
 * The config option `use_bundle_config` has been removed. Bundle configurations are now loaded by default.
 * Bundle configurations are not loaded using the `StyleManagerArchive` and `StyleManager` Model anymore.
+* Namespace and methods for expanding your own DCA have been changed, consult the documentation for the changes.
+*
