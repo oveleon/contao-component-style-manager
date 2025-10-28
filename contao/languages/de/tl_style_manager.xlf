@@ -26,10 +26,6 @@
         <source>Title / Description</source>
         <target>Titel / Beschreibung</target>
       </trans-unit>
-      <trans-unit id="tl_style_manager.noStylesDefined">
-        <source>No styles are defined for this area.</source>
-        <target>Für diesen Bereich sind keine Stile hinterlegt.</target>
-      </trans-unit>
       <trans-unit id="tl_style_manager.new.0">
         <source>New CSS group</source>
         <target>Neue CSS-Gruppe</target>

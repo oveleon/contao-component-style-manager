@@ -36,7 +36,7 @@ class StyleManager
      */
     public static function deserializeValues(mixed $arrValue): mixed
     {
-        if (isset($arrValue[self::VARS_KEY]))
+        if (!isset($arrValue[self::VARS_KEY]))
         {
             return $arrValue;
         }
@@ -46,7 +46,7 @@ class StyleManager
             foreach ($values as $alias => $arrItem)
             {
                 $strId = self::generateAlias($archiveAlias, $alias);
-                $arrValue[$strId] = html_entity_decode((string)$arrItem['value']);
+                $arrValue[$strId] = html_entity_decode((string) $arrItem['value']);
             }
         }
 

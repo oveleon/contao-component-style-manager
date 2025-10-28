@@ -54,6 +54,21 @@ class StyleManagerWidgetListener
     #[AsCallback(table: 'tl_form_field', target: 'config.onload')]
     public function addPalette(DataContainer $dc): void
     {
+        self::applyToPalette($dc);
+    }
+
+    #[AsCallback(table: 'tl_form_field', target: 'list.sorting.child_record')]
+    public function listFormFields(array $arrRow): string
+    {
+        $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
+        $arrRow['styleManager'] = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
+
+        $formField = new \tl_form_field();
+        return $formField->listFormFields($arrRow);
+    }
+
+    public static function applyToPalette(DataContainer $dc): void
+    {
         $eventDispatcher = System::getContainer()->get('event_dispatcher');
 
         $pm = PaletteManipulator::create()
@@ -66,7 +81,7 @@ class StyleManagerWidgetListener
             $event = new AddStyleManagerPaletteEvent($dc, $palette);
             $eventDispatcher->dispatch($event);
 
-            $palette = $event->getPalette();
+            $palette = $event->palette;
 
             if ($palette === '__selector__' || $palette === '__skip__')
             {
@@ -75,16 +90,6 @@ class StyleManagerWidgetListener
 
             $pm->applyToPalette($palette, $dc->table);
         }
-    }
-
-    #[AsCallback(table: 'tl_form_field', target: 'list.sorting.child_record')]
-    public function listFormFields(array $arrRow): string
-    {
-        $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
-        $arrRow['styleManager'] = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
-
-        $formField = new \tl_form_field();
-        return $formField->listFormFields($arrRow);
     }
 
     public static function resetClasses(mixed $varValue, DataContainer $dc, string $strTable): mixed
@@ -157,12 +162,7 @@ class StyleManagerWidgetListener
         return $varValue;
     }
 
-    private static function isMultipleField(string $strField): bool
-    {
-        return StyleManager::$validCssClassFields[ $strField ] > 1;
-    }
-
-    private function clearClasses(mixed $varValue, DataContainer $dc): mixed
+    public static function clearClasses(mixed $varValue, DataContainer $dc): mixed
     {
         if (self::isMultipleField($dc->field))
         {
@@ -195,6 +195,11 @@ class StyleManagerWidgetListener
         }
 
         return $varValue;
+    }
+
+    private static function isMultipleField(string $strField): bool
+    {
+        return StyleManager::$validCssClassFields[ $strField ] > 1;
     }
 
     private static function cleanupClasses(mixed &$arrValues, string $strTable): void

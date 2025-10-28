@@ -13,7 +13,7 @@ namespace Oveleon\ContaoComponentStyleManager\Model;
 use Contao\Model;
 use Contao\Model\Collection;
 use Contao\System;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
+use Oveleon\ContaoComponentStyleManager\StyleManager\ConfigProvider;
 
 /**
  * Reads and writes fields from style manager categories
@@ -45,28 +45,23 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
  * @method static integer countByTitle($id, array $opt=array())
  * @method static integer countByIdentifier($id, array $opt=array())
  * @method static integer countByGroupAlias($id, array $opt=array())
- *
- * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 class StyleManagerArchiveModel extends Model
 {
     /**
-     * Table name
      * @var string
      */
     protected static $strTable = 'tl_style_manager_archive';
 
-    /**
-     * Find configuration archives and published archives
-     */
     public static function findAllWithConfiguration(array $arrOptions = []): Collection|StyleManagerArchiveModel|array|null
     {
         $objArchives = static::findAll($arrOptions);
 
-        $bundleConfig = Config::getInstance();
-        $arrArchives = $bundleConfig::getArchives();
+        /** @var ConfigProvider $configuration */
+        $configuration = System::getContainer()->get('contao_component_style_manager.config_provider');
+        $arrArchives = $configuration->archives;
 
-        if (null !== $arrArchives)
+        if ([] !== $arrArchives)
         {
             if (null !== $objArchives)
             {

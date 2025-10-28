@@ -15,8 +15,8 @@ use Contao\Model;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
+use Oveleon\ContaoComponentStyleManager\Event\StyleManagerFindByTableEvent;
+use Oveleon\ContaoComponentStyleManager\StyleManager\ConfigProvider;
 
 /**
  * Reads and writes fields from style manager
@@ -95,21 +95,15 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
  * @method static integer countByContentElements($id, array $opt=array())
  * @method static integer countByExtendNews($id, array $opt=array())
  * @method static integer countByExtendEvents($id, array $opt=array())
- *
- * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 class StyleManagerModel extends Model
 {
     /**
-     * Table name
      * @var string
      */
     protected static $strTable = 'tl_style_manager';
 
-    /**
-     * Find published CSS groups using their table
-     */
-    public static function findByTable(string $strTable, array $arrOptions=array()): Collection|StyleManagerModel|array|null
+    public static function findByTable(string $strTable, array $arrOptions = []): Collection|StyleManagerModel|array|null
     {
         switch ($strTable)
         {
@@ -132,25 +126,25 @@ class StyleManagerModel extends Model
             case 'tl_calendar_events':
                 return static::findByExtendEvents(1, $arrOptions);
             default:
-                // ToDo: Maybe having an interface in the future would be better - The `styleManagerFindByTable` Hook has been removed
+                $eventDispatcher = System::getContainer()->get('event_dispatcher');
+                $event = new StyleManagerFindByTableEvent($strTable, $arrOptions);
+                $eventDispatcher->dispatch($event);
 
-                return null;
+                return $event->getCollection();
         }
     }
 
-    /**
-     * Find configuration and published CSS groups using their table
-     */
     public static function findByTableAndConfiguration(string $strTable, array $arrOptions=array()): Collection|StyleManagerModel|array|null
     {
-        $objContainer = System::getContainer();
+        $container = System::getContainer();
         $objGroups = static::findByTable($strTable, $arrOptions);
 
         // Load and merge bundle configurations
         $arrObjStyleGroups = null;
 
-        $bundleConfig = Config::getInstance();
-        $arrGroups = $bundleConfig::getGroups($strTable);
+        /** @var ConfigProvider $configuration */
+        $configuration = $container->get('contao_component_style_manager.config_provider');
+        $arrGroups = $configuration->getGroups($strTable);
 
         if (null !== $arrGroups)
         {
@@ -177,7 +171,7 @@ class StyleManagerModel extends Model
             // Append bundle config groups
             foreach ($arrGroups as $combinedAlias => $objGroup)
             {
-                $blnStrict = $objContainer->getParameter('contao_component_style_manager.strict');
+                $blnStrict = $container->getParameter('contao_component_style_manager.strict');
 
                 // Skip if the alias already exists in the backend configuration
                 if ($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
@@ -214,9 +208,6 @@ class StyleManagerModel extends Model
         return $objGroups;
     }
 
-    /**
-     * Find one item by alias by their parent ID
-     */
     public static function findByAliasAndPid(string $alias, int|string $pid, array $arrOptions=array()): StyleManagerModel|null
     {
         $t = static::$strTable;

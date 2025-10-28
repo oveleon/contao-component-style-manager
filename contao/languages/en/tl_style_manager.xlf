@@ -20,9 +20,6 @@
       <trans-unit id="tl_style_manager.ow_value">
         <source>Title / Description</source>
       </trans-unit>
-      <trans-unit id="tl_style_manager.noStylesDefined">
-        <source>No styles are defined for this area.</source>
-      </trans-unit>
       <trans-unit id="tl_style_manager.new.0">
         <source>New CSS group</source>
       </trans-unit>

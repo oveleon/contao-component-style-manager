@@ -12,17 +12,19 @@ namespace Oveleon\ContaoComponentStyleManager\Widget;
 
 use Contao\Backend;
 use Contao\BackendUser;
-use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
-use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Database;
 use Contao\DC_Table;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
+use Oveleon\ContaoComponentStyleManager\Event\StyleManagerSkipFieldEvent;
+use Oveleon\ContaoComponentStyleManager\EventListener\DataContainer\StyleManagerWidgetListener;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerArchiveModel;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
+use Oveleon\ContaoComponentStyleManager\Style\StyleGroup;
 use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
@@ -39,36 +41,25 @@ use Twig\Environment;
  */
 class ComponentStyleSelect extends Widget
 {
-    /**
-     * Submit user input
-     * @var boolean
-     */
     protected $blnSubmitInput = true;
 
-    /**
-     * Template
-     * @var string
-     */
     protected $strTemplate = 'be_widget';
 
-    private readonly ContaoCsrfTokenManager|null $tokenManager;
+    public RequestStack|null $requestStack {
+        get => System::getContainer()->get('request_stack');
+    }
 
-    private readonly InsertTagParser|null $insertTagParser;
+    public Environment|null $twig {
+        get => System::getContainer()->get('twig');
+    }
 
-    private readonly RequestStack|null $requestStack;
-
-    private readonly Environment|null $twig;
+    public EventDispatcherInterface|null $eventDispatcher {
+        get => System::getContainer()->get('event_dispatcher');
+    }
 
     public function __construct($arrAttributes = null)
     {
         parent::__construct($arrAttributes);
-
-        $container = System::getContainer();
-
-        $this->tokenManager = $container->get('contao.csrf.token_manager');
-        $this->insertTagParser = $container->get('contao.insert_tag.parser');
-        $this->requestStack = $container->get('request_stack');
-        $this->twig = $container->get('twig');
     }
 
     /**
@@ -83,7 +74,7 @@ class ComponentStyleSelect extends Widget
 
         if ($arrObjStyleGroups === null || $arrObjStyleArchives === null)
         {
-            return $this->renderEmptyMessage();
+            return $this->twig?->render('@Contao/backend/widget/style_manager.html.twig', ['empty' => true]);
         }
 
         $isEmpty = true;
@@ -92,13 +83,13 @@ class ComponentStyleSelect extends Widget
         // Prepare archives
         foreach ($arrObjStyleArchives as $objStyleArchive)
         {
-            $arrArchives[ $objStyleArchive->identifier ] = [
+            $arrArchives[$objStyleArchive->identifier] = [
                 'title'      => $objStyleArchive->title,
                 'identifier' => $objStyleArchive->identifier,
                 'desc'       => $objStyleArchive->desc,
                 'group'      => $objStyleArchive->groupAlias,
                 'model'      => $objStyleArchive
-            ];
+           ];
 
             $arrParentMapping[$objStyleArchive->id ?? $objStyleArchive->identifier] = $objStyleArchive->identifier;
 
@@ -108,7 +99,9 @@ class ComponentStyleSelect extends Widget
         // Restore default values
         $this->varValue = StyleManager::deserializeValues($this->varValue);
 
-        // Prepare group fields
+        /**
+         * @var StyleGroup|StyleManagerModel $objStyleGroup
+         */
         foreach ($arrObjStyleGroups as $objStyleGroup)
         {
             $arrOptions      = [];
@@ -155,7 +148,13 @@ class ComponentStyleSelect extends Widget
                 }
             }
 
-            // ToDo: Maybe add an event for the former styleManagerSkipField Hook?
+            $event = new StyleManagerSkipFieldEvent($objStyleGroup, $this);
+            $this->eventDispatcher->dispatch($event);
+
+            if ($event->shouldSkip())
+            {
+                continue;
+            }
 
             $opts = StringUtil::deserialize($objStyleGroup->cssClasses);
 
@@ -164,11 +163,8 @@ class ComponentStyleSelect extends Widget
                 $arrFieldOptions[] = [
                     'label' => $opt['value'] ?: $opt['key'],
                     'value' => $opt['key']
-                ];
+               ];
             }
-
-            // dynamically change or expand group options
-            // ToDo: Add an event instead of the former Hook styleManagerGroupFieldOptionsEvent
 
             if (false === StyleManager::styleGroupMappableToArchives($objStyleGroup, $arrParentMapping))
             {
@@ -176,7 +172,7 @@ class ComponentStyleSelect extends Widget
             }
 
             $archiveIdent = $arrParentMapping[$objStyleGroup->pid];
-            $strId        = StyleManager::generateAlias($arrArchives[ $archiveIdent ]['identifier'], $objStyleGroup->alias);
+            $strId        = StyleManager::generateAlias($arrArchives[$archiveIdent]['identifier'], $objStyleGroup->alias);
             $strFieldId   = $this->strId . '_' . $strId;
             $strFieldName = $this->strName . '[' . $strId . ']';
 
@@ -186,7 +182,7 @@ class ComponentStyleSelect extends Widget
                 {
                     $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
                         StringUtil::specialchars($arrOption['value']),
-                        static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
+                        static::optionSelected($arrOption['value'], $this->varValue[$strId] ?? ''),
                         $arrOption['label']);
                 }
                 else
@@ -197,7 +193,7 @@ class ComponentStyleSelect extends Widget
                     {
                         $arrOptGroups[] = sprintf('<option value="%s"%s>%s</option>',
                             StringUtil::specialchars($arrOptgroup['value']),
-                            static::optionSelected($arrOption['value'], $this->varValue[ $strId ] ?? ''),
+                            static::optionSelected($arrOption['value'], $this->varValue[$strId] ?? ''),
                             $arrOptgroup['label']);
                     }
 
@@ -212,21 +208,21 @@ class ComponentStyleSelect extends Widget
             }
 
             // create a collection
-            $groupAlias      = ($arrArchives[ $archiveIdent ]['group'] ?: 'group-' . $arrArchives[ $archiveIdent ]['identifier']) . '-' . $this->id;
-            $collectionAlias = $arrArchives[ $archiveIdent ]['identifier'];
+            $groupAlias      = ($arrArchives[$archiveIdent]['group'] ?: 'group-' . $arrArchives[$archiveIdent]['identifier']) . '-' . $this->id;
+            $collectionAlias = $arrArchives[$archiveIdent]['identifier'];
 
             if (!\in_array($collectionAlias, array_keys($arrCollection)))
             {
-                $arrCollection[ $collectionAlias ] = [
-                    'label'      => $arrArchives[ $archiveIdent ]['title'],
-                    'desc'       => $this->insertTagParser?->replaceInline(nl2br($arrArchives[ $archiveIdent ]['desc'] ?? '')),
+                $arrCollection[$collectionAlias] = [
+                    'label'      => $arrArchives[$archiveIdent]['title'],
+                    'desc'       => $arrArchives[$archiveIdent]['desc'] ?? '',
                     'group'      => $groupAlias,
-                    'groupTitle' => $arrArchives[ $archiveIdent ]['group'] ?? null,
+                    'groupTitle' => $arrArchives[$archiveIdent]['group'] ?? null,
                     'fields'     => []
-                ];
+               ];
             }
 
-            $arrCollection[ $collectionAlias ]['fields'][] = sprintf('%s%s<select name="%s" id="ctrl_%s" class="%s%s"%s data-action="focus->contao--scroll-offset#store">%s</select>%s%s',
+            $arrCollection[$collectionAlias]['fields'][] = sprintf('%s%s<select name="%s" id="ctrl_%s" class="%s%s"%s data-action="focus->contao--scroll-offset#store">%s</select>%s%s',
                 (str_contains($objStyleGroup->cssClass ?? '', 'separator') ? '<hr>' : '') . '<div' . ($objStyleGroup->cssClass ? ' class="' . $objStyleGroup->cssClass . '"' : ''). (!!$objStyleGroup->chosen ? ' data-controller="contao--choices"' : '') .'>',
                 '<h3><label for="ctrl_' . $strFieldId . '">' . $objStyleGroup->title . '</label></h3>',
                 $strFieldName,
@@ -244,7 +240,7 @@ class ComponentStyleSelect extends Widget
 
         if ($isEmpty)
         {
-            return $this->renderEmptyMessage();
+            return $this->twig?->render('@Contao/backend/widget/style_manager.html.twig', ['empty' => true]);
         }
 
         $objSession = $this->requestStack?->getSession()->getBag('contao_backend');
@@ -260,24 +256,14 @@ class ComponentStyleSelect extends Widget
         // collect groups
         foreach ($arrCollection as $alias => $collection)
         {
-            $arrGroups[ $collection['group'] ][ $alias ] = $collection;
+            $arrGroups[$collection['group']][$alias] = $collection;
         }
 
-        return $this->twig?->render('@Contao/backend/widget/stylemanager.html.twig', [
-            'id'             => $this->id,
-            'groups'         => $arrGroups,
-            'requestToken'   => $this->tokenManager?->getDefaultTokenValue(),
-            'session'        => $arrSession,
-        ]);
-    }
-
-    /**
-     * Return the empty message
-     */
-    private function renderEmptyMessage(): string
-    {
-        System::loadLanguageFile('tl_style_manager');
-        return '<div class="no_styles tl_info"><p>' . $GLOBALS['TL_LANG']['tl_style_manager']['noStylesDefined'] . '</p></div>';
+        return $this->twig?->render('@Contao/backend/widget/style_manager.html.twig', [
+            'id' => $this->id,
+            'groups' => $arrGroups,
+            'session' => $arrSession,
+       ]);
     }
 
     /**
@@ -308,8 +294,8 @@ class ComponentStyleSelect extends Widget
             $dc->activeRecord = $this->activeRecord;
 
             // ToDo:
-            $value = StyleManager::resetClasses($this->activeRecord->{$field}, $dc, $this->strTable);
-            $value = StyleManager::updateClasses($value, $dc);
+            $value = StyleManagerWidgetListener::resetClasses($this->activeRecord->{$field}, $dc, $this->strTable);
+            $value = StyleManagerWidgetListener::updateClasses($value, $dc);
 
             // Update CSS class field
             Database::getInstance()->prepare('UPDATE ' . $this->strTable . ' SET ' . $field . '=? WHERE id=?')
