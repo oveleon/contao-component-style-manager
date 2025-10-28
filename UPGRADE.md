@@ -13,6 +13,6 @@
 * The `styleManagerFormatMethod` hook has been removed.
 * The `styleManagerGroupFieldOptions` hook has been removed.
 * Whilst XML bundle-configurations still work, you are encouraged to use the YAML configuration.
-* The config option `show_group_title` has been removed. Hide the group titles by extending the Twig template.
+* The config option `show_group_title` has been removed. Use Twig instead.
 * The config option `use_bundle_config` has been removed. Bundle configurations are now loaded by default.
 * Bundle configurations are not loaded using the `StyleManagerArchive` and `StyleManager` Model anymore.

@@ -15,24 +15,24 @@ use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Oveleon\ContaoComponentStyleManager\Style\StyleGroup;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class IsVisibleGroupEvent extends Event
+class StyleManagerVisibleGroupEvent extends Event
 {
     private bool $visible = false;
 
     public function __construct(
-        public readonly StyleGroup|StyleManagerModel $group,
         public readonly string $table,
+        public readonly StyleGroup|StyleManagerModel $group,
     ) {
-    }
-
-    public function getGroup(): StyleGroup|StyleManagerModel
-    {
-        return $this->group;
     }
 
     public function getTable(): string
     {
         return $this->table;
+    }
+
+    public function getGroup(): StyleGroup|StyleManagerModel
+    {
+        return $this->group;
     }
 
     public function isVisible(): bool
