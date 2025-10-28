@@ -27,19 +27,14 @@ final class ConfigProvider
 {
     private array $arrGroups;
 
-    private array $arrArchive;
+    private(set) array $archives;
 
     public function __construct(
         private readonly ResourceFinderInterface $resourceFinder,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly string $projectDir,
     ) {
-        [$this->arrArchive, $this->arrGroups] = $this->loadBundleConfiguration();
-    }
-
-    public function getArchives(): array|null
-    {
-        return $this->arrArchive;
+        [$this->archives, $this->arrGroups] = $this->loadBundleConfiguration();
     }
 
     public function getGroups(string|null $table = null): array|null
@@ -356,7 +351,6 @@ final class ConfigProvider
             return true;
         }
 
-        // ToDo: DI
         $event = new StyleManagerVisibleGroupEvent($strTable, $objGroup);
         $this->eventDispatcher->dispatch($event);
 
