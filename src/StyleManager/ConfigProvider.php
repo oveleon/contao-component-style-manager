@@ -10,95 +10,56 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoComponentStyleManager\StyleManager;
 
+use Contao\CoreBundle\Config\ResourceFinderInterface;
 use Contao\StringUtil;
-use Contao\System;
-use Oveleon\ContaoComponentStyleManager\Event\IsVisibleGroupEvent;
+use Oveleon\ContaoComponentStyleManager\Event\StyleManagerVisibleGroupEvent;
 use Oveleon\ContaoComponentStyleManager\Model\StyleManagerModel;
 use Oveleon\ContaoComponentStyleManager\Style\StyleArchive;
 use Oveleon\ContaoComponentStyleManager\Style\StyleGroup;
 use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @internal
  */
-final class Config
+final class ConfigProvider
 {
-    /**
-     * Object instance (Singleton)
-     */
-    protected static Config|null $objInstance = null;
+    private array $arrGroups;
 
-    /**
-     * Group data
-     */
-    protected static array $arrGroups = [];
+    private array $arrArchive;
 
-    /**
-     * Archive data
-     */
-    protected static array $arrArchive = [];
-
-    /**
-     * Prevent direct instantiation (Singleton)
-     */
-    public function __construct()
-    {
-        [$arrStyleArchives, $arrStyleGroups] = Config::loadBundleConfiguration();
-
-        self::$arrArchive = $arrStyleArchives;
-        self::$arrGroups = $arrStyleGroups;
+    public function __construct(
+        private readonly ResourceFinderInterface $resourceFinder,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly string $projectDir,
+    ) {
+        [$this->arrArchive, $this->arrGroups] = $this->loadBundleConfiguration();
     }
 
-    /**
-     * Prevent cloning of the object (Singleton)
-     */
-    final public function __clone()
+    public function getArchives(): array|null
     {
+        return $this->arrArchive;
     }
 
-    /**
-     * Instantiate the config object
-     */
-    public static function getInstance(): Config|null
-    {
-        if (Config::$objInstance === null)
-        {
-            Config::$objInstance = new Config();
-        }
-
-        return Config::$objInstance;
-    }
-
-    /**
-     * Return all archives as an array
-     */
-    public static function getArchives(): array|null
-    {
-        return Config::$arrArchive;
-    }
-
-    /**
-     * Return all groups as an array
-     */
-    public static function getGroups(string|null $table = null): array|null
+    public function getGroups(string|null $table = null): array|null
     {
         if (null === $table)
         {
-            return Config::$arrGroups;
+            return $this->arrGroups;
         }
 
         $arrObjStyleGroups = null;
 
-        if ([] === Config::$arrGroups)
+        if ([] === $this->arrGroups)
         {
             return null;
         }
 
-        foreach (Config::$arrGroups as $combinedAlias => $objStyleGroup)
+        foreach ($this->arrGroups as $combinedAlias => $objStyleGroup)
         {
             // Skip if the group is not allowed for the current table
-            if (self::isVisibleGroup($objStyleGroup, $table))
+            if ($this->isVisibleGroup($table, $objStyleGroup))
             {
                 $arrObjStyleGroups[$combinedAlias] = $objStyleGroup;
             }
@@ -110,13 +71,9 @@ final class Config
     /**
      * Return all configuration files from third-party bundles
      */
-    public static function getBundleConfigurationFiles(ConfigurationFileType $type): array|null
+    private function getBundleConfigurationFiles(ConfigurationFileType $type): array|null
     {
-        $container = System::getContainer();
-
-        /** @var string $projectDir */
-        $projectDir = $container->getParameter('kernel.project_dir');
-        $arrFiles = $container->get('contao.resource_finder')?->findIn('templates')?->files()?->name('style-manager-*'. $type->value);
+        $arrFiles = $this->resourceFinder?->findIn('templates')?->files()?->name('style-manager-*'. $type->value);
         $arrBundleConfigs = null;
 
         if ($arrFiles->hasResults())
@@ -143,15 +100,15 @@ final class Config
                     $bundleName = 'vendor';
                 }
 
-                $arrBundleConfigs[basename($strRelPath) . ' <b>(' . $bundleName . ')</b>'] = str_replace($projectDir, '', $strRelPath);
+                $arrBundleConfigs[basename($strRelPath) . ' <b>(' . $bundleName . ')</b>'] = str_replace($this->projectDir, '', $strRelPath);
             }
         }
 
-        if ($projectTemplates = array_merge((glob($projectDir . '/templates/style-manager-*' . $type->value) ?: []), (glob($projectDir . '/templates/*/style-manager-*' . $type->value) ?: [])))
+        if ($projectTemplates = array_merge((glob($this->projectDir . '/templates/style-manager-*' . $type->value) ?: []), (glob($this->projectDir . '/templates/*/style-manager-*' . $type->value) ?: [])))
         {
             foreach ($projectTemplates as $template)
             {
-                $arrBundleConfigs[basename($template) . ' <b>(/'. dirname(StringUtil::striprootdir($template)) .')</b>'] = str_replace($projectDir, '', $template);
+                $arrBundleConfigs[basename($template) . ' <b>(/'. dirname(StringUtil::striprootdir($template)) .')</b>'] = str_replace($this->projectDir, '', $template);
             }
         }
 
@@ -188,15 +145,13 @@ final class Config
      */
     public function parseXmlConfiguration(array $files, array $configuration): array|null
     {
-        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-
         [$styleArchives, $styleGroups] = $configuration;
 
         foreach ($files as $filePath)
         {
             if (!is_file($filePath))
             {
-                $filePath = $rootDir . '/' . $filePath;
+                $filePath = $this->projectDir . '/' . $filePath;
             }
 
             if (
@@ -382,7 +337,7 @@ final class Config
     /**
      * Check whether an element is visible in the style manager widget
      */
-    private static function isVisibleGroup(StyleGroup|StyleManagerModel $objGroup, string $strTable): bool
+    private function isVisibleGroup(string $strTable, StyleGroup|StyleManagerModel $objGroup): bool
     {
         $isVisible = match ($strTable) {
             'tl_layout' => !!$objGroup->extendLayout,
@@ -402,27 +357,21 @@ final class Config
         }
 
         // ToDo: DI
-        $eventDispatcher = System::getContainer()->get('event_dispatcher');
-        $event = new IsVisibleGroupEvent($objGroup, $strTable);
-        $eventDispatcher->dispatch($event);
+        $event = new StyleManagerVisibleGroupEvent($strTable, $objGroup);
+        $this->eventDispatcher->dispatch($event);
 
         return $event->isVisible();
     }
 
-    /**
-     * @experimental
-     */
     private function parseYamlConfiguration(array $files, array $configuration): array
     {
-        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-
         [$styleArchives, $styleGroups] = $configuration;
 
         foreach ($files as $filePath)
         {
             if (!is_file($filePath))
             {
-                $filePath = $rootDir . '/' . $filePath;
+                $filePath = $this->projectDir . '/' . $filePath;
             }
 
             if (
