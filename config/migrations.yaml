@@ -1,7 +1,0 @@
-services:
-    Oveleon\ContaoComponentStyleManager\Migration\Version30\ObjectConversionMigration:
-        arguments:
-            - '@database_connection'
-            - '@contao.framework'
-        tags:
-            - { name: contao.migration, priority: 0 }
