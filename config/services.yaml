@@ -6,4 +6,15 @@ services:
 
     Oveleon\ContaoComponentStyleManager\:
         resource: '../src/'
-        exclude: '../src/{Model,DependencyInjection,Event}'
+        exclude: '../src/{Model,Event,Style,Util,ContaoComponentStyleManager.php}'
+
+    contao_component_style_manager.config_provider:
+        class: Oveleon\ContaoComponentStyleManager\StyleManager\ConfigProvider
+        public: true
+        arguments:
+            - '@contao.resource_finder'
+            - '@event_dispatcher'
+            - '%kernel.project_dir%'
+
+    # Autowiring aliases
+    Oveleon\ContaoComponentStyleManager\StyleManager\ConfigProvider: '@contao_component_style_manager.config_provider'

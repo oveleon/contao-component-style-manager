@@ -111,9 +111,5 @@ $GLOBALS['TL_DCA']['tl_style_manager_archive'] = [
             'eval'                    => ['rgxp'=>'natural', 'nospace'=>true, 'maxlength'=>255, 'tl_class'=>'w50'],
             'sql'                     => "int(10) NOT NULL default '0'"
         ],
-        'bundleConfig' => [
-            'reference'               => &$GLOBALS['TL_LANG']['tl_style_manager_archive']['bundleConfig'],
-            'eval'                    => ['helpwizard'=>true],
-        ]
     ]
 ];

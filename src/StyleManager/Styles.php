@@ -140,15 +140,7 @@ class Styles
                 break;
 
             default:
-                // HOOK: add custom logic format methods
-                if (isset($GLOBALS['TL_HOOKS']['styleManagerFormatMethod']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerFormatMethod']))
-                {
-                    foreach ($GLOBALS['TL_HOOKS']['styleManagerFormatMethod'] as $callback)
-                    {
-                        return System::importStatic($callback[0])->{$callback[1]}($format, $method, $this);
-                    }
-                }
-
+                // ToDo: Event or is this even needed? Has not been used. People should decorate this service instead
                 if ($value = $this->get($this->currIdentifier, $this->currGroups))
                 {
                     return sprintf($format, $value);

@@ -1,20 +1,20 @@
-# Version 2.* to 3.0
+# Upgrade from StyleManager Version 3.* to 4.0
 
-## Storage adjustment
-
-### Migration
-
-If you update from version 2 to version 3, you have to perform a migration, otherwise the records will break and cannot
-be reassigned in the StyleManager widget. If the StyleManager widget is already called before running a migration,
-selected properties are inserted into the DCA's CSS class field to avoid errors.
-
-[Learn more about the migration](docs/MIGRATE.md)
-
-## Restructure of the Bundle
-
-### Namespaces
-
-Due to the restructuring of the bundle, the namespaces needs to be adjusted, if the StyleManager was used for vendor
-DCAs.
-
-[Learn more about StyleManager Support](docs/SUPPORT.md)
+* Minimum PHP-Version is 8.4
+* The built-in XML-Import has been removed.
+* The built-in XML-Export has been removed.
+* The built-in partial XML-Export has been removed.
+* The built-in partial XML-Import has been removed.
+* The `objectConversion` command has been removed.
+* The `ObjectConversion` migration has been removed.
+* The `styleManagerFindByTable` hook has been removed, use the event instead.
+* The `styleManagerIsVisibleGroup` hook has been removed, use the event instead.
+* The `styleManagerSkipField` hook has been removed, use the event instead.
+* The `styleManagerFormatMethod` hook has been removed.
+* The `styleManagerGroupFieldOptions` hook has been removed.
+* Whilst XML bundle-configurations still work, you are encouraged to use the YAML configuration.
+* The config option `show_group_title` has been removed. Use Twig instead.
+* The config option `use_bundle_config` has been removed. Bundle configurations are now loaded by default.
+* Bundle configurations are not loaded using the `StyleManagerArchive` and `StyleManager` Model anymore.
+* Namespace and methods for expanding your own DCA have been changed, consult the documentation for the changes.
+*

@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace Oveleon\ContaoComponentStyleManager\Twig;
 
 use Contao\StringUtil;
-use Oveleon\ContaoComponentStyleManager\StyleManager\StyleManager;
 use Oveleon\ContaoComponentStyleManager\StyleManager\Styles;
+use Oveleon\ContaoComponentStyleManager\Util\StyleManager;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -30,23 +30,6 @@ class StyleManagerExtension extends AbstractExtension
 
     public function createContext(array $data): Styles
     {
-        // ToDo: Enable when contao ships fe_page as a twig template
-        /*if ($GLOBALS['TL_PTY'][$data['type']] ?? false)
-        {
-            global $objPage;
-
-            $layout = LayoutModel::findByPk($data['layoutId']);
-
-            $arrStyles = array_filter(array_merge_recursive(
-                StringUtil::deserialize($objPage?->styleManager, true),
-                StringUtil::deserialize($layout?->styleManager, true)
-            ));
-        }
-        else
-        {
-            $arrStyles = StringUtil::deserialize($data['styleManager'], true);
-        }*/
-
         /** @var array $arrStyles */
         $arrStyles = StringUtil::deserialize($data['styleManager'], true);
 

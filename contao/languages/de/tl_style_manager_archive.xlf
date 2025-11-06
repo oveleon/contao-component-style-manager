@@ -122,43 +122,6 @@
         <source>Enter a freely definable number here to define the sort index. This is used to determine the order of the categories in the backend.</source>
         <target>Geben Sie hier eine frei definierbare Zahl ein, um den Sortierindex zu definieren. Dieser dient dazu, die Reihenfolge der Kategorien im Backend zu bestimmen.</target>
       </trans-unit>
-
-      <trans-unit id="tl_style_manager_archive.bundleConfig.0.0">
-        <source>About the bundle configuration</source>
-        <target>Über die Bundle-Konfiguration</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.0.1">
-        <source>Bundle configurations are used to automatically consume and use StyleManager properties from other bundles.</source>
-        <target>Bundle-Konfigurationen dienen dazu, automatisiert StyleManager-Eigenschaften aus anderen Bundles zu konsumieren und verwenden zu können.</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.1.0">
-        <source>Overwrite configuration</source>
-        <target>Konfiguration überschreiben</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.1.1">
-        <source>If you import the configurations into the system using the Import button, properties with the same identifiers (category) and aliases (CSS group) will be added / overwritten. If you delete these properties later, the original configuration will be used again.</source>
-        <target>Sofern Sie die Bundle-Konfigurationen über den Import-Button in das System importieren, werden Eigenschaften mit denselben Kennungen (Kategorie) und Aliasse (CSS-Gruppe) ergänzt / überschrieben. Beim nachträglichen Löschen dieser Eigenschaften wird die Original-Konfiguration wieder verwendet.</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.2.0">
-        <source>Switch on / off</source>
-        <target>Ein- / Ausschalten</target>
-      </trans-unit>
-      <trans-unit id="tl_style_manager_archive.bundleConfig.2.1">
-        <source>Automatic reading of bundle configurations can be switched off via config.yaml:
-          &lt;br/&gt;&lt;br/&gt;
-&lt;pre&gt;
-contao_component_style_manager:
-    use_bundle_config: false
-&lt;/pre&gt;
-        </source>
-        <target>Das automatische Einlesen von Bundle-Konfigurationen kann über die config.yaml ausgeschaltet werden:
-          &lt;br/&gt;&lt;br/&gt;
-&lt;pre&gt;
-  contao_component_style_manager:
-      use_bundle_config: false
-&lt;/pre&gt;
-        </target>
-      </trans-unit>
     </body>
   </file>
 </xliff>

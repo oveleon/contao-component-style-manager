@@ -69,7 +69,7 @@ class StyleManagerListener
 
         if ($arrExtends !== null)
         {
-            $label .= sprintf('<span style="color:#999;padding-left:3px">[%s]</span>', implode(", ", $arrExtends));
+            $label .= sprintf('<span style="color:var(--gray);padding-left:3px">[%s]</span>', implode(", ", $arrExtends));
         }
 
         return $label;

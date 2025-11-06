@@ -10,11 +10,13 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoComponentStyleManager\Model;
 
+use Contao\Controller;
 use Contao\Model;
 use Contao\Model\Collection;
+use Contao\StringUtil;
 use Contao\System;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Config;
-use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
+use Oveleon\ContaoComponentStyleManager\Event\StyleManagerFindByTableEvent;
+use Oveleon\ContaoComponentStyleManager\StyleManager\ConfigProvider;
 
 /**
  * Reads and writes fields from style manager
@@ -93,21 +95,15 @@ use Oveleon\ContaoComponentStyleManager\StyleManager\Sync;
  * @method static integer countByContentElements($id, array $opt=array())
  * @method static integer countByExtendNews($id, array $opt=array())
  * @method static integer countByExtendEvents($id, array $opt=array())
- *
- * @author Daniele Sciannimanica <daniele@oveleon.de>
  */
 class StyleManagerModel extends Model
 {
     /**
-     * Table name
      * @var string
      */
     protected static $strTable = 'tl_style_manager';
 
-    /**
-     * Find published CSS groups using their table
-     */
-    public static function findByTable(string $strTable, array $arrOptions=array()): Collection|StyleManagerModel|array|null
+    public static function findByTable(string $strTable, array $arrOptions = []): Collection|StyleManagerModel|array|null
     {
         switch ($strTable)
         {
@@ -130,106 +126,88 @@ class StyleManagerModel extends Model
             case 'tl_calendar_events':
                 return static::findByExtendEvents(1, $arrOptions);
             default:
-                // HOOK: add support for third-party tables
-                if (isset($GLOBALS['TL_HOOKS']['styleManagerFindByTable']) && \is_array($GLOBALS['TL_HOOKS']['styleManagerFindByTable']))
-                {
-                    foreach ($GLOBALS['TL_HOOKS']['styleManagerFindByTable'] as $callback)
-                    {
-                        if (null !== ($result = System::importStatic($callback[0])->{$callback[1]}($strTable, $arrOptions)))
-                        {
-                            return $result;
-                        }
-                    }
-                }
+                $eventDispatcher = System::getContainer()->get('event_dispatcher');
+                $event = new StyleManagerFindByTableEvent($strTable, $arrOptions);
+                $eventDispatcher->dispatch($event);
 
-                return null;
+                return $event->getCollection();
         }
     }
 
-    /**
-     * Find configuration and published CSS groups using their table
-     */
     public static function findByTableAndConfiguration(string $strTable, array $arrOptions=array()): Collection|StyleManagerModel|array|null
     {
-        $objContainer = System::getContainer();
+        $container = System::getContainer();
         $objGroups = static::findByTable($strTable, $arrOptions);
 
         // Load and merge bundle configurations
-        if ($objContainer->getParameter('contao_component_style_manager.use_bundle_config'))
+        $arrObjStyleGroups = null;
+
+        /** @var ConfigProvider $configuration */
+        $configuration = $container->get('contao_component_style_manager.config_provider');
+        $arrGroups = $configuration->getGroups($strTable);
+
+        if (null !== $arrGroups)
         {
-            $arrObjStyleGroups = null;
+            $arrArchiveIdentifier = [];
 
-            $bundleConfig = Config::getInstance();
-            $arrGroups = $bundleConfig::getGroups($strTable);
-
-            if (null !== $arrGroups)
+            if (null !== ($objArchives = StyleManagerArchiveModel::findAll()))
             {
-                $arrArchiveIdentifier = [];
+                $arrArchiveIdentifier = array_combine(
+                    $objArchives->fetchEach('id'),
+                    $objArchives->fetchEach('identifier')
+                );
+            }
 
-                if (null !== ($objArchives = StyleManagerArchiveModel::findAll()))
+            if (null !== $objGroups)
+            {
+                foreach ($objGroups as $objGroup)
                 {
-                    $arrArchiveIdentifier = array_combine(
-                        $objArchives->fetchEach('id'),
-                        $objArchives->fetchEach('identifier')
-                    );
+                    $alias = $arrArchiveIdentifier[$objGroup->pid] . '_' . $objGroup->alias;
+
+                    $arrObjStyleGroups[ $alias ] = $objGroup->current();
                 }
+            }
 
-                if (null !== $objGroups)
+            // Append bundle config groups
+            foreach ($arrGroups as $combinedAlias => $objGroup)
+            {
+                $blnStrict = $container->getParameter('contao_component_style_manager.strict');
+
+                // Skip if the alias already exists in the backend configuration
+                if ($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
                 {
-                    foreach ($objGroups as $objGroup)
+                    $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
+                }
+                elseif (!$blnStrict)
+                {
+                    // Merge if the alias already exists in the backend configuration
+                    if ($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
                     {
-                        $alias = Sync::combineAliases(
-                            $arrArchiveIdentifier[$objGroup->pid],
-                            $objGroup->alias
-                        );
-
-                        $arrObjStyleGroups[ $alias ] = $objGroup->current();
+                        // Overwrite with a merged object
+                        $arrObjStyleGroups[ $combinedAlias ] = self::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
                     }
-                }
-
-                // Append bundle config groups
-                foreach ($arrGroups as $combinedAlias => $objGroup)
-                {
-                    $blnStrict = $objContainer->getParameter('contao_component_style_manager.strict');
-
-                    // Skip if the alias already exists in the backend configuration
-                    if ($blnStrict && $arrObjStyleGroups && !\array_key_exists($combinedAlias, $arrObjStyleGroups))
+                    else
                     {
                         $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
                     }
-                    elseif (!$blnStrict)
-                    {
-                        // Merge if the alias already exists in the backend configuration
-                        if ($arrObjStyleGroups && \array_key_exists($combinedAlias, $arrObjStyleGroups))
-                        {
-                            // Overwrite with a merged object
-                            $arrObjStyleGroups[ $combinedAlias ] = Sync::mergeGroupObjects($objGroup, $arrObjStyleGroups[ $combinedAlias ], ['id', 'pid', 'alias']);
-                        }
-                        else
-                        {
-                            $arrObjStyleGroups[ $combinedAlias ] = $objGroup;
-                        }
-                    }
                 }
             }
-
-            if ($arrObjStyleGroups)
-            {
-                // Sort by sorting
-                usort($arrObjStyleGroups, function($a, $b) {
-                    return ($a->sorting <=> $b->sorting);
-                });
-
-                return $arrObjStyleGroups;
-            }
         }
+
+        if ($arrObjStyleGroups)
+        {
+            // Sort by sorting
+            usort($arrObjStyleGroups, function($a, $b) {
+                return ($a->sorting <=> $b->sorting);
+            });
+
+            return $arrObjStyleGroups;
+        }
+
 
         return $objGroups;
     }
 
-    /**
-     * Find one item by alias by their parent ID
-     */
     public static function findByAliasAndPid(string $alias, int|string $pid, array $arrOptions=array()): StyleManagerModel|null
     {
         $t = static::$strTable;
@@ -245,5 +223,108 @@ class StyleManagerModel extends Model
         );
 
         return static::findOneBy($arrColumns, $arrValues, $arrOptions);
+    }
+
+    private static function mergeGroupObjects(StyleManagerModel|null $objOriginal = null, StyleManagerModel|null $objMerge = null, array|null $skipFields = null, bool $skipEmpty = true, $forceOverwrite = true): StyleManagerModel|null
+    {
+        if (null === $objOriginal || null === $objMerge)
+        {
+            return $objOriginal;
+        }
+
+        Controller::loadDataContainer('tl_style_manager');
+
+        foreach ($objMerge->row() as $field => $value)
+        {
+            if (
+                ($skipEmpty && (!$value || strtolower((string) $value) === 'null'))
+                || (null !== $skipFields && in_array($field, $skipFields))
+            ) {
+                continue;
+            }
+
+            switch ($field)
+            {
+                // Merge and manipulation of existing classes
+                case 'cssClasses':
+                    if ($objOriginal->{$field})
+                    {
+                        /** @var array $arrClasses */
+                        $arrClasses = StringUtil::deserialize($objOriginal->{$field}, true);
+                        $arrExists = self::flattenKeyValueArray($arrClasses);
+
+                        /** @var array $arrValues */
+                        $arrValues = StringUtil::deserialize($value, true);
+
+                        foreach ($arrValues as $cssClass)
+                        {
+                            if (array_key_exists($cssClass['key'], $arrExists))
+                            {
+                                if (!$forceOverwrite)
+                                {
+                                    continue;
+                                }
+
+                                // Overwrite existing value
+                                if (false !== ($key = array_search($cssClass['key'], array_column($arrClasses, 'key'))))
+                                {
+                                    $arrClasses[ $key ] = [
+                                        'key' => $cssClass['key'],
+                                        'value' => $cssClass['value']
+                                    ];
+                                }
+
+                                continue;
+                            }
+
+                            $arrClasses[] = [
+                                'key' => $cssClass['key'],
+                                'value' => $cssClass['value']
+                            ];
+                        }
+
+                        $value  = serialize($arrClasses);
+                    }
+
+                    break;
+                // Check for multiple fields like contentElement
+                default:
+                    $fieldOptions = $GLOBALS['TL_DCA']['tl_style_manager']['fields'][$field];
+
+                    if (isset($fieldOptions['eval']['multiple']) && !!$fieldOptions['eval']['multiple'] && $fieldOptions['inputType'] === 'checkbox')
+                    {
+                        /** @var array $arrElements */
+                        $arrElements = StringUtil::deserialize($objOriginal->{$field}, true);
+
+                        /** @var array $arrValues */
+                        $arrValues = StringUtil::deserialize($value, true);
+
+                        foreach ($arrValues as $element)
+                        {
+                            if (in_array($element, $arrElements))
+                            {
+                                if (!$forceOverwrite)
+                                {
+                                    continue;
+                                }
+
+                                $key = array_search($element, $arrElements);
+                                $arrElements[ $key ] = $element;
+
+                                continue;
+                            }
+
+                            $arrElements[] = $element;
+                        }
+
+                        $value  = serialize($arrElements);
+                    }
+            }
+
+            // Overwrite field values
+            $objOriginal->{$field} = $value;
+        }
+
+        return $objOriginal;
     }
 }
