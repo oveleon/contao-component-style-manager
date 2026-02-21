@@ -414,8 +414,16 @@ class StyleManager
         }
     }
 
-    #[AsCallback(table: 'tl_form_field', target: 'list.sorting.child_record')]
-    public function listFormFields(array $arrRow): string
+    /**
+     * Updates the style manager definition within the form field view.
+     *
+     * Callbacks are registered via the StyleManagerContaoCallbackPass.
+     *
+     * For Contao < 5.7, this method is registered with the 'list.sorting.child_record' callback -> returns string.
+     * For Contao >= 5.7 this method is registered with the 'list.label.label' callback -> returns array.
+     */
+    //#[AsCallback(table: 'tl_form_field', target: 'list.label.label')]
+    public function listFormFields($arrRow): string|array
     {
         $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
         $arrRow['styleManager'] = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
