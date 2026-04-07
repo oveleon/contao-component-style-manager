@@ -415,12 +415,12 @@ class StyleManager
     }
 
     #[AsCallback(table: 'tl_form_field', target: 'list.sorting.child_record')]
-    public function listFormFields(array $arrRow): string|array
+    public function listFormFields(array $arrRow): string
     {
         $arrStyles = StringUtil::deserialize($arrRow['styleManager']);
         $arrRow['styleManager'] = new Styles($arrStyles[StyleManager::VARS_KEY] ?? null);
 
         $formField = new \tl_form_field();
-        return $formField->listFormFields($arrRow);
+        return $formField->listFormFields($arrRow)[1];
     }
 }
